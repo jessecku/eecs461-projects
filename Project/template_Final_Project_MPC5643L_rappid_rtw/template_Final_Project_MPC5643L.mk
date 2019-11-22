@@ -52,7 +52,7 @@
 #  EXTMODE_STATIC_SIZE - Size of static memory allocation buffer.
 
 MODEL           = template_Final_Project_MPC5643L
-MODULES         = FlexPWM_564xL_library.c adc0_config.c adc_564xl_library.c adc_init.c adc_trigger_init.c eTimer_564xL_library.c flexcan_564xl_library.c flexpwm_init.c freemaster_MPC56xx.c freemaster_appcmd.c freemaster_protocol.c freemaster_rec.c freemaster_scope.c freemaster_serial.c freemaster_sfio.c freemaster_tsa.c gpio_564xl_library.c intc_init.c intc_sw_vectable.c linflex_init.c linflex_siu_init.c rappid_main.c rappid_utils.c romcopy.c rtGetInf.c rtGetNaN.c rt_nonfinite.c siu_init.c sys_init.c sysclk_init.c template_Final_Project_MPC5643L_data.c vmod.c vmod_wrapper.c 
+MODULES         = FlexPWM_564xL_library.c PL.c PL_wrapper.c adc0_config.c adc_564xl_library.c adc_init.c adc_trigger_init.c eTimer_564xL_library.c flexcan_564xl_library.c flexpwm_init.c freemaster_MPC56xx.c freemaster_appcmd.c freemaster_protocol.c freemaster_rec.c freemaster_scope.c freemaster_serial.c freemaster_sfio.c freemaster_tsa.c gpio_564xl_library.c intc_init.c intc_sw_vectable.c linflex_init.c linflex_siu_init.c rappid_main.c rappid_utils.c romcopy.c rtGetInf.c rtGetNaN.c rt_nonfinite.c siu_init.c sys_init.c sysclk_init.c template_Final_Project_MPC5643L_data.c vmod.c vmod_wrapper.c 
 MAKEFILE        = template_Final_Project_MPC5643L.mk
 ALT_MATLAB_ROOT = C:\PROGRA~2\MATLAB\R2011b
 MATLAB_ROOT     = C:\Program Files (x86)\MATLAB\R2011b
@@ -167,9 +167,9 @@ MATLAB_INCLUDES = \
 
 # Additional file include paths
 ADD_INCLUDES = \
-	-IH:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw \
-	-IH:\EECS_461\project \
-	-IH:\EECS_461\project\TEMP~!#5 \
+	-IH:\eecs461\project\template_Final_Project_MPC5643L_rappid_rtw \
+	-IH:\eecs461\project \
+	-IH:\eecs461\project\TEMP~781 \
 	-IC:\RAppIDToolbox\rappid\UofMBlocks\UofM_blocks\blocks\VehicleSim \
 
 
@@ -533,11 +533,11 @@ $(PLIB_TEMP)/%.o: C:\RAppIDToolbox\rappid\UofMBlocks\UofM_blocks\blocks\VehicleS
 	@$(COMPILE_TOOL) $(COMPILE_TOOL_OPTS) $(CFLAGS) -o $@ -c $<
 
 
-$(LIB_TEMP)/%.o: c:\MCToolbox\rappid564xl\UofMBlocks\Serial/%.c
-	@echo ### "c:\MCToolbox\rappid564xl\UofMBlocks\Serial\$*.c"
+$(LIB_TEMP)/%.o: C:\MCToolbox\rappid564xl\UofMBlocks\Serial/%.c
+	@echo ### "C:\MCToolbox\rappid564xl\UofMBlocks\Serial\$*.c"
 	@$(COMPILE_TOOL) $(COMPILE_TOOL_OPTS) $(CFLAGS) -o $@ -c $<
-$(PLIB_TEMP)/%.o: c:\MCToolbox\rappid564xl\UofMBlocks\Serial/%.c
-	@echo ### "c:\MCToolbox\rappid564xl\UofMBlocks\Serial\$*.c"
+$(PLIB_TEMP)/%.o: C:\MCToolbox\rappid564xl\UofMBlocks\Serial/%.c
+	@echo ### "C:\MCToolbox\rappid564xl\UofMBlocks\Serial\$*.c"
 	@$(COMPILE_TOOL) $(COMPILE_TOOL_OPTS) $(CFLAGS) -o $@ -c $<
 
 

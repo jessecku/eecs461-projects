@@ -18,7 +18,7 @@
  *   in the Simulink Coder User's Manual in the Chapter titled,
  *   "Wrapper S-functions".
  *
- *   Created: Tue Mar 29 16:00:59 2016
+ *   Created: Tue Apr 12 15:00:09 2016
  */
 
 /*
@@ -71,7 +71,7 @@ void vmod_Outputs_wrapper(const real32_T *u,
     u[0];
   ydot[0] = ((L2[0]/L1[0])*sin(delta[0])*cos(psi[0])+cos(delta[0])*sin(psi[0]))*
     u[0];
-  psidot[0] = ((1/L1[0])*sin(delta[0]))*u[0];
+  psidot[0] = ((-1/L1[0])*sin(delta[0]))*u[0];
 
   /* %%%-SFUNWIZ_wrapper_Outputs_Changes_END --- EDIT HERE TO _BEGIN */
 }

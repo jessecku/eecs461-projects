@@ -3,10 +3,10 @@
  *
  * Code generated for Simulink model 'template_Final_Project_MPC5643L'.
  *
- * Model version                  : 1.141
+ * Model version                  : 1.190
  * Simulink Coder version         : 8.1 (R2011b) 08-Jul-2011
  * TLC version                    : 8.1 (Jul  9 2011)
- * C/C++ source code generated on : Tue Mar 29 17:51:25 2016
+ * C/C++ source code generated on : Tue Apr 12 16:44:21 2016
  *
  * Target selection: rappid564xl.tlc
  * Embedded hardware selection: Motorola PowerPC
@@ -18,15 +18,16 @@
 #define RTW_HEADER_template_Final_Project_MPC5643L_private_h_
 #include "rtwtypes.h"
 #include "MPC5643L.h"
-#include "flexcan_564xl_library.h"
 #include "gpio_564xl_library.h"
+#include "flexcan_564xl_library.h"
 #include "adc_564xl_library.h"
+#include "path_data.h"
+#include "path_data.h"
 #include "FlexPWM_564xL_library.h"
 #include "flexpwm_init.h"
-#include "path_data.h"
-#include "path_data.h"
 #include "adc0_config.h"
 #include "eTimer_564xL_library.h"
+#define CALL_EVENT                     (-1)
 #ifndef __RTWTYPES_H__
 #error This file requires rtwtypes.h to be included
 #else
@@ -41,6 +42,11 @@
 #endif                                 /* TMWTYPES_PREVIOUSLY_INCLUDED */
 #endif                                 /* __RTWTYPES_H__ */
 
+extern void PL_Outputs_wrapper(const real32_T *H,
+  const real32_T *si,
+  const real32_T *s,
+  real32_T *lead_s,
+  real32_T *lead_u);
 extern void vmod_Outputs_wrapper(const real32_T *u,
   const real32_T *delta,
   const real32_T *psi,

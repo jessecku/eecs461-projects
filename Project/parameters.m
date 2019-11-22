@@ -9,6 +9,7 @@ R = 1/5;  % steering ratio input to wheel steer angle, alpha
 Ak = 100; % (N-mm)/(m-rad/s)  
 m = 2000; % (Kg) mass
 b = 100;  % (N-s)/m 
+H = 10;
 
 
 % ACC control parameters
@@ -32,3 +33,14 @@ Chase_Ctrl = c2d(ss(A,B,C,D), dT, 'matched');
 Chase_Ctrl_x0 = 0;
 
 v0 = 0;
+
+% automatic steering 
+
+% PD controller to get delta_desired
+Kd_PD = 0.04; % 0 to 0.1
+Kp_PD = 0.4; % 0 to 1
+
+% PID controller to get auto torque
+Kd_PID  = 40; % 0 to 100
+Ki_PID = 0; % very small ~10^-6
+Kp_PID = 500;  % >400

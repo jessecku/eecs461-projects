@@ -11,7 +11,7 @@
 function rtwHilite(aBlock,aParentSID) {
  aParentSID = "";
  try {
-    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\eecs461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\eecs461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
  } catch (e) { 
  }
 } // end rtwHilite
@@ -21,7 +21,7 @@ function rtwHilite(aBlock,aParentSID) {
 <BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
 <P>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
-<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\vmod.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\vmod.c</A></H4>
+<H4>File: <A HREF="file:///H:\eecs461\project\template_Final_Project_MPC5643L_rappid_rtw\vmod.c" TARGET="rtwreport_document_frame">H:\eecs461\project\template_Final_Project_MPC5643L_rappid_rtw\vmod.c</A></H4>
 <PRE id="RTWcode">
 <SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/*</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> * File: vmod.c</SPAN>
@@ -51,7 +51,7 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><SPAN CLASS="CT"> *  -------------------------------------------------------------------------</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><SPAN CLASS="CT"> * | See matlabroot/simulink/src/sfuntmpl_doc.c for a more detailed template |</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><SPAN CLASS="CT"> *  -------------------------------------------------------------------------</SPAN>
-</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><SPAN CLASS="CT"> * Created: Tue Mar 29 16:00:59 2016</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><SPAN CLASS="CT"> * Created: Tue Apr 12 15:00:09 2016</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT"> *</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><SPAN CLASS="CT"> *</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><SPAN CLASS="CT"> */</SPAN>
@@ -239,7 +239,7 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A><SPAN CLASS="CT"> * Abstract:</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A><SPAN CLASS="CT"> *   Setup sizes of the various vectors.</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A><SPAN CLASS="CT"> */</SPAN>
-</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlInitializeSizes">mdlInitializeSizes</A>(SimStruct *S)
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlInitializeSizes(SimStruct *S)
 </SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A>  DECL_AND_INIT_DIMSINFO(inputDimsInfo);
 </SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A>  DECL_AND_INIT_DIMSINFO(outputDimsInfo);
@@ -319,7 +319,7 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A>
 </SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A><FONT COLOR="#992211">#</FONT> <SPAN CLASS="PP">define</SPAN> MDL_SET_INPUT_PORT_FRAME_DATA
 </SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A>
-</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlSetInputPortFrameData">mdlSetInputPortFrameData</A>(SimStruct *S,
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlSetInputPortFrameData(SimStruct *S,
 </SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A>  <A HREF="rtwtypes_h.html#type_int_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_int_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">int_T</FONT></A> port,
 </SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A>  Frame_T frameData)
 </SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A><B>{</B>
@@ -330,7 +330,7 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A><SPAN CLASS="CT"> * Abstract:</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A><SPAN CLASS="CT"> *    Specifiy  the sample time.</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A><SPAN CLASS="CT"> */</SPAN>
-</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlInitializeSampleTimes">mdlInitializeSampleTimes</A>(SimStruct *S)
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlInitializeSampleTimes(SimStruct *S)
 </SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A>  ssSetSampleTime(S, 0, SAMPLE_TIME_0);
 </SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A>  ssSetOffsetTime(S, 0, 0.0);
@@ -338,21 +338,21 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>
 </SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> MDL_SET_INPUT_PORT_DATA_TYPE
 </SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A>
-</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlSetInputPortDataType">mdlSetInputPortDataType</A>(SimStruct *S, <SPAN CLASS="DT">int</SPAN> port, DTypeId dType)
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlSetInputPortDataType(SimStruct *S, <SPAN CLASS="DT">int</SPAN> port, DTypeId dType)
 </SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A>  ssSetInputPortDataType( S, 0, dType);
 </SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A><B>}</B>
 </SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A>
 </SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> MDL_SET_OUTPUT_PORT_DATA_TYPE
 </SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A>
-</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlSetOutputPortDataType">mdlSetOutputPortDataType</A>(SimStruct *S, <SPAN CLASS="DT">int</SPAN> port, DTypeId dType)
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlSetOutputPortDataType(SimStruct *S, <SPAN CLASS="DT">int</SPAN> port, DTypeId dType)
 </SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A>  ssSetOutputPortDataType(S, 0, dType);
 </SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A><B>}</B>
 </SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A>
 </SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> MDL_SET_DEFAULT_PORT_DATA_TYPES
 </SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A>
-</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlSetDefaultPortDataTypes">mdlSetDefaultPortDataTypes</A>(SimStruct *S)
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlSetDefaultPortDataTypes(SimStruct *S)
 </SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A>  ssSetInputPortDataType( S, 0, SS_DOUBLE);
 </SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A>  ssSetOutputPortDataType(S, 0, SS_DOUBLE);
@@ -361,7 +361,7 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A><SPAN CLASS="CT">/* Function: mdlOutputs =======================================================</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A><SPAN CLASS="CT"> *</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A><SPAN CLASS="CT"> */</SPAN>
-</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlOutputs">mdlOutputs</A>(SimStruct *S, <A HREF="rtwtypes_h.html#type_int_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_int_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">int_T</FONT></A> tid)
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlOutputs(SimStruct *S, <A HREF="rtwtypes_h.html#type_int_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_int_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">int_T</FONT></A> tid)
 </SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A>  <SPAN CLASS="DT">const</SPAN> <A HREF="rtwtypes_h.html#type_real32_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_real32_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">real32_T</FONT></A> *u = (<SPAN CLASS="DT">const</SPAN> <A HREF="rtwtypes_h.html#type_real32_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_real32_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">real32_T</FONT></A>*) ssGetInputPortSignal(S,0);
 </SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A>  <SPAN CLASS="DT">const</SPAN> <A HREF="rtwtypes_h.html#type_real32_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_real32_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">real32_T</FONT></A> *delta = (<SPAN CLASS="DT">const</SPAN> <A HREF="rtwtypes_h.html#type_real32_T" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_real32_T');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">real32_T</FONT></A>*) ssGetInputPortSignal(S,1);
@@ -380,7 +380,7 @@ function rtwHilite(aBlock,aParentSID) {
 </SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A><SPAN CLASS="CT"> *    at the termination of a simulation.  For example, if memory was</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A><SPAN CLASS="CT"> *    allocated in mdlStart, this is the place to free it.</SPAN>
 </SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A><SPAN CLASS="CT"> */</SPAN>
-</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_mdlTerminate">mdlTerminate</A>(SimStruct *S)
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> mdlTerminate(SimStruct *S)
 </SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A><B>{</B>
 </SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A><B>}</B>
 </SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A>
