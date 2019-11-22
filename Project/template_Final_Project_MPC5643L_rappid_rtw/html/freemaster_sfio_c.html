@@ -1,0 +1,193 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_sfio.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_sfio.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_sfio.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2011 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster_sfio.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER SFIO (Matlab/Simulink interface) encapsulation handler</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.0.5.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Aug-3-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A><SPAN CLASS="CT">   * This file contains the SFIO communication handler and enables the SFIO tool</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><SPAN CLASS="CT">   * to run over FreeMASTER. For more information, see Freescale SFIO documentation.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_private.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_protocol.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SFIO &amp;&amp; (!FMSTR_DISABLE)
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><SPAN CLASS="CT">/* the sfiolib needs to be added to the project */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;sfiolib.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><SPAN CLASS="CT"> *  local variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> <A NAME="var_pcm_nSfioRespLen">pcm_nSfioRespLen</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><SPAN CLASS="CT">/* recorder runtime flags */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">volatile</SPAN> <SPAN CLASS="KW">union</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_FLAGS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_FLAGS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_FLAGS</FONT></A> <A NAME="var_all">all</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>  <SPAN CLASS="KW">struct</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>    <SPAN CLASS="DT">unsigned</SPAN> bEvenRun : 1;             <SPAN CLASS="CT">/* last command executed was the even one */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A>    <SPAN CLASS="DT">unsigned</SPAN> bLastOK : 1;              <SPAN CLASS="CT">/* last command executed properly */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>  <B>}</B> flg;
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A><B>}</B> pcm_wSfioFlags;
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A><SPAN CLASS="CT"> * @brief  Initialization of SFIO communication layer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_InitSfio">FMSTR_InitSfio</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>  pcm_wSfioFlags.all = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A><SPAN CLASS="CT"> * @brief  Handling SFIOFRAME (even and odd) commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A><SPAN CLASS="CT"> * @param  pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><SPAN CLASS="CT"> * @note  This function handles the SFIO (Matlab/Simulink Interface) command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A><SPAN CLASS="CT"> *        encapsulated into FreeMASTER protocol. It emulates the SFIO serial</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A><SPAN CLASS="CT"> *        char-by-char communication.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_SfioFrame">FMSTR_SfioFrame</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pResponse = pMessageIO;
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> i, nFrameLen, nByte;
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>  SFIO_U16 nRet = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>  <SPAN CLASS="CT">/* get command and remember if it was even/odd */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>  pMessageIO = FMSTR_ValueFromBuffer8(&amp;nByte, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A>  pcm_wSfioFlags.flg.bEvenRun = (nByte &amp; 1) ? 0 : 1;
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>  pcm_wSfioFlags.flg.bLastOK = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A>  <SPAN CLASS="CT">/* get data length */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>  pMessageIO = FMSTR_ValueFromBuffer8(&amp;nFrameLen, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>  <SPAN CLASS="CT">/* feed the SFIO engine byte-by-byte */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A>  <SPAN CLASS="KW">for</SPAN> (i=0; nRet == 0 &amp;&amp; i&lt;nFrameLen; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>    pMessageIO = FMSTR_ValueFromBuffer8(&amp;nByte, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A>    nRet = SFIO_ProcessRecievedChar(nByte);
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>  <SPAN CLASS="CT">/* frame not handled or handled prematurely */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A>  <SPAN CLASS="KW">if</SPAN> (!nRet || i &lt; nFrameLen)
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pResponse, FMSTR_STC_SFIOERR);
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A>  <SPAN CLASS="CT">/* how much data to return? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>  <SPAN CLASS="KW">if</SPAN> (nRet &gt; FMSTR_COMM_BUFFER_SIZE)
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pResponse, FMSTR_STC_RSPBUFFOVF);
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>  <SPAN CLASS="CT">/* remember this command had executed properly */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A>  <A HREF="freemaster_sfio_c.html#var_pcm_nSfioRespLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nSfioRespLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nSfioRespLen</FONT></A> = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>) nRet;
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A>  pcm_wSfioFlags.flg.bLastOK = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>  <SPAN CLASS="CT">/* SFIO response to return */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A>  pResponse = FMSTR_ConstToBuffer8(pResponse, FMSTR_STS_OK | FMSTR_STSF_VARLEN);
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>  pResponse = FMSTR_ValueToBuffer8(pResponse, <A HREF="freemaster_sfio_c.html#var_pcm_nSfioRespLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nSfioRespLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nSfioRespLen</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A>  <SPAN CLASS="KW">return</SPAN> <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_CopyToBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CopyToBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CopyToBuffer</FONT></A>(pResponse, (<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A>) SFIO_GetOutputBuffer(),
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>    <A HREF="freemaster_sfio_c.html#var_pcm_nSfioRespLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nSfioRespLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nSfioRespLen</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A><SPAN CLASS="CT"> * @brief  Handling SFIOGETRESP (even and odd) commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A><SPAN CLASS="CT"> * @param  pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><SPAN CLASS="CT"> * @note  This function handles the retried request for the last SFIO response.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A><SPAN CLASS="CT"> *        PC may request this retry when the last frame execution took too long</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A><SPAN CLASS="CT"> *        (e.g. due to breakpoint) but is still finished properly. The original</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A><SPAN CLASS="CT"> *        SFIOFRAME command returned timeout, so the PC will use SFIOGETRESP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="CT"> *        to finish data.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A><SPAN CLASS="CT"> *        The even/odd matching is here to have some dgree of robustness for</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A><SPAN CLASS="CT"> *        a case when SFIOFRAME packet gets lost without ever reaching SFIO engine.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A><SPAN CLASS="CT"> *        Without any checking, the SFIOGETRESP would just blindly return the</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A><SPAN CLASS="CT"> *        pre-last result and would definietelly cause Simulink problems.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A><SPAN CLASS="CT"> *        Having the check implemented, the PC can determine the even/odd mismatch</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A><SPAN CLASS="CT"> *        and may re-send the last SFIOFRAME command.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_SfioGetResp">FMSTR_SfioGetResp</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> nByte;
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A>  <SPAN CLASS="CT">/* get command and determine if it is even/odd */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A>  FMSTR_ValueFromBuffer8(&amp;nByte, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A>  <SPAN CLASS="CT">/* last command must have been finished propely */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A>  <SPAN CLASS="KW">if</SPAN> (!pcm_wSfioFlags.flg.bLastOK)
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STC_SFIOERR);
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A>  <SPAN CLASS="CT">/* only respond to "matching" request (even to even, odd to odd) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A>  <SPAN CLASS="KW">if</SPAN> (nByte &amp; 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>    <SPAN CLASS="KW">if</SPAN> (pcm_wSfioFlags.flg.bEvenRun)
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A>      <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STC_SFIOUNMATCH);
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A>  <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A>    <SPAN CLASS="KW">if</SPAN> (!pcm_wSfioFlags.flg.bEvenRun)
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>      <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STC_SFIOUNMATCH);
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A>  <SPAN CLASS="CT">/* SFIO response to return */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A>  pMessageIO = FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STS_OK | FMSTR_STSF_VARLEN);
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A>  pMessageIO = FMSTR_ValueToBuffer8(pMessageIO, <A HREF="freemaster_sfio_c.html#var_pcm_nSfioRespLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nSfioRespLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nSfioRespLen</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A>  <SPAN CLASS="KW">return</SPAN> <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_CopyToBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CopyToBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CopyToBuffer</FONT></A>(pMessageIO, (<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A>) SFIO_GetOutputBuffer(),
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A>    <A HREF="freemaster_sfio_c.html#var_pcm_nSfioRespLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nSfioRespLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nSfioRespLen</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_SFIO && (!FMSTR_DISABLE) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

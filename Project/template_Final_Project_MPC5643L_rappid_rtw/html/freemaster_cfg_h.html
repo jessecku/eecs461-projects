@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_cfg.h </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_cfg.h" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_cfg.h</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/***************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT">   * @file   freemaster_cfg.h.example</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT">   * @brief  FreeMASTER Serial Communication Driver configuration file</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> __FREEMASTER_CFG_H
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> __FREEMASTER_CFG_H
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT"> * Select interrupt or poll-driven serial communication</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_LONG_INTR                0                         <SPAN CLASS="CT">/* complete message processing in interrupt */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_SHORT_INTR               0                         <SPAN CLASS="CT">/* SCI FIFO-queuing done in interrupt */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_POLL_DRIVEN              1                         <SPAN CLASS="CT">/* no interrupt needed, polling only */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><SPAN CLASS="CT"> * Select communication interface (SCI base address)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_device.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_SCI_SECOND
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_SCI_BASE                 0xFFE40000UL              <SPAN CLASS="CT">/* LINFlex0 base on MPC5643L */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_SCI_BASE                 0xFFE44000UL              <SPAN CLASS="CT">/* LINFlex1 base on MPC5643L */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_CAN_SECOND
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CAN_BASE                 0xFFFC0000UL              <SPAN CLASS="CT">/* FlexCAN0 base on MPC5643L */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CAN_BASE                 0xFFFC4000UL              <SPAN CLASS="CT">/* FlexCAN1 base on MPC5643L */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_SCI                  1
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_FLEXCAN              0
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="CT">/* select RX and TX FlexCAN Message buffers */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_FLEXCAN_TXMB             0
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_FLEXCAN_RXMB             1
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><SPAN CLASS="CT"> * Input/output communication buffer size</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_COMM_BUFFER_SIZE         0                         <SPAN CLASS="CT">/* set to 0 for "automatic" */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A><SPAN CLASS="CT"> * Receive FIFO queue size (use with FMSTR_SHORT_INTR only)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_COMM_RQUEUE_SIZE         32                        <SPAN CLASS="CT">/* set to 0 for "default" */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><SPAN CLASS="CT"> * Support for Application Commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_APPCMD               1                         <SPAN CLASS="CT">/* enable/disable App.Commands support */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_APPCMD_BUFF_SIZE         32                        <SPAN CLASS="CT">/* App.Command data buffer size */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MAX_APPCMD_CALLS         4                         <SPAN CLASS="CT">/* how many app.cmd callbacks? (0=disable) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A><SPAN CLASS="CT"> * Oscilloscope support</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_SCOPE                1                         <SPAN CLASS="CT">/* enable/disable scope support */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> <A HREF="freemaster_rec_c.html#var_FMSTR_MAX_SCOPE_VARS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_MAX_SCOPE_VARS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_MAX_SCOPE_VARS</FONT></A>           8                         <SPAN CLASS="CT">/* max. number of scope variables (2..8) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A><SPAN CLASS="CT"> * Recorder support</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_RECORDER             1                         <SPAN CLASS="CT">/* enable/disable recorder support */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MAX_REC_VARS             8                         <SPAN CLASS="CT">/* max. number of recorder variables (2..8) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_OWNBUFF              0                         <SPAN CLASS="CT">/* use user-allocated rec. buffer (1=yes) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A><SPAN CLASS="CT">/* built-in recorder buffer (use when FMSTR_REC_OWNBUFF is 0) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_BUFF_SIZE            1024                      <SPAN CLASS="CT">/* built-in buffer size */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A><SPAN CLASS="CT">/* recorder time base, specifies how often the recorder is called in the user app. */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_TIMEBASE             FMSTR_REC_BASE_MILLISEC(0) <SPAN CLASS="CT">/* 0 = "unknown" */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_FLOAT_TRIG           0                         <SPAN CLASS="CT">/* enable/disable floating point triggering */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A><SPAN CLASS="CT"> * Target-side address translation (TSA)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_TSA                  0                         <SPAN CLASS="CT">/* enable TSA functionality */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_TSA_SAFETY           0                         <SPAN CLASS="CT">/* enable access to TSA variables only */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_TSA_INROM            0                         <SPAN CLASS="CT">/* TSA tables declared as const (put to ROM) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A><SPAN CLASS="CT"> * Enable/Disable read/write memory commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_READMEM              1                         <SPAN CLASS="CT">/* enable read memory commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_WRITEMEM             1                         <SPAN CLASS="CT">/* enable write memory commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_WRITEMEMMASK         1                         <SPAN CLASS="CT">/* enable write memory bits commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A><SPAN CLASS="CT"> * Enable/Disable read/write variable commands (a bit faster than Read Mem)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_READVAR              0                         <SPAN CLASS="CT">/* enable read variable fast commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_WRITEVAR             0                         <SPAN CLASS="CT">/* enable write variable fast commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_WRITEVARMASK         0                         <SPAN CLASS="CT">/* enable write variable bits fast commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* __FREEMASTER_CFG_H */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

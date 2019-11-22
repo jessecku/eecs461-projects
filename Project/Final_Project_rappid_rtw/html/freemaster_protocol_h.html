@@ -1,0 +1,190 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_protocol.h </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\Final_Project.mdl' 'H:\\EECS_461\\project\\Final_Project_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\Final_Project_rappid_rtw\freemaster_protocol.h" TARGET="rtwreport_document_frame">H:\EECS_461\project\Final_Project_rappid_rtw\freemaster_protocol.h</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2010 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster_protocol.h</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER protocol header file</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.0.18.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Aug-10-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> __FREEMASTER_PROTOCOL_H
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> __FREEMASTER_PROTOCOL_H
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><SPAN CLASS="CT">/*-------------------------------------</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><SPAN CLASS="CT">   command message - standard commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><SPAN CLASS="CT">   -------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READMEM              0x01U
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEMEM             0x02U
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEMEMMASK         0x03U
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READMEM_EX           0x04U                     <SPAN CLASS="CT">/* read a block of memory */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEMEM_EX          0x05U                     <SPAN CLASS="CT">/* write a block of memory */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEMEMMASK_EX      0x06U                     <SPAN CLASS="CT">/* write block of memory with bit mask */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SETUPSCOPE           0x08U
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SETUPREC             0x09U
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SETUPSCOPE_EX        0x0aU                     <SPAN CLASS="CT">/* setup the oscilloscope */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SETUPREC_EX          0x0bU                     <SPAN CLASS="CT">/* setup the recorder */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SENDAPPCMD           0x10U                     <SPAN CLASS="CT">/* send the application command */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETTSAINFO           0x11U                     <SPAN CLASS="CT">/* get TSA info */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETTSAINFO_EX        0x12U                     <SPAN CLASS="CT">/* get TSA info 32bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SFIOFRAME_1          0x13U                     <SPAN CLASS="CT">/* deliver & execute SFIO frame (even) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SFIOFRAME_0          0x14U                     <SPAN CLASS="CT">/* deliver & execute SFIO frame (odd) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_PIPE                 0x15U                     <SPAN CLASS="CT">/* read/write pipe data */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A><SPAN CLASS="CT">/*-------------------------------------</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><SPAN CLASS="CT">   command message - Fast Commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A><SPAN CLASS="CT">   -------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A><SPAN CLASS="CT">/* no data part */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETINFO              0xc0U                     <SPAN CLASS="CT">/* retrieve board information structure */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_STARTREC             0xc1U                     <SPAN CLASS="CT">/* start data recorder */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_STOPREC              0xc2U                     <SPAN CLASS="CT">/* stop data recorder */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETRECSTS            0xc3U                     <SPAN CLASS="CT">/* get the recorder status */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETRECBUFF           0xc4U
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READSCOPE            0xc5U                     <SPAN CLASS="CT">/* read the scope data */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETAPPCMDSTS         0xc6U                     <SPAN CLASS="CT">/* get the application command status */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETINFOBRIEF         0xc8U                     <SPAN CLASS="CT">/* retrieve a subset of board information structure */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETRECBUFF_EX        0xc9U                     <SPAN CLASS="CT">/* get the recorder data */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SFIOGETRESP_0        0xcaU                     <SPAN CLASS="CT">/* retry to get last SFIO response (even) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_SFIOGETRESP_1        0xcbU                     <SPAN CLASS="CT">/* retry to get last SFIO response (odd) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A><SPAN CLASS="CT">/* 2 bytes data part */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READVAR8             0xD0U
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READVAR16            0xD1U
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READVAR32            0xD2U
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETAPPCMDDATA        0xD3U                     <SPAN CLASS="CT">/* get the application command data */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETSTRLEN            0xD4U                     <SPAN CLASS="CT">/* get string length (required by TSA) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A><SPAN CLASS="CT">/* 4 bytes data part */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READVAR8_EX          0xe0U                     <SPAN CLASS="CT">/* read byte variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READVAR16_EX         0xe1U                     <SPAN CLASS="CT">/* read word variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_READVAR32_EX         0xe2U                     <SPAN CLASS="CT">/* read dword variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEVAR8            0xe3U                     <SPAN CLASS="CT">/* write byte variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEVAR16           0xe4U                     <SPAN CLASS="CT">/* write word variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEVAR8MASK        0xe5U                     <SPAN CLASS="CT">/* write specified bits in byte variable  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_GETSTRLEN_EX         0xe6U                     <SPAN CLASS="CT">/* get string length (required by TSA) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A><SPAN CLASS="CT">/* 6 bytes data part */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEVAR32           0xf0U                     <SPAN CLASS="CT">/* write dword variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CMD_WRITEVAR16MASK       0xf1U                     <SPAN CLASS="CT">/* write specified bits in word variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A><SPAN CLASS="CT">/*-------------------------------------</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A><SPAN CLASS="CT">   response message - status byte</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A><SPAN CLASS="CT">   -------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A><SPAN CLASS="CT">/* flags in response codes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STSF_ERROR               0x80U                     <SPAN CLASS="CT">/* FLAG: error answer (no response data) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STSF_VARLEN              0x40U                     <SPAN CLASS="CT">/* FLAG: variable-length answer (length byte) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STSF_EVENT               0x20U                     <SPAN CLASS="CT">/* FLAG: reserved */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A><SPAN CLASS="CT">/* confirmation codes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STS_OK                   0x00U                     <SPAN CLASS="CT">/* operation finished successfully */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STS_RECRUN               0x01U                     <SPAN CLASS="CT">/* data recorder is running */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STS_RECDONE              0x02U                     <SPAN CLASS="CT">/* data recorder is stopped */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><SPAN CLASS="CT">/* error codes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_INVCMD               0x81U                     <SPAN CLASS="CT">/* unknown command code */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_CMDCSERR             0x82U                     <SPAN CLASS="CT">/* command checksum error */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_CMDTOOLONG           0x83U                     <SPAN CLASS="CT">/* command is too long */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_RSPBUFFOVF           0x84U                     <SPAN CLASS="CT">/* the response would not fit into transmit buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_INVBUFF              0x85U                     <SPAN CLASS="CT">/* invalid buffer length or operation */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_INVSIZE              0x86U                     <SPAN CLASS="CT">/* invalid size specified */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_SERVBUSY             0x87U                     <SPAN CLASS="CT">/* service is busy */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_NOTINIT              0x88U                     <SPAN CLASS="CT">/* service is not initialized */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_EACCESS              0x89U                     <SPAN CLASS="CT">/* access is denied */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_SFIOERR              0x8AU                     <SPAN CLASS="CT">/* Error in SFIO frame */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_SFIOUNMATCH          0x8BU                     <SPAN CLASS="CT">/* Even/odd mismatch in SFIO transaction */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_PIPEERR              0x8CU                     <SPAN CLASS="CT">/* Pipe error */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_FASTRECERR           0x8DU                     <SPAN CLASS="CT">/* Feature not implemented in Fast Recorder */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_CANTGLERR            0x8EU                     <SPAN CLASS="CT">/* CAN fragmentation (toggle bit) error */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_CANMSGERR            0x8FU                     <SPAN CLASS="CT">/* CAN message format error */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_STC_FLOATDISABLED        0x90U                     <SPAN CLASS="CT">/* Floating point triggering is not enabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A><SPAN CLASS="CT"> * Protocol constants</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_SOB                      0x2bU                     <SPAN CLASS="CT">/* '+' - start of message*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_FASTCMD                  0xc0U                     <SPAN CLASS="CT">/* code of fast cmd 0xc0&gt; */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_FASTCMD_DATALEN_MASK     0x30U                     <SPAN CLASS="CT">/* mask of data length part of fast command */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_FASTCMD_DATALEN_SHIFT    3
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_DESCR_SIZE               25U                       <SPAN CLASS="CT">/* length board desription string */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A><SPAN CLASS="CT">/* Board configuration flags  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CFGFLAG_BIGENDIAN        0x01U                     <SPAN CLASS="CT">/*/&lt; used when CPU is big endian */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="CT">/* TSA-global flags  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_TSA_INFO_VERSION_MASK    0x000fU                   <SPAN CLASS="CT">/*/&lt; TSA version  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_TSA_INFO_32BIT           0x0100U                   <SPAN CLASS="CT">/*/&lt; TSA address format (16/32 bit) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_TSA_INFO_HV2BA           0x0200U                   <SPAN CLASS="CT">/*/&lt; TSA HawkV2 byte-addressing mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A><SPAN CLASS="CT"> * CAN Protocol constants</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A><SPAN CLASS="CT">/* control byte (the first byte in each CAN message) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANCTL_TGL               0x80                      <SPAN CLASS="CT">/* toggle bit, first message clear, then toggles */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANCTL_M2S               0x40                      <SPAN CLASS="CT">/* master to slave direction */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANCTL_FST               0x20                      <SPAN CLASS="CT">/* first CAN message of FreeMASTER packet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANCTL_LST               0x10                      <SPAN CLASS="CT">/* last CAN message of FreeMASTER packet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANCTL_SPC               0x08                      <SPAN CLASS="CT">/* special command (in data[1], handled by CAN sublayer (no FM protocol decode) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANCTL_LEN_MASK          0x07                      <SPAN CLASS="CT">/* number of data bytes after the CTL byte (0..7) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A><SPAN CLASS="CT">/* special commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_CANSPC_PING              0xc0
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A><SPAN CLASS="CT"> * Packet Driven BDM Protocol constants</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A><SPAN CLASS="CT">/* Communication buffer borders */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_BUFFBORDER_CODE1   0x07e0                    <SPAN CLASS="CT">/* Beginning Magic Number for Packet driven BDM communication buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_BUFFBORDER_CODE2   0xf81f                    <SPAN CLASS="CT">/* Ending Magic Number for Packet driven BDM communication buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A><SPAN CLASS="CT">/* Packet Driven BDM Communication States */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_NOT_INIT           0x00                      <SPAN CLASS="CT">/* FreeMASTER driver is not initalized */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_IDLE               0x01                      <SPAN CLASS="CT">/* FreeMASTER serial driver is configured to BDM and ready to communicate */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_RECEIVED_FRAME     0x02                      <SPAN CLASS="CT">/* FreeMASTER Communication buffer includes frame to be proceeded */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_DECODING_FRAME     0x04                      <SPAN CLASS="CT">/* Received frame is proceeding */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PDBDM_FRAME_TO_SEND      0x08                      <SPAN CLASS="CT">/* FreeMASTER Communication buffer includes frame to be send back */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* __FREEMASTER_PROTOCOL_H */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

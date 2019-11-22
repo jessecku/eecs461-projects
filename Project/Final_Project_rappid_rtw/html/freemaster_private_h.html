@@ -1,0 +1,552 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_private.h </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\Final_Project.mdl' 'H:\\EECS_461\\project\\Final_Project_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\Final_Project_rappid_rtw\freemaster_private.h" TARGET="rtwreport_document_frame">H:\EECS_461\project\Final_Project_rappid_rtw\freemaster_private.h</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2011 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster_private.h</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER driver private declarations, used internally by the driver</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.0.52.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Aug-25-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> __FREEMASTER_PRIVATE_H
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> __FREEMASTER_PRIVATE_H
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> __FREEMASTER_H
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Please include the freemaster.h master header file before the freemaster_private.h
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT">/* include MQX headers */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&lt;mqx.h&gt;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&lt;bsp.h&gt;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><SPAN CLASS="CT"> * Platform-dependent types, macros and functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><SPAN CLASS="CT">/* platform macro FMSTR_PLATFORM_xxxxxxx should be defined  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A><SPAN CLASS="CT">/* as "non-zero" in the "freemaster.h" file */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xx)
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_56F8xx
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_56F8xx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 56F8xx
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_56F8xx
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xxx)
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_56F8xxx
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_56F8xxx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 56F8xxx
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_56F8xxx
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_HC12)
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_HC12
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_HC12.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 HC12
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_HC12
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_HC08)
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_HC08
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_HC08.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 HC08
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_HC08
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MPC55xx)
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MPC55xx
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_MPC55xx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 MPC55xx
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_MPC55xx
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MPC5xx)
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MPC5xx
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_MPC5xx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 MPC5xx
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_MPC5xx
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MCF51xx)
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MCF51xx
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_MCF51xx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 MCF51xx
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_MCF51xx
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MCF52xx)
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MCF52xx
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_MCF52xx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 MCF52xx
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_MCF52xx
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MPC56xx)
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MPC56xx
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_MPC56xx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 MPC56xx
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_MPC56xx
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MQX)
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MQX
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_MQX.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 MQX
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_MQX
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_KXX)
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_KXX
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_Kxx.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM                 KXX
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_PLATFORM_KXX
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_PLATFORM
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Unknown FreeMASTER driver platform
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A><SPAN CLASS="CT"> * NULL needed</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> NULL
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> NULL                           ((void *) 0)
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A><SPAN CLASS="CT"> * Boolean values</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_TRUE
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_TRUE                     (1U)
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_FALSE
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_FALSE                    (0U)
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A><SPAN CLASS="CT"> * inline functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A><SPAN CLASS="CT">/* we do not assume the inline is always supported by compiler</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A><SPAN CLASS="CT">   rather each platform header defines its FMSTR_INLINE */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_INLINE
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_INLINE                   static
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A><SPAN CLASS="CT">/* building macro-based inline code */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MACROCODE_BEGIN()        do<B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MACROCODE_END()          <B>}</B>while(0)
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A><SPAN CLASS="CT"> * Global non-API functions (used internally in FreeMASTER driver)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_serial_c.html#fcn_FMSTR_InitSerial" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitSerial');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitSerial</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendResponse" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendResponse');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendResponse</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nLength);
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessSCI" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessSCI');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessSCI</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessJTAG" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessJTAG');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessJTAG</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_serial_c.html#fcn_FMSTR_Tx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Tx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Tx</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> * pTxChar);
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_serial_c.html#fcn_FMSTR_Rx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Rx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Rx</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> nRxChar);
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_ProtocolDecoder" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProtocolDecoder');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProtocolDecoder</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_GetBoardInfo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetBoardInfo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetBoardInfo</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_ReadMem" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ReadMem');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ReadMem</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_ReadVar" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ReadVar');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ReadVar</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize);
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_WriteMem" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_WriteMem');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_WriteMem</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_WriteVar" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_WriteVar');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_WriteVar</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize);
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_WriteVarMask" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_WriteVarMask');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_WriteVarMask</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize);
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_WriteMemMask" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_WriteMemMask');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_WriteMemMask</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_InitAppCmds" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitAppCmds');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitAppCmds</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_StoreAppCmd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StoreAppCmd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StoreAppCmd</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_GetAppCmdStatus" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetAppCmdStatus');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetAppCmdStatus</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_GetAppCmdRespData" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetAppCmdRespData');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetAppCmdRespData</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_scope_c.html#fcn_FMSTR_InitScope" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitScope');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitScope</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_scope_c.html#fcn_FMSTR_SetUpScope" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SetUpScope');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SetUpScope</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_scope_c.html#fcn_FMSTR_ReadScope" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ReadScope');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ReadScope</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_InitRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitRec</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_SetUpRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SetUpRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SetUpRec</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_StartRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StartRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StartRec</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_StopRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StopRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StopRec</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_GetRecStatus" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetRecStatus');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetRecStatus</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_GetRecBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetRecBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetRecBuff</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_IsInRecBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_IsInRecBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_IsInRecBuffer</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddr, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize);
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A><A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_GetRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetRecBuffSize</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_tsa_c.html#fcn_FMSTR_InitTsa" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitTsa');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitTsa</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_tsa_c.html#fcn_FMSTR_GetTsaInfo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetTsaInfo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetTsaInfo</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_tsa_c.html#fcn_FMSTR_GetStringLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetStringLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetStringLen</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckTsaSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckTsaSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckTsaSpace</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddr, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize, <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A>  bWriteAccess);
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_StrLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StrLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StrLen</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddr);
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_sfio_c.html#fcn_FMSTR_InitSfio" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitSfio');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitSfio</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_sfio_c.html#fcn_FMSTR_SfioFrame" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SfioFrame');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SfioFrame</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A HREF="freemaster_sfio_c.html#fcn_FMSTR_SfioGetResp" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SfioGetResp');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SfioGetResp</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A><SPAN CLASS="DT">void</SPAN> FMSTR_InitPipes(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> FMSTR_PipeFrame(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A><SPAN CLASS="DT">void</SPAN> FMSTR_InitCan(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A><SPAN CLASS="DT">void</SPAN> FMSTR_SetCanCmdID(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U32" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U32');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U32</FONT></A> canID);
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A><SPAN CLASS="DT">void</SPAN> FMSTR_SetCanRespID(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U32" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U32');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U32</FONT></A> canID);
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> FMSTR_TxCan(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> FMSTR_RxCan(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A><SPAN CLASS="DT">void</SPAN> FMSTR_ProcessCanRx(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A><SPAN CLASS="DT">void</SPAN> FMSTR_ProcessCanTx(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A><SPAN CLASS="DT">void</SPAN> FMSTR_InitPDBdm(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A><SPAN CLASS="CT">/****************************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A><SPAN CLASS="CT"> * Potentially unused variable declaration</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A><SPAN CLASS="CT"> *****************************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> _lint
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_UNUSED(sym)                                        <SPAN CLASS="CT">/*lint -esym(715,sym) -esym(818,sym) -esym(529,sym) -e{960} */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_UNUSED(sym)              ((sym),0)
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_LONG_INTR &amp;&amp; (FMSTR_SHORT_INTR || FMSTR_POLL_DRIVEN)) || \
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A> (FMSTR_SHORT_INTR &amp;&amp; (FMSTR_LONG_INTR || FMSTR_POLL_DRIVEN)) || \
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A> (FMSTR_POLL_DRIVEN &amp;&amp; (FMSTR_LONG_INTR || FMSTR_SHORT_INTR)) || \
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A> !(FMSTR_POLL_DRIVEN || FMSTR_LONG_INTR || FMSTR_SHORT_INTR)
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A><SPAN CLASS="CT">/* mismatch in interrupt modes, only one can be selected */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> You have to enable exctly one of FMSTR_LONG_INTR or FMSTR_SHORT_INTR or FMSTR_POLL_DRIVEN
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_COMM_RQUEUE_SIZE &lt; 1
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Error in FMSTR_COMM_RQUEUE_SIZE value.
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A><SPAN CLASS="CT">/* only one communication link may be selected */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> ((((FMSTR_USE_SCI)?1:0) + ((FMSTR_USE_JTAG)?1:0) + ((FMSTR_USE_CAN)?1:0) + ((FMSTR_USE_MQX_IO)?1:0) + ((FMSTR_DISABLE)?1:0) + ((FMSTR_USE_USB_CDC)?1:0) + ((FMSTR_USE_PDBDM)?1:0)) &gt; 1)
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> More than one communication interface selected for FreeMASTER driver
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A><SPAN CLASS="CT">/* All Interface options are set to 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> ((((FMSTR_USE_SCI)?1:0) + ((FMSTR_USE_JTAG)?1:0) + ((FMSTR_USE_CAN)?1:0) + ((FMSTR_USE_MQX_IO)?1:0) + ((FMSTR_DISABLE)?1:0) + ((FMSTR_USE_USB_CDC)?1:0) + ((FMSTR_USE_PDBDM)?1:0)) == 0)
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> All Interface options are set to 0, please chooce one intercace or set FMSTR_DISABLE macro to 1.
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A><SPAN CLASS="CT">/* SCI does not have a transmission double buffer (kind of queue) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A><SPAN CLASS="CT">/* (if not specified differently in platform-dependent header file) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_SCI_BASE
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_SCI_BASE must be defined when using SCI interface
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A><SPAN CLASS="CT">/* CAN is MSCAN or FLEXCAN */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_CAN
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A><SPAN CLASS="CT">/* if CANHW is not specified in freemaster.h, the platform is not yet tested with CAN */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (!<SPAN CLASS="PP">defined</SPAN>(FMSTR_CANHW_MSCAN)) &amp;&amp; FMSTR_USE_MSCAN
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> MSCAN support not yet fully tested on this platform
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A><SPAN CLASS="CT">/* if CANHW is not specified in freemaster.h, the platform is not yet tested with CAN */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (!<SPAN CLASS="PP">defined</SPAN>(FMSTR_CANHW_FLEXCAN)) &amp;&amp; FMSTR_USE_FLEXCAN
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> FlexCAN support not yet fully tested on this platform
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_CAN_BASE
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_CAN_BASE must be defined when is using CAN interface
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A><SPAN CLASS="CT">/* can't be both*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_MSCAN) &amp;&amp; (FMSTR_USE_FLEXCAN)
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Can not configure FreeMASTER to use both MSCAN and FlexCAN
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A><SPAN CLASS="CT">/* should be at least one */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !(FMSTR_USE_MSCAN) &amp;&amp; !(FMSTR_USE_FLEXCAN)
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Please select if MSCAN or FlexCAN will be used
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A><SPAN CLASS="CT">/* flexcan needs to know the transmit and receive MB number */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_FLEXCAN
+</SPAN><SPAN><A CLASS="LN" NAME="301">  301   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_FLEXCAN_TXMB == FMSTR_FLEXCAN_RXMB
+</SPAN><SPAN><A CLASS="LN" NAME="302">  302   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> FCAN RX and FCAN TX are using same Message Buffer. FreeMASTER CAN driver doesnt support this configuration. Please change number of Message Buffer in FMSTR_FLEXCAN_TXMB or FMSTR_FLEXCAN_RXMB macros.
+</SPAN><SPAN><A CLASS="LN" NAME="303">  303   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="304">  304   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A><SPAN CLASS="CT">/* Cannot define define FMSTR_USE_CAN by user */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_FLEXCAN || FMSTR_USE_MSCAN
+</SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Cannot use FlecCan/MsCan and define macro FMSTR_USE_CAN to 0
+</SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="312">  312   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A><SPAN CLASS="CT">/* MQX IO communication interface warnings and errors */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !(<SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MQX) &amp;&amp; FMSTR_PLATFORM_MQX)
+</SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> MQX IO communication interface is supported only in FMSTR_PLATFORM_MQX, Please choose another communication interface.
+</SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A><SPAN CLASS="CT">/* define FreeMASTER IO Channel */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_MQX_IO_CHANNEL
+</SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> MQX IO Channel is not defined by FMSTR_MQX_IO_CHANNEL macro, FreeMASTER use &quot;ttya:&quot; IO Channel
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MQX_IO_CHANNEL           <FONT COLOR="#1122ff">&quot;ttya:&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A><SPAN CLASS="CT">/* configure the FreeMASTER communication channel to non blocking mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_MQX_IO_BLOCKING
+</SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> FMSTR_MQX_IO_BLOCKING macro is not defined, the MQX IO Channel will be open in non blocking mode
+</SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MQX_IO_BLOCKING          0
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A><SPAN CLASS="CT">/* MQX open port parameters */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_MQX_IO_BLOCKING
+</SPAN><SPAN><A CLASS="LN" NAME="334">  334   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MQX_IO_PARAMETER         0
+</SPAN><SPAN><A CLASS="LN" NAME="335">  335   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_MQX_IO_PARAMETER         IO_SERIAL_NON_BLOCKING
+</SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A><SPAN CLASS="CT">/* MQX doesn't supports Long interrupt and Short interrupt */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_LONG_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> &quot;MQX IO interface doesn't supports the Long Interrupt routines&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="343">  343   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> &quot;MQX IO interface doesn't supports the normal Short Interrupt routines, please open your MQX communication interface in Interrupt mode&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="344">  344   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="345">  345   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="346">  346   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="347">  347   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_MQX)
+</SPAN><SPAN><A CLASS="LN" NAME="348">  348   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PLATFORM_MQX
+</SPAN><SPAN><A CLASS="LN" NAME="349">  349   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="350">  350   </A><SPAN CLASS="CT">/* MQX communication interfaces require MQX header files to be included. */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="351">  351   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> __MQX__
+</SPAN><SPAN><A CLASS="LN" NAME="352">  352   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Please include the MQX header file before the freemaster.h
+</SPAN><SPAN><A CLASS="LN" NAME="353">  353   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="354">  354   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> &quot;MQX target driver doesn't supports the SCI module as communication interface&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_CAN
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> &quot;MQX target driver doesn't supports the CAN module as communication interface&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> &quot;MQX target driver doesn't supports the JTAG module as communication interface&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="362">  362   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> &quot;MQX target driver doesn't supports the USB CDC as communication interface&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="363">  363   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="364">  364   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="365">  365   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="366">  366   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="367">  367   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI || FMSTR_USE_JTAG || FMSTR_USE_USB_CDC || FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="368">  368   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_USE_SERIAL
+</SPAN><SPAN><A CLASS="LN" NAME="369">  369   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_SERIAL               1
+</SPAN><SPAN><A CLASS="LN" NAME="370">  370   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="371">  371   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SERIAL == 0
+</SPAN><SPAN><A CLASS="LN" NAME="372">  372   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> &quot;FMSTR_USE_SERIAL macro cannot be configured by user, FreeMASTER serial driver functionality is not garanted.&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="373">  373   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="374">  374   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="375">  375   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="376">  376   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="377">  377   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_USE_SERIAL
+</SPAN><SPAN><A CLASS="LN" NAME="378">  378   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_SERIAL               0
+</SPAN><SPAN><A CLASS="LN" NAME="379">  379   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="380">  380   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="381">  381   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="382">  382   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="383">  383   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="384">  384   </A><SPAN CLASS="CT">/* USB CDC driver doesn't supports POLL mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="385">  385   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_POLL_DRIVEN
+</SPAN><SPAN><A CLASS="LN" NAME="386">  386   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> &quot;FreeMASTER USB CDC driver doesn't supports the POLL mode&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="387">  387   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="388">  388   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="389">  389   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="390">  390   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_PDBDM
+</SPAN><SPAN><A CLASS="LN" NAME="391">  391   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="392">  392   </A><SPAN CLASS="CT">/* Packet Driven BDM communication does not support any interrupt mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="393">  393   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR || FMSTR_LONG_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="394">  394   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> &quot;FreeMASTER Packet Driven BDM driver doesn't support any Interrupt mode&quot;
+</SPAN><SPAN><A CLASS="LN" NAME="395">  395   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="396">  396   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="397">  397   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="398">  398   </A><SPAN CLASS="CT">/* check scope settings */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="399">  399   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCOPE
+</SPAN><SPAN><A CLASS="LN" NAME="400">  400   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <A HREF="freemaster_rec_c.html#var_FMSTR_MAX_SCOPE_VARS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_MAX_SCOPE_VARS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_MAX_SCOPE_VARS</FONT></A> &gt; 8 || <A HREF="freemaster_rec_c.html#var_FMSTR_MAX_SCOPE_VARS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_MAX_SCOPE_VARS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_MAX_SCOPE_VARS</FONT></A> &lt; 2
+</SPAN><SPAN><A CLASS="LN" NAME="401">  401   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Error in FMSTR_MAX_SCOPE_VARS value. Use a value in range 2..8
+</SPAN><SPAN><A CLASS="LN" NAME="402">  402   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="403">  403   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="404">  404   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="405">  405   </A><SPAN CLASS="CT">/* check recorder settings */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="406">  406   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_RECORDER || FMSTR_USE_FASTREC
+</SPAN><SPAN><A CLASS="LN" NAME="407">  407   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_MAX_REC_VARS &gt; 8 || FMSTR_MAX_REC_VARS &lt; 2
+</SPAN><SPAN><A CLASS="LN" NAME="408">  408   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Error in FMSTR_MAX_REC_VARS value. Use a value in range 2..8
+</SPAN><SPAN><A CLASS="LN" NAME="409">  409   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="410">  410   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="411">  411   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_USE_READMEM
+</SPAN><SPAN><A CLASS="LN" NAME="412">  412   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Recorder needs the FMSTR_USE_READMEM feature
+</SPAN><SPAN><A CLASS="LN" NAME="413">  413   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="414">  414   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="415">  415   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="416">  416   </A><SPAN CLASS="CT">/* fast recorder requires its own allocation of recorder buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="417">  417   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_FASTREC
+</SPAN><SPAN><A CLASS="LN" NAME="418">  418   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_OWNBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="419">  419   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Fast recorder requires its own buffer allocation
+</SPAN><SPAN><A CLASS="LN" NAME="420">  420   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="421">  421   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="422">  422   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="423">  423   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_TSA
+</SPAN><SPAN><A CLASS="LN" NAME="424">  424   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_USE_READMEM
+</SPAN><SPAN><A CLASS="LN" NAME="425">  425   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> TSA needs the FMSTR_USE_READMEM feature
+</SPAN><SPAN><A CLASS="LN" NAME="426">  426   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="427">  427   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="428">  428   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="429">  429   </A><SPAN CLASS="CT">/* check SFIO settings */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="430">  430   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SFIO
+</SPAN><SPAN><A CLASS="LN" NAME="431">  431   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="432">  432   </A><SPAN CLASS="CT">/* The SFIO configuration files (sfio.h and optionally also the sfio_cfg.h) exist</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="433">  433   </A><SPAN CLASS="CT">   in project to define SFIO parameters. */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="434">  434   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;sfio.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="435">  435   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> SFIO_MAX_INPUT_DATA_LENGTH
+</SPAN><SPAN><A CLASS="LN" NAME="436">  436   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> SFIO_MAX_INPUT_DATA_LENGTH was not defined in sfio_cfg.h
+</SPAN><SPAN><A CLASS="LN" NAME="437">  437   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="438">  438   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="439">  439   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> SFIO_MAX_OUTPUT_DATA_LENGTH
+</SPAN><SPAN><A CLASS="LN" NAME="440">  440   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> SFIO_MAX_OUTPUT_DATA_LENGTH was not defined in sfio_cfg.h
+</SPAN><SPAN><A CLASS="LN" NAME="441">  441   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="442">  442   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="443">  443   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="444">  444   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_PIPES
+</SPAN><SPAN><A CLASS="LN" NAME="445">  445   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> FMSTR_PIPES_EXPERIMENTAL
+</SPAN><SPAN><A CLASS="LN" NAME="446">  446   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> The &quot;pipes&quot; feature is now in experimental code phase. Not yet tested on this platform.
+</SPAN><SPAN><A CLASS="LN" NAME="447">  447   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="448">  448   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="449">  449   </A><SPAN CLASS="CT">/* must enable printf for vararg printf */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="450">  450   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !(FMSTR_USE_PIPE_PRINTF) &amp;&amp; (FMSTR_USE_PIPE_PRINTF_VARG)
+</SPAN><SPAN><A CLASS="LN" NAME="451">  451   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> You must enable pipe printf for vararg printf (see FMSTR_USE_PIPE_PRINTF)
+</SPAN><SPAN><A CLASS="LN" NAME="452">  452   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="453">  453   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="454">  454   </A><SPAN CLASS="CT">/* at least one */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="455">  455   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_MAX_PIPES_COUNT &lt; 1
+</SPAN><SPAN><A CLASS="LN" NAME="456">  456   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> No sense to allocate zero-count pipes. Disabling pipes.
+</SPAN><SPAN><A CLASS="LN" NAME="457">  457   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_USE_PIPES
+</SPAN><SPAN><A CLASS="LN" NAME="458">  458   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_PIPES                0
+</SPAN><SPAN><A CLASS="LN" NAME="459">  459   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="460">  460   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="461">  461   </A><SPAN CLASS="CT">/* printf buffer should accept one integer printed */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="462">  462   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PIPES_PRINTF_BUFF_SIZE &lt; 8
+</SPAN><SPAN><A CLASS="LN" NAME="463">  463   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Pipe printf buffer should be at least 8 (see FMSTR_PIPES_PRINTF_BUFF_SIZE)
+</SPAN><SPAN><A CLASS="LN" NAME="464">  464   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="465">  465   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="466">  466   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_PIPES_PRINTF_BUFF_SIZE &gt; 255
+</SPAN><SPAN><A CLASS="LN" NAME="467">  467   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> Pipe printf buffer should not exceed 255 (see FMSTR_PIPES_PRINTF_BUFF_SIZE)
+</SPAN><SPAN><A CLASS="LN" NAME="468">  468   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="469">  469   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="470">  470   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="471">  471   </A><SPAN CLASS="CT">/* check what kind of board info is sent */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="472">  472   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_BRIEFINFO
+</SPAN><SPAN><A CLASS="LN" NAME="473">  473   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_RECORDER
+</SPAN><SPAN><A CLASS="LN" NAME="474">  474   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">warning</SPAN> The full information structure must be used when recorder is to be used
+</SPAN><SPAN><A CLASS="LN" NAME="475">  475   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">undef</SPAN> FMSTR_USE_BRIEFINFO
+</SPAN><SPAN><A CLASS="LN" NAME="476">  476   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_USE_BRIEFINFO            1
+</SPAN><SPAN><A CLASS="LN" NAME="477">  477   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="478">  478   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="479">  479   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="480">  480   </A><SPAN CLASS="CT">/* automatic buffer size by default */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="481">  481   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> FMSTR_COMM_BUFFER_SIZE
+</SPAN><SPAN><A CLASS="LN" NAME="482">  482   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_COMM_BUFFER_SIZE         0
+</SPAN><SPAN><A CLASS="LN" NAME="483">  483   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="484">  484   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="485">  485   </A><SPAN CLASS="CT">/* check minimal buffer size required for all enabled features */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="486">  486   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_COMM_BUFFER_SIZE
+</SPAN><SPAN><A CLASS="LN" NAME="487">  487   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="488">  488   </A><SPAN CLASS="CT">/* basic commands (getinfobrief, write/read memory etc.) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="489">  489   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_BRIEFINFO &amp;&amp; FMSTR_COMM_BUFFER_SIZE &lt; 11
+</SPAN><SPAN><A CLASS="LN" NAME="490">  490   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_COMM_BUFFER_SIZE set too small for basic FreeMASTER commands (11 bytes)
+</SPAN><SPAN><A CLASS="LN" NAME="491">  491   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="492">  492   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="493">  493   </A><SPAN CLASS="CT">/* full info required */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="494">  494   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !(FMSTR_USE_BRIEFINFO) &amp;&amp; FMSTR_COMM_BUFFER_SIZE &lt; 35
+</SPAN><SPAN><A CLASS="LN" NAME="495">  495   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_COMM_BUFFER_SIZE set too small for GETINFO command (size 35)
+</SPAN><SPAN><A CLASS="LN" NAME="496">  496   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="497">  497   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="498">  498   </A><SPAN CLASS="CT">/* application commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="499">  499   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_APPCMD &amp;&amp; FMSTR_COMM_BUFFER_SIZE &lt; ((FMSTR_APPCMD_BUFF_SIZE)+1)
+</SPAN><SPAN><A CLASS="LN" NAME="500">  500   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_COMM_BUFFER_SIZE set too small for SENDAPPCMD command (size FMSTR_APPCMD_BUFF_SIZE+1)
+</SPAN><SPAN><A CLASS="LN" NAME="501">  501   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="502">  502   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="503">  503   </A><SPAN CLASS="CT">/* configuring scope (EX) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="504">  504   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCOPE &amp;&amp; FMSTR_COMM_BUFFER_SIZE &lt; ((<A HREF="freemaster_rec_c.html#var_FMSTR_MAX_SCOPE_VARS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_MAX_SCOPE_VARS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_MAX_SCOPE_VARS</FONT></A>)*5+1)
+</SPAN><SPAN><A CLASS="LN" NAME="505">  505   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_COMM_BUFFER_SIZE set too small for SETUPSCOPEEX command (size FMSTR_MAX_SCOPE_VARS*5+1)
+</SPAN><SPAN><A CLASS="LN" NAME="506">  506   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="507">  507   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="508">  508   </A><SPAN CLASS="CT">/* configuring recorder (EX) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="509">  509   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_RECORDER &amp;&amp; FMSTR_COMM_BUFFER_SIZE &lt; ((FMSTR_MAX_REC_VARS)*5+18)
+</SPAN><SPAN><A CLASS="LN" NAME="510">  510   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_COMM_BUFFER_SIZE set too small for SETUPRECEX command (size FMSTR_MAX_REC_VARS*5+18)
+</SPAN><SPAN><A CLASS="LN" NAME="511">  511   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="512">  512   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="513">  513   </A><SPAN CLASS="CT">/* SFIO encapsulation */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="514">  514   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SFIO
+</SPAN><SPAN><A CLASS="LN" NAME="515">  515   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_COMM_BUFFER_SIZE &lt; ((SFIO_MAX_INPUT_DATA_LENGTH)+1)) || \
+</SPAN><SPAN><A CLASS="LN" NAME="516">  516   </A> (FMSTR_COMM_BUFFER_SIZE &lt; ((SFIO_MAX_OUTPUT_DATA_LENGTH)+1))
+</SPAN><SPAN><A CLASS="LN" NAME="517">  517   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">error</SPAN> FMSTR_COMM_BUFFER_SIZE set too small for SFIO encapsulation (see SFIO_MAX_xxx_DATA_LENGTH)
+</SPAN><SPAN><A CLASS="LN" NAME="518">  518   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="519">  519   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="520">  520   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="521">  521   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* __FREEMASTER_PRIVATE_H */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="522">  522   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

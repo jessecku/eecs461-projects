@@ -1,0 +1,25 @@
+/*
+ * File: Two_types.h
+ *
+ * Code generated for Simulink model 'Two'.
+ *
+ * Model version                  : 1.28
+ * Simulink Coder version         : 8.1 (R2011b) 08-Jul-2011
+ * TLC version                    : 8.1 (Jul  9 2011)
+ * C/C++ source code generated on : Tue Mar 22 15:26:27 2016
+ *
+ * Target selection: rappid564xl.tlc
+ * Embedded hardware selection: Motorola PowerPC
+ * Code generation objectives: Unspecified
+ * Validation result: Not run
+ */
+
+#ifndef RTW_HEADER_Two_types_h_
+#define RTW_HEADER_Two_types_h_
+#endif                                 /* RTW_HEADER_Two_types_h_ */
+
+/*
+ * File trailer for generated code.
+ *
+ * [EOF]
+ */

@@ -1,0 +1,100 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - romcopy.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\romcopy.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\romcopy.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> *                                RAppIDJDP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> *           Rapid Application Initialization and Documentation Tool</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> *                         Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *                (c) Copyright 2004-2008 Freescale Semiconductor, Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> *                         ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A><SPAN CLASS="CT"> *                       MPC560xP Configuration Tool</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT"> * Project Name           : baseconfig</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT"> * Project File           : baseconfig.rsp</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT"> * Revision Number        : 1.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT"> * Tool Version           : 1.0.0.1</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT"> * @file                  : romcopy.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><SPAN CLASS="CT"> * Target Compiler        : Codewarrior</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="CT"> * Target Part            : MPC5604C</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><SPAN CLASS="CT"> * Part Errata Fixes      : none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><SPAN CLASS="CT"> * Project Last Save Date : 03-Oct-2008 08:24:54</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><SPAN CLASS="CT"> * Created on Date        : 05-Nov-2008 14:57:10</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><SPAN CLASS="CT"> * @Brief Description     : It copies data from ROM to RAM</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;typedefs.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><SPAN CLASS="DT">extern</SPAN> <SPAN CLASS="DT">int</SPAN> <A HREF="rappid_main_c.html#fcn_main" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_main');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">main</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><SPAN CLASS="DT">extern</SPAN> <SPAN CLASS="DT">char</SPAN> __DATA_ROM[], __DATA_RAM[], __DATA_END[], __BSS_START[], __BSS_END[];
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="DT">int</SPAN> <A NAME="fcn_romcopy">romcopy</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>  <SPAN CLASS="DT">int</SPAN> count;
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>  <SPAN CLASS="DT">char</SPAN> *destinationLocation = (<SPAN CLASS="DT">char</SPAN>*)__DATA_RAM;
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>  <SPAN CLASS="DT">char</SPAN> *SourceLocation = (<SPAN CLASS="DT">char</SPAN>*)__DATA_ROM;
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A>  <SPAN CLASS="DT">long</SPAN> <SPAN CLASS="DT">int</SPAN> NoOfBytes = __DATA_END-__DATA_RAM;
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>  <SPAN CLASS="CT">/* move initialized data from ROM to RAM if defined at	*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>  <SPAN CLASS="CT">/* different locations					*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A>  <SPAN CLASS="KW">if</SPAN> (__DATA_ROM != __DATA_RAM) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>    <SPAN CLASS="KW">for</SPAN> (count=0;count &lt;NoOfBytes ; count++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>      *destinationLocation = *SourceLocation;
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>      *destinationLocation++;
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>      *SourceLocation++;
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A>  <SPAN CLASS="CT">/* clear uninitialized data				*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>  <SPAN CLASS="KW">if</SPAN> (__BSS_START != __BSS_END) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>    destinationLocation = (<SPAN CLASS="DT">char</SPAN>*) __BSS_START;
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>    NoOfBytes = __BSS_END-__BSS_START;
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>    <SPAN CLASS="KW">for</SPAN> (count=0;count &lt;NoOfBytes ; count++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>      *destinationLocation = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>      *destinationLocation++;
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>  <SPAN CLASS="CT">/*return to main program */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>  <SPAN CLASS="KW">return</SPAN> <A HREF="rappid_main_c.html#fcn_main" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_main');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">main</FONT></A>() ;
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

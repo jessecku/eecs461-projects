@@ -1,0 +1,394 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - eTimer_564xL_library.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\eTimer_564xL_library.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\eTimer_564xL_library.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/**</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> *                (c) Copyright 2011 Freescale Semiconductor, Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> *                         ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> *    @file    eTimer_564xL_library.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A><SPAN CLASS="CT"> *    @version M4_SRC_SW_VERSION_MAJOR.M4_SRC_SW_VERSION_MINOR.M4_SRC_SW_VERSION_PATCH</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT"> *    @brief   ADC module support.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT"> *    @details Implementation of ADC module functions.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT"> *    Project M4_SRC_PROJECT_NAME</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT"> *    Platform M4_SRC_MCU_FAMILY</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT"> *   Creation date:		05/20/05</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT"> *   Author:                         r61406</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __cplusplus
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="DT">extern</SPAN> <FONT COLOR="#1122ff">&quot;C&quot;</FONT><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><SPAN CLASS="CT">   *                  Includes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><SPAN CLASS="CT">   ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;eTimer_564xL_library.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><SPAN CLASS="CT">   *   Function:  etimer_init_pcr_in_out_564xL</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT">     @brief    eTimer Channel Pin Configuration Setup .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><SPAN CLASS="CT">     @details  eTimer Channel Pin Configuration Setup</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><SPAN CLASS="CT">     @param[in]     subMod</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><SPAN CLASS="CT">     @param[in]     channel  channel</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><SPAN CLASS="CT">     @param[in]     pcrNum  pcrNum</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_etimer_init_pcr_in_out_564xL">etimer_init_pcr_in_out_564xL</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> subMod, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> channel, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>    pcrNum)
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>    <SPAN CLASS="KW">if</SPAN> (subMod == 0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>      <SPAN CLASS="KW">if</SPAN> (channel == 0) <B>{</B>              <SPAN CLASS="CT">/* eTimer 0 channel 0		*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 0) <B>{</B>             <SPAN CLASS="CT">/* PCR[0] A[0]  ETC[0] input/output  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A>          SIU.PCR[0].R = 0x0500;       <SPAN CLASS="CT">/* ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>          SIU.PSMI[35].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 58) <B>{</B>     <SPAN CLASS="CT">/* PCR[59] D[10]  ETC[0] input  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>          SIU.PSMI[35].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 1) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 0 channel 1   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 1) <B>{</B>             <SPAN CLASS="CT">/*   PCR[1] A[1]  ETC[1] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>          SIU.PCR[1].R = 0x0500;       <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A>          SIU.PSMI[36].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 59) <B>{</B>     <SPAN CLASS="CT">/*   PCR[59] D[11]  ETC[1] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>          SIU.PSMI[36].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 2) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 0 channel 2   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 2) <B>{</B>             <SPAN CLASS="CT">/*   PCR[2] A[2]  ETC[2] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>          SIU.PCR[2].R = 0x0500;       <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>          SIU.PSMI[37].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 80) <B>{</B>     <SPAN CLASS="CT">/*   PCR[80] F[0]  ETC[2] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>          SIU.PSMI[37].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 3) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 0 channel 3   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 3) <B>{</B>             <SPAN CLASS="CT">/*   PCR[3] A[3]  ETC[3] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>          SIU.PCR[3].R = 0x0500;       <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A>          SIU.PSMI[38].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 62) <B>{</B>     <SPAN CLASS="CT">/*   PCR[80] D[14]  ETC[3] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>          SIU.PSMI[38].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 4) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 0 channel 4   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 4) <B>{</B>             <SPAN CLASS="CT">/*   PCR[4] A[4]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>          SIU.PCR[4].R = 0x0D00;       <SPAN CLASS="CT">/*   ALT[3]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>          SIU.PSMI[7].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 43) <B>{</B>     <SPAN CLASS="CT">/*   PCR[43] C[11]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>          SIU.PCR[43].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>          SIU.PSMI[7].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 30) <B>{</B>     <SPAN CLASS="CT">/*   PCR[30] B[14]  ETC[4] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>          SIU.PSMI[7].B.PADSEL = 2;
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 99) <B>{</B>     <SPAN CLASS="CT">/*   PCR[99] G[3]  ETC[4] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A>          SIU.PSMI[7].B.PADSEL = 3;
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 5) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 0 channel 5   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 44) <B>{</B>            <SPAN CLASS="CT">/*   PCR[44] C[12]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A>          SIU.PCR[44].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>          SIU.PSMI[8].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 77) <B>{</B>     <SPAN CLASS="CT">/*   PCR[77] E[13]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>          SIU.PCR[77].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A>          SIU.PSMI[8].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 24) <B>{</B>     <SPAN CLASS="CT">/*   PCR[24] B[8]  ETC[5] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A>          SIU.PSMI[8].B.PADSEL = 2;
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 100) <B>{</B>    <SPAN CLASS="CT">/*   PCR[100] G[4]  ETC[5] input   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A>          SIU.PSMI[8].B.PADSEL = 3;
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (subMod == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>      <SPAN CLASS="KW">if</SPAN> (channel == 0) <B>{</B>              <SPAN CLASS="CT">/*   eTimer 1 channel 0	   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 4) <B>{</B>             <SPAN CLASS="CT">/*   PCR[4] A[4]  ETC[0] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A>          SIU.PCR[4].R = 0x0500;       <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A>          SIU.PSMI[9].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 47) <B>{</B>     <SPAN CLASS="CT">/*   PCR[47] C[15]  ETC[0] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>          SIU.PCR[47].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A>          SIU.PSMI[9].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 1) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 1 channel 1   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 45) <B>{</B>            <SPAN CLASS="CT">/*   PCR[45] C[13]  ETC[1] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A>          SIU.PCR[45].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>          SIU.PSMI[10].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 48) <B>{</B>     <SPAN CLASS="CT">/*   PCR[48] D[0]  ETC[1] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>          SIU.PCR[48].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A>          SIU.PSMI[10].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 2) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 1 channel 2   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 16) <B>{</B>            <SPAN CLASS="CT">/*   PCR[16] B[0]  ETC[2] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A>          SIU.PCR[16].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A>          SIU.PSMI[11].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 46) <B>{</B>     <SPAN CLASS="CT">/*   PCR[46] C[14]  ETC[2] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A>          SIU.PCR[46].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A>          SIU.PSMI[11].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 49) <B>{</B>     <SPAN CLASS="CT">/*   PCR[49] D[1]  ETC[2] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A>          SIU.PCR[49].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A>          SIU.PSMI[11].B.PADSEL = 2;
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 3) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 1 channel 3   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 17) <B>{</B>            <SPAN CLASS="CT">/*   PCR[17] B[1]  ETC[3] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A>          SIU.PCR[17].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A>          SIU.PSMI[12].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 50) <B>{</B>     <SPAN CLASS="CT">/*   PCR[50] D[2]  ETC[3] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A>          SIU.PCR[50].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A>          SIU.PSMI[12].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 92) <B>{</B>     <SPAN CLASS="CT">/*   PCR[92] F[12]  ETC[3] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A>          SIU.PCR[92].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A>          SIU.PSMI[12].B.PADSEL = 2;
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 4) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 1 channel 4   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 14) <B>{</B>            <SPAN CLASS="CT">/*   PCR[14] A[15]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>          SIU.PCR[14].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A>          SIU.PSMI[13].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 51) <B>{</B>     <SPAN CLASS="CT">/*   PCR[51] D[3]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>          SIU.PCR[51].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>          SIU.PSMI[13].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 56) <B>{</B>     <SPAN CLASS="CT">/*   PCR[56] D[8]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A>          SIU.PCR[56].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>          SIU.PSMI[13].B.PADSEL = 2;
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 93) <B>{</B>     <SPAN CLASS="CT">/*   PCR[93] F[13]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A>          SIU.PCR[93].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A>          SIU.PSMI[13].B.PADSEL = 3;
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 5) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 1 channel 5   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 5) <B>{</B>             <SPAN CLASS="CT">/*   PCR[5] A[5]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A>          SIU.PCR[5].R = 0x0900;       <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A>          SIU.PSMI[14].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 15) <B>{</B>     <SPAN CLASS="CT">/*   PCR[15] A[15]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A>          SIU.PCR[15].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A>          SIU.PSMI[14].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 52) <B>{</B>     <SPAN CLASS="CT">/*   PCR[52] D[4]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A>          SIU.PCR[52].R = 0x0900;      <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A>          SIU.PSMI[14].B.PADSEL = 2;
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 78) <B>{</B>     <SPAN CLASS="CT">/*   PCR[78] E[14]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A>          SIU.PCR[78].R = 0x0500;      <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A>          SIU.PSMI[14].B.PADSEL = 3;
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (subMod == 2) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A>      <SPAN CLASS="KW">if</SPAN> (channel == 0) <B>{</B>              <SPAN CLASS="CT">/*   eTimer 2 channel 0   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 116) <B>{</B>           <SPAN CLASS="CT">/*   PCR[116] H[4]  ETC[0] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A>          SIU.PCR[116].R = 0x0900;     <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A>          SIU.PSMI[39].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 128) <B>{</B>    <SPAN CLASS="CT">/*   PCR[128] I[0]  ETC[0] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A>          SIU.PCR[128].R = 0x0500;     <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A>          SIU.PSMI[39].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 1) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 2 channel 1   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 119) <B>{</B>           <SPAN CLASS="CT">/*   PCR[119] H[7]  ETC[1] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A>          SIU.PCR[119].R = 0x0900;     <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A>          SIU.PSMI[40].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 129) <B>{</B>    <SPAN CLASS="CT">/*   PCR[129] I[1]  ETC[1] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A>          SIU.PCR[129].R = 0x0500;     <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A>          SIU.PSMI[40].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 2) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 2 channel 2   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 122) <B>{</B>           <SPAN CLASS="CT">/*   PCR[122] H[10]  ETC[2] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A>          SIU.PCR[122].R = 0x0900;     <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A>          SIU.PSMI[41].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 130) <B>{</B>    <SPAN CLASS="CT">/*   PCR[130] I[2]  ETC[2] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A>          SIU.PCR[130].R = 0x0500;     <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A>          SIU.PSMI[41].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 3) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 2 channel 3   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 125) <B>{</B>           <SPAN CLASS="CT">/*   PCR[125] H[13]  ETC[3] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A>          SIU.PCR[125].R = 0x0900;     <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A>          SIU.PSMI[42].B.PADSEL = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (pcrNum == 131) <B>{</B>    <SPAN CLASS="CT">/*   PCR[131] I[3]  ETC[3] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A>          SIU.PCR[131].R = 0x0500;     <SPAN CLASS="CT">/*   ALT[1]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A>          SIU.PSMI[42].B.PADSEL = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 4) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 2 channel 4   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 126) <B>{</B>           <SPAN CLASS="CT">/*   PCR[126] H[14]  ETC[4] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A>          SIU.PCR[126].R = 0x0900;     <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (channel == 5) <B>{</B>       <SPAN CLASS="CT">/*   eTimer 2 channel 5   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A>        <SPAN CLASS="KW">if</SPAN> (pcrNum == 127) <B>{</B>           <SPAN CLASS="CT">/*   PCR[127] H[15]  ETC[5] input/output   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A>          SIU.PCR[127].R = 0x0900;     <SPAN CLASS="CT">/*   ALT[2]   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A><SPAN CLASS="CT">   *   Function:  etimer_init_564xL</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A><SPAN CLASS="CT">     @brief    eTimer Channel Pin Configuration Setup .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A><SPAN CLASS="CT">     @details  eTimer Channel Pin Configuration Setup</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A><SPAN CLASS="CT">     @param[in]     subMod</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A><SPAN CLASS="CT">     @param[in]     channel  channel</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A><SPAN CLASS="CT">     @param[in]     CNTMODE  CNTMODE</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A><SPAN CLASS="CT">     ......</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_etimer_init_564xL">etimer_init_564xL</A>(
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> subMod, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> channel, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CNTMODE, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> OUTMODE,
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> ONCE,
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> LENGTH, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> DIR, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> OEN, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> COINIT, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> STPEN,
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> ROC, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> PRISRC, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> SECSRC, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> PIPS, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> SIPS,
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> OPS, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> MSTR, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> VAL, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> COFRC, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CLC1,
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CLC2, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CMPMODE, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CPT1MODE, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CPT2MODE,
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> ONESHOT,
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CFWM, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CNTRinit, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> COMP1init, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> COMP2init,
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> FILT,
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> INTDMA
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A>    )
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="mpc5643l_h.html#type_mcTIMER_tag" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_mcTIMER_tag');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">mcTIMER_tag</FONT></A>* eTimer;
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="mpc5643l_h.html#type_mcTIMER_CHANNEL_tag" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_mcTIMER_CHANNEL_tag');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">mcTIMER_CHANNEL_tag</FONT></A>* eTimerChannel;
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A>    <SPAN CLASS="KW">if</SPAN> (subMod == 2) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A>      eTimer = &amp;mcTIMER2;
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (subMod == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A>      eTimer = &amp;mcTIMER1;
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A>      eTimer = &amp;mcTIMER0;
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A>    eTimerChannel = &amp;(eTimer-&gt;CHANNEL[channel]);
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A>    eTimerChannel-&gt;CTRL1.B.CNTMODE = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A>    eTimerChannel-&gt;COMP1.R = COMP1init;
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A>    eTimerChannel-&gt;CMPLD1.R = COMP1init;
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A>    eTimerChannel-&gt;COMP2.R = COMP2init;
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A>    eTimerChannel-&gt;CMPLD2.R = COMP2init;
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A>    eTimerChannel-&gt;CNTR.R = CNTRinit;
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A>    eTimerChannel-&gt;LOAD.R = CNTRinit;
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A>    eTimerChannel-&gt;CTRL1.B.PRISRC = PRISRC;
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A>    eTimerChannel-&gt;CTRL1.B.ONCE = ONCE;
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A>    eTimerChannel-&gt;CTRL1.B.LENGTH = LENGTH;
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A>    eTimerChannel-&gt;CTRL1.B.DIR = DIR;
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A>    eTimerChannel-&gt;CTRL1.B.SECSRC = SECSRC;
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A>    eTimerChannel-&gt;CTRL2.B.OEN = OEN;
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A>    eTimerChannel-&gt;CTRL2.B.RDNT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A>    eTimerChannel-&gt;CTRL2.B.VAL = VAL;
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A>    eTimerChannel-&gt;CTRL2.B.COFRC = COFRC;
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A>    eTimerChannel-&gt;CTRL2.B.COINIT = COINIT;
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A>    eTimerChannel-&gt;CTRL2.B.SIPS = SIPS;
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A>    eTimerChannel-&gt;CTRL2.B.PIPS = PIPS;
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A>    eTimerChannel-&gt;CTRL2.B.OPS = OPS;
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A>    eTimerChannel-&gt;CTRL2.B.MSTR = MSTR;
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A>    eTimerChannel-&gt;CTRL2.B.OUTMODE = OUTMODE;
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A>    eTimerChannel-&gt;CTRL3.B.STPEN = STPEN;
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A>    eTimerChannel-&gt;CTRL3.B.ROC = ROC;
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A>    eTimerChannel-&gt;CTRL3.B.DBGEN = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A>    eTimerChannel-&gt;CCCTRL.B.CLC2 = CLC2;
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A>    eTimerChannel-&gt;CCCTRL.B.CLC1 = CLC1;
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A>    eTimerChannel-&gt;CCCTRL.B.CMPMODE = CMPMODE;
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A>    eTimerChannel-&gt;CCCTRL.B.CPT2MODE = CPT2MODE;
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A>    eTimerChannel-&gt;CCCTRL.B.CPT1MODE = CPT1MODE;
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A>    eTimerChannel-&gt;CCCTRL.B.CFWM = CFWM;
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A>    eTimerChannel-&gt;CCCTRL.B.ONESHOT = ONESHOT;
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A>    eTimerChannel-&gt;CCCTRL.B.ARM = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A>    eTimerChannel-&gt;INTDMA.R = INTDMA;
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A>    eTimerChannel-&gt;FILT.R = FILT;
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A>    eTimerChannel-&gt;CTRL1.B.CNTMODE = CNTMODE;
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A><SPAN CLASS="CT">   *   Function:  etimer_564xL_update</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A><SPAN CLASS="CT">     @brief    eTimer Channel Pin Configuration Setup .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A><SPAN CLASS="CT">     @details  eTimer Channel Pin Configuration Setup</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A><SPAN CLASS="CT">     @param[in]     subMod</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A><SPAN CLASS="CT">     @param[in]     channel  channel</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A><SPAN CLASS="CT">     @param[in]     LOAD  LOAD</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A><SPAN CLASS="CT">     ......</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_etimer_564xL_update">etimer_564xL_update</A>(<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> subMod, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> channel,
+</SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> LOAD, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CMPLD1, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> CMPLD2)
+</SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="mpc5643l_h.html#type_mcTIMER_tag" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_mcTIMER_tag');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">mcTIMER_tag</FONT></A>* eTimer;
+</SPAN><SPAN><A CLASS="LN" NAME="301">  301   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="mpc5643l_h.html#type_mcTIMER_CHANNEL_tag" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_mcTIMER_CHANNEL_tag');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">mcTIMER_CHANNEL_tag</FONT></A>* eTimerChannel;
+</SPAN><SPAN><A CLASS="LN" NAME="302">  302   </A>    <SPAN CLASS="KW">if</SPAN> (subMod == 2) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="303">  303   </A>      eTimer = &amp;mcTIMER2;
+</SPAN><SPAN><A CLASS="LN" NAME="304">  304   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (subMod == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A>      eTimer = &amp;mcTIMER1;
+</SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A>      eTimer = &amp;mcTIMER0;
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A>    eTimerChannel = &amp;(eTimer-&gt;CHANNEL[channel]);
+</SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A>    eTimerChannel-&gt;LOAD.R = LOAD;
+</SPAN><SPAN><A CLASS="LN" NAME="312">  312   </A>    eTimerChannel-&gt;CMPLD1.R = CMPLD1;
+</SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>    eTimerChannel-&gt;CMPLD2.R = CMPLD2;
+</SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A><SPAN CLASS="CT">   *   Function:  etimer_564xL_capture</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A><SPAN CLASS="CT">     @brief    eTimer Channel Pin Configuration Setup .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A><SPAN CLASS="CT">     @details  eTimer Channel Pin Configuration Setup</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A><SPAN CLASS="CT">     @param[in]     subMod</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A><SPAN CLASS="CT">     @param[in]     channel  channel</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A><SPAN CLASS="CT">     @param[in]     Capture1cnt  Capture1cnt</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A><SPAN CLASS="CT">     ......</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_etimer_564xL_capture">etimer_564xL_capture</A>(<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> subMod, <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> channel,
+</SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>* Capture1cnt,<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>* Capture1,
+</SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>* Capture2cnt,<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>* Capture2)
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="mpc5643l_h.html#type_mcTIMER_tag" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_mcTIMER_tag');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">mcTIMER_tag</FONT></A>* eTimer;
+</SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="mpc5643l_h.html#type_mcTIMER_CHANNEL_tag" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_mcTIMER_CHANNEL_tag');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">mcTIMER_CHANNEL_tag</FONT></A>* eTimerChannel;
+</SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> i;
+</SPAN><SPAN><A CLASS="LN" NAME="334">  334   </A>    <SPAN CLASS="KW">if</SPAN> (subMod == 2) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="335">  335   </A>      eTimer = &amp;mcTIMER2;
+</SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (subMod == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A>      eTimer = &amp;mcTIMER1;
+</SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A>      eTimer = &amp;mcTIMER0;
+</SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A>    eTimerChannel = &amp;(eTimer-&gt;CHANNEL[channel]);
+</SPAN><SPAN><A CLASS="LN" NAME="343">  343   </A>    *Capture1cnt = eTimerChannel-&gt;CTRL3.B.C1FCNT;
+</SPAN><SPAN><A CLASS="LN" NAME="344">  344   </A>    <SPAN CLASS="KW">for</SPAN> (i = 0; i &lt; *Capture1cnt; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="345">  345   </A>      Capture1[i] = eTimerChannel-&gt;CAPT1.R;
+</SPAN><SPAN><A CLASS="LN" NAME="346">  346   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="347">  347   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="348">  348   </A>    *Capture2cnt = eTimerChannel-&gt;CTRL3.B.C2FCNT;
+</SPAN><SPAN><A CLASS="LN" NAME="349">  349   </A>    <SPAN CLASS="KW">for</SPAN> (i = 0; i &lt; *Capture2cnt; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="350">  350   </A>      Capture2[i] = eTimerChannel-&gt;CAPT2.R;
+</SPAN><SPAN><A CLASS="LN" NAME="351">  351   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="352">  352   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="353">  353   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="354">  354   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __cplusplus
+</SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A><SPAN CLASS="CT"> *                           End of File</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="362">  362   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="363">  363   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="364">  364   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

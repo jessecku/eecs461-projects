@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster.h </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster.h" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster.h</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2011 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster.h</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER Driver main API header file, MPC56xx platform</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.0.5.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Aug-10-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A><SPAN CLASS="CT">   * This is the only header file needed to be included by the user application</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><SPAN CLASS="CT">   * to implement the FreeMASTER interface. In addition, user has to write her</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><SPAN CLASS="CT">   * "freemaster_cfg.h" configuration file and put it anywhere on the #include path</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> __FREEMASTER_H
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> __FREEMASTER_H
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT">/* identify our current platform */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_PLATFORM_MPC56xx         1
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><SPAN CLASS="CT">/* FreeMASTER configuration */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_cfg.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><SPAN CLASS="CT"> * Global types</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">unsigned</SPAN> <SPAN CLASS="DT">char</SPAN>* <A NAME="type_FMSTR_ADDR">FMSTR_ADDR</A>;     <SPAN CLASS="CT">/* CPU address type (4bytes) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">unsigned</SPAN> <SPAN CLASS="DT">short</SPAN> <A NAME="type_FMSTR_SIZE">FMSTR_SIZE</A>;     <SPAN CLASS="CT">/* general size type (at least 16 bits) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">signed</SPAN> <SPAN CLASS="DT">long</SPAN> <A NAME="type_FMSTR_BOOL">FMSTR_BOOL</A>;        <SPAN CLASS="CT">/* general boolean type  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A><SPAN CLASS="CT">/* application command-specific types */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">unsigned</SPAN> <SPAN CLASS="DT">char</SPAN> <A NAME="type_FMSTR_APPCMD_CODE">FMSTR_APPCMD_CODE</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">unsigned</SPAN> <SPAN CLASS="DT">char</SPAN> FMSTR_APPCMD_DATA, *<A NAME="type_FMSTR_APPCMD_PDATA">FMSTR_APPCMD_PDATA</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">unsigned</SPAN> <SPAN CLASS="DT">char</SPAN> <A NAME="type_FMSTR_APPCMD_RESULT">FMSTR_APPCMD_RESULT</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A><SPAN CLASS="CT">/* pointer to application command callback handler */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><SPAN CLASS="KW">typedef</SPAN> <A HREF="freemaster_h.html#type_FMSTR_APPCMD_RESULT" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_RESULT');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_RESULT</FONT></A> (*FMSTR_PAPPCMDFUNC)(<A HREF="freemaster_h.html#type_FMSTR_APPCMD_CODE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_CODE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_CODE</FONT></A>,
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>  <A HREF="freemaster_h.html#type_FMSTR_APPCMD_PDATA" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_PDATA');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_PDATA</FONT></A>,<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A><SPAN CLASS="CT"> * TSA-related user types and macros</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_tsa.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A><SPAN CLASS="CT"> * Constants</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A><SPAN CLASS="CT">/* application command status information  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_APPCMDRESULT_NOCMD       0xff
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_APPCMDRESULT_RUNNING     0xfe
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> MFSTR_APPCMDRESULT_LASTVALID   0xf7                      <SPAN CLASS="CT">/* F8-FF are reserved  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A><SPAN CLASS="CT">/* recorder time base declaration helpers */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_BASE_SECONDS(x)      ((x) &amp; 0x3fff)
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_BASE_MILLISEC(x)     (((x) &amp; 0x3fff) | 0x4000)
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_BASE_MICROSEC(x)     (((x) &amp; 0x3fff) | 0x8000)
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> FMSTR_REC_BASE_NANOSEC(x)      (((x) &amp; 0x3fff) | 0xc000)
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifndef</SPAN> NULL
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> NULL                           ((void *) 0)
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A><SPAN CLASS="CT">/*****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A><SPAN CLASS="CT"> * Global functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A><SPAN CLASS="CT">/* FreeMASTER serial communication API */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_Init" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Init');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Init</FONT></A>(<SPAN CLASS="DT">void</SPAN>);           <SPAN CLASS="CT">/* general initiazlation */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_Poll" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Poll');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Poll</FONT></A>(<SPAN CLASS="DT">void</SPAN>);                 <SPAN CLASS="CT">/* polling call, use in SHORT_INTR and POLL_DRIVEN modes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_Isr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Isr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Isr</FONT></A>(<SPAN CLASS="DT">void</SPAN>);                  <SPAN CLASS="CT">/* SCI/FlexCAN interrupt handler for LONG_INTR and SHORT_INTR modes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A><SPAN CLASS="CT">/* Recorder API */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Recorder" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Recorder');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Recorder</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_TriggerRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TriggerRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TriggerRec</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_SetUpRecBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SetUpRecBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SetUpRecBuff</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nBuffAddr, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> nBuffSize);
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A><SPAN CLASS="CT">/* Application commands API */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A><A HREF="freemaster_h.html#type_FMSTR_APPCMD_CODE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_CODE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_CODE</FONT></A> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_GetAppCmd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetAppCmd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetAppCmd</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><A HREF="freemaster_h.html#type_FMSTR_APPCMD_PDATA" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_PDATA');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_PDATA</FONT></A> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_GetAppCmdData" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetAppCmdData');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetAppCmdData</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>* pDataLen);
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_RegisterAppCmdCall" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_RegisterAppCmdCall');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_RegisterAppCmdCall</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_APPCMD_CODE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_CODE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_CODE</FONT></A> nAppCmdCode,
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A>  FMSTR_PAPPCMDFUNC pCallbackFunc);
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_AppCmdAck" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AppCmdAck');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AppCmdAck</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_APPCMD_RESULT" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_APPCMD_RESULT');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_APPCMD_RESULT</FONT></A> nResultCode);
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_appcmd_c.html#fcn_FMSTR_AppCmdSetResponseData" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AppCmdSetResponseData');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AppCmdSetResponseData</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nResultDataAddr, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>  nResultDataLen);
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* __FREEMASTER_H */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

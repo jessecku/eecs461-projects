@@ -1,0 +1,697 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - adc_init.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\adc_init.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\adc_init.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/**</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> *                (c) Copyright 2011 Freescale Semiconductor, Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> *                         ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> *    @file    adc_init.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A><SPAN CLASS="CT"> *    @version M4_SRC_SW_VERSION_MAJOR.M4_SRC_SW_VERSION_MINOR.M4_SRC_SW_VERSION_PATCH</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT"> *    @brief   This file contains the ADC Configuration and initialization functions.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT"> *    @details This File contains function that setup Normal & injected channels,</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT"> *                          Sampling, PreSampling, interrupt, Threshold and CTU.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT"> *    Project M4_SRC_PROJECT_NAME</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT"> *    Platform M4_SRC_MCU_FAMILY</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT"> *   Creation date:		23-May-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT"> *   Author:                         B14423</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __cplusplus
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><SPAN CLASS="DT">extern</SPAN> <FONT COLOR="#1122ff">&quot;C&quot;</FONT><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><SPAN CLASS="CT">   *                  Includes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT">   ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;adc_init.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A>  <SPAN CLASS="CT">/*********************  Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><SPAN CLASS="CT">   *   Function:  adc_init_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><SPAN CLASS="CT">     @brief    ADC Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><SPAN CLASS="CT">     @details       ADC Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_init_fnc">adc_init_fnc</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>    <SPAN CLASS="CT">/*            Abort all conversion in process                */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>    ADC_0.MCR.B.ABORT = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>    ADC_1.MCR.B.ABORT = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>    <SPAN CLASS="CT">/*            ADC Sampling and ThresHold Configuration                    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>    <A HREF="adc_init_c.html#fcn_adc_sampling_setup_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_sampling_setup_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_sampling_setup_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A>    <SPAN CLASS="CT">/*            ADC General Setup                    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A>    <A HREF="adc_init_c.html#fcn_adc_general_setup_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_general_setup_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_general_setup_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>    <SPAN CLASS="CT">/*            ADC CTU Configuration        */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>    <A HREF="adc_init_c.html#fcn_adc_ctu_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_ctu_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_ctu_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>    <SPAN CLASS="CT">/*            ADC Interrupt Configuration                            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>    <A HREF="adc_init_c.html#fcn_adc_interrupt_setup_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_interrupt_setup_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_interrupt_setup_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>    <SPAN CLASS="CT">/*            ADC Channel Configuration                    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A>    <A HREF="adc_init_c.html#fcn_adc_channel_setup_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_channel_setup_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_channel_setup_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A>    <SPAN CLASS="CT">/*            ADC Trigger Configuration                    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>    <A HREF="adc_init_c.html#fcn_adc_trigger_setup_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_trigger_setup_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_trigger_setup_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>    <SPAN CLASS="CT">/*            DMA Setup Function(s)                    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A>    <A HREF="adc_init_c.html#fcn_adc_dma_setup_fnc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_adc_dma_setup_fnc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">adc_dma_setup_fnc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A>    <SPAN CLASS="CT">/*            Exit the ABORT state                    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>    ADC_0.MCR.B.ABORT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>    ADC_1.MCR.B.ABORT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A>  <SPAN CLASS="CT">/*********************  Trigger Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A><SPAN CLASS="CT">   *   Function:  adc_trigger_setup_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A><SPAN CLASS="CT">     @brief    ADC Trigger Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><SPAN CLASS="CT">     @details       ADC Trigger Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_trigger_setup_fnc">adc_trigger_setup_fnc</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>    <SPAN CLASS="CT">/*                    ADC 0 Trigger Configuration            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A>    ADC_0.MCR.R = 0xa0000000;
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>    <SPAN CLASS="CT">/* Injection Trigger : Disabled     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A>    <SPAN CLASS="CT">/* Injection trigger edge : Falling*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>    <SPAN CLASS="CT">/*                    ADC 1 Trigger Configuration            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>    ADC_1.MCR.R = 0xa0000000;
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>    <SPAN CLASS="CT">/* Injection Trigger : Disabled     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A>    <SPAN CLASS="CT">/* Injection trigger edge :  Falling */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A>  <SPAN CLASS="CT">/*********************  Interrupt Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><SPAN CLASS="CT">   *   Function:  adc_interrupt_setup_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><SPAN CLASS="CT">     @brief    ADC Interrupt Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A><SPAN CLASS="CT">     @details       ADC Interrupt Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_interrupt_setup_fnc">adc_interrupt_setup_fnc</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A>    <SPAN CLASS="CT">/*                    Interrupt Mask Register(ADC0_IMR)        */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A>    ADC_0.IMR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A>    <SPAN CLASS="CT">/* End of Chain Conversion Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A>    <SPAN CLASS="CT">/* End of Injected Chain Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A>    <SPAN CLASS="CT">/* End of Channel Conversion Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A>    <SPAN CLASS="CT">/* End of Injected Channel Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A>    <SPAN CLASS="CT">/* Error in Offset Refresh Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A>    <SPAN CLASS="CT">/* Offset Cancellation Over Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A>    <SPAN CLASS="CT">/* End of CTU conversion Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A>    <SPAN CLASS="CT">/*                    Interrupt Mask Register(ADC1_IMR)        */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>    ADC_1.IMR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A>    <SPAN CLASS="CT">/* End of Chain Conversion Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A>    <SPAN CLASS="CT">/* End of Injected Chain Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>    <SPAN CLASS="CT">/* End of Channel Conversion Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A>    <SPAN CLASS="CT">/* End of Injected Channel Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A>    <SPAN CLASS="CT">/* Error in Offset Refresh Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A>    <SPAN CLASS="CT">/* Offset Cancellation Over Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>    <SPAN CLASS="CT">/* End of CTU conversion Interrupt : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A>  <SPAN CLASS="CT">/*********************  Sampling Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A><SPAN CLASS="CT">   *   Function:  adc_sampling_setup_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A><SPAN CLASS="CT">     @brief    ADC Sampling Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A><SPAN CLASS="CT">     @details       ADC Sampling Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_sampling_setup_fnc">adc_sampling_setup_fnc</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A>    <SPAN CLASS="CT">/*                ADC_0 Sampling Control            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A>    <SPAN CLASS="CT">/*                Conversion Timing Register 0(ADC_0_CTR0)    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A>    ADC_0.CTR[0].R = 0x00008203;
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A>    <SPAN CLASS="CT">/*Phase duration Latch : Enabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A>    <SPAN CLASS="CT">/*Input Sampling Duration : 3 clock Cycles     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A>    <SPAN CLASS="CT">/*Input Comparison Duration : 1 clock Cycles     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A>    <SPAN CLASS="CT">/*                Offset  Word Register (ADC_OFFWR)    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A>    <SPAN CLASS="CT">//        ADC_0.OFFWR.B.OFFSETWORD = 0x00000000;</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A>    <SPAN CLASS="CT">/* Offset Loading : Disabled     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A>    <SPAN CLASS="CT">/* External Offset Word : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A>    <SPAN CLASS="CT">/*             Main Configuration Register (ADC_0_MCR)    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A>    ADC_0.MCR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A>    <SPAN CLASS="CT">/* Offset Cancellation Phase : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A>    <SPAN CLASS="CT">/* Offset Refresh during Idle mode :Disabled     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A>    ADC_0.MCR.B.PWDN = 0x0;
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A>    <SPAN CLASS="CT">/* Exit from power down state*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A>    <SPAN CLASS="KW">while</SPAN> (ADC_0.MCR.B.OFFCANC) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A>      <SPAN CLASS="CT">/*No Operation*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A>    <SPAN CLASS="CT">/* Note that offset cancellation is performed only after coming</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A><SPAN CLASS="CT">       out of powerdown state. As a consequence, OFFCANC bit must be</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A><SPAN CLASS="CT">       set before PWDN bit resetting after the offset cancellation</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A><SPAN CLASS="CT">       phase is over the 8-bit offset coefficient is stored in the</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A><SPAN CLASS="CT">       Offset word register OFFREG and as a consequence, the OFFCANC bit is cleared */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A>    <SPAN CLASS="CT">/*                ADC_1 Sampling Control            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A>    <SPAN CLASS="CT">/*                Conversion Timing Register 0(ADC_1_CTR0)    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A>    ADC_1.CTR[0].R = 0x00008203;
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A>    <SPAN CLASS="CT">/*Phase duration Latch : Enabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A>    <SPAN CLASS="CT">/*Input Sampling Duration : 3 clock Cycles     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A>    <SPAN CLASS="CT">/*Input Comparison Duration : 1 clock Cycles     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A>    <SPAN CLASS="CT">/*                Offset  Word Register (ADC_OFFWR)    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A>    <SPAN CLASS="CT">//        ADC_1.OFFWR.B.OFFSETWORD = 0x00000000;</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A>    <SPAN CLASS="CT">/* Offset Loading : Disabled     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A>    <SPAN CLASS="CT">/* External Offset Word : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A>    <SPAN CLASS="CT">/*             Main Configuration Register (ADC_1_MCR)    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A>    ADC_1.MCR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A>    <SPAN CLASS="CT">/* Offset Cancellation Phase : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A>    <SPAN CLASS="CT">/* Offset Refresh during Idle mode :Disabled     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A>    ADC_1.MCR.B.PWDN = 0x0;
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A>    <SPAN CLASS="CT">/* Exit from power down state*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A>    <SPAN CLASS="KW">while</SPAN> (ADC_1.MCR.B.OFFCANC) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A>      <SPAN CLASS="CT">/*No Operation*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A>    <SPAN CLASS="CT">/* Note that offset cancellation is performed only after coming</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A><SPAN CLASS="CT">       out of powerdown state. As a consequence, OFFCANC bit must be</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A><SPAN CLASS="CT">       set before PWDN bit resetting after the offset cancellation</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A><SPAN CLASS="CT">       phase is over the 8-bit offset coefficient is stored in the</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A><SPAN CLASS="CT">       Offset word register OFFREG and as a consequence, the OFFCANC bit is cleared */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A>  <SPAN CLASS="CT">/*********************  General Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A><SPAN CLASS="CT">   *   Function:  adc_general_setup_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A><SPAN CLASS="CT">     @brief    ADC General Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A><SPAN CLASS="CT">     @details       ADC General Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_general_setup_fnc">adc_general_setup_fnc</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A>    <SPAN CLASS="CT">/*                ADC 0 Device Setup             */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A>    ADC_0.MCR.R = 0xA0000000;
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A>    <SPAN CLASS="CT">/* Auto Clock Off feature : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A>    <SPAN CLASS="CT">/* Conversion data Overwrite: Enabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A>    <SPAN CLASS="CT">/* Conversion Data Aligned: Right Aligned */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A>    <SPAN CLASS="CT">/* Conversion Mode Selected :  Scan */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A>    <SPAN CLASS="CT">/* ADC Conversion clock selected as :  System Clock/2 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A>    <SPAN CLASS="CT">/* ADC PowerDown Mode is :  Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A>    ADC_0.DSDR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A>    <SPAN CLASS="CT">/* The Decode Signal Delay : 0 clock Cycle      */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A>    ADC_0.PDEDR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A>    <SPAN CLASS="CT">/* The Power Down Delay : 0 clock Cycle      */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A>    <SPAN CLASS="CT">/*                ADC 1 Device Setup             */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A>    ADC_1.MCR.R = 0xA0000000;
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A>    <SPAN CLASS="CT">/* Auto Clock Off feature : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A>    <SPAN CLASS="CT">/* Conversion data Overwrite: Enabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A>    <SPAN CLASS="CT">/* Conversion Data Aligned: Right Aligned */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A>    <SPAN CLASS="CT">/* Conversion Mode Selected :  Scan */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A>    <SPAN CLASS="CT">/* ADC Conversion clock selected as :  System Clock/2 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>    ADC_1.DSDR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A>    <SPAN CLASS="CT">/* The Decode Signal Delay : 0 clock Cycle      */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A>    ADC_1.PDEDR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A>    <SPAN CLASS="CT">/* The Power Down Delay : 0 clock Cycle      */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A>  <SPAN CLASS="CT">/*********************  Channel Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A><SPAN CLASS="CT">   *   Function:  adc_channel_setup_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A><SPAN CLASS="CT">     @brief    ADC Channel Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A><SPAN CLASS="CT">     @details       ADC Channel Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_channel_setup_fnc">adc_channel_setup_fnc</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="301">  301   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="302">  302   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="303">  303   </A>    <SPAN CLASS="CT">/*                ADC 0 Channel Setup            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="304">  304   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A>    <SPAN CLASS="CT">/*    Normal Channel Conversion Mask Register 0(ADC_0_NCMR0)*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A>    ADC_0.NCMR[0].R = 0x0000FFFF;
+</SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A>    <SPAN CLASS="CT">/* ADC Channel 0 in Normal Mode : Enabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="312">  312   </A>    <SPAN CLASS="CT">/* ADC Channel 1 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>    <SPAN CLASS="CT">/* ADC Channel 2 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A>    <SPAN CLASS="CT">/* ADC Channel 3 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A>    <SPAN CLASS="CT">/* ADC Channel 4 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A>    <SPAN CLASS="CT">/* ADC Channel 5 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A>    <SPAN CLASS="CT">/* ADC Channel 6 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A>    <SPAN CLASS="CT">/* ADC Channel 7 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A>    <SPAN CLASS="CT">/* ADC Channel 8 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A>    <SPAN CLASS="CT">/* ADC Channel 9 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A>    <SPAN CLASS="CT">/* ADC Channel 10 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A>    <SPAN CLASS="CT">/* ADC Channel 11 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A>    <SPAN CLASS="CT">/* ADC Channel 12 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A>    <SPAN CLASS="CT">/* ADC Channel 13 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A>    <SPAN CLASS="CT">/* ADC Channel 14 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A>    <SPAN CLASS="CT">/* ADC Channel 15 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A>    <SPAN CLASS="CT">/*        Injected Channel Conversion Mask Register 0(ADC_0_JCMR0)*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A>    ADC_0.JCMR[0].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A>    <SPAN CLASS="CT">/* ADC Channel 0 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="334">  334   </A>    <SPAN CLASS="CT">/* ADC Channel 1 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="335">  335   </A>    <SPAN CLASS="CT">/* ADC Channel 2 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A>    <SPAN CLASS="CT">/* ADC Channel 3 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A>    <SPAN CLASS="CT">/* ADC Channel 4 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A>    <SPAN CLASS="CT">/* ADC Channel 5 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A>    <SPAN CLASS="CT">/* ADC Channel 6 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A>    <SPAN CLASS="CT">/* ADC Channel 7 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A>    <SPAN CLASS="CT">/* ADC Channel 8 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A>    <SPAN CLASS="CT">/* ADC Channel 9 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="343">  343   </A>    <SPAN CLASS="CT">/* ADC Channel 10 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="344">  344   </A>    <SPAN CLASS="CT">/* ADC Channel 11 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="345">  345   </A>    <SPAN CLASS="CT">/* ADC Channel 12 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="346">  346   </A>    <SPAN CLASS="CT">/* ADC Channel 13 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="347">  347   </A>    <SPAN CLASS="CT">/* ADC Channel 14 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="348">  348   </A>    <SPAN CLASS="CT">/* ADC Channel 15 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="349">  349   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="350">  350   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="351">  351   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 0 (ADC_0_TRC0)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="352">  352   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="353">  353   </A>    ADC_0.TRC[0].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="354">  354   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 0 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 0:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 0 : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 1 (ADC_0_TRC1)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="362">  362   </A>    ADC_0.TRC[1].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="363">  363   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="364">  364   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 1 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="365">  365   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 1:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="366">  366   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 1 : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="367">  367   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="368">  368   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="369">  369   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 2 (ADC_0_TRC2)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="370">  370   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="371">  371   </A>    ADC_0.TRC[2].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="372">  372   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="373">  373   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 2 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="374">  374   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 2:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="375">  375   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 2 : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="376">  376   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="377">  377   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="378">  378   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 3 (ADC_0_TRC3)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="379">  379   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="380">  380   </A>    ADC_0.TRC[3].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="381">  381   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="382">  382   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 3 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="383">  383   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 3:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="384">  384   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 3 : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="385">  385   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="386">  386   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="387">  387   </A>    <SPAN CLASS="CT">/*            Threshold Register 0 (ADC_0_THRHLR0)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="388">  388   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="389">  389   </A>    ADC_0.THRHLR[0].R = 0x03840000;
+</SPAN><SPAN><A CLASS="LN" NAME="390">  390   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="391">  391   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="392">  392   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 900    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="393">  393   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="394">  394   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="395">  395   </A>    <SPAN CLASS="CT">/*            Threshold Register 1 (ADC_0_THRHLR1)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="396">  396   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="397">  397   </A>    ADC_0.THRHLR[1].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="398">  398   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="399">  399   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="400">  400   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="401">  401   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="402">  402   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="403">  403   </A>    <SPAN CLASS="CT">/*            Threshold Register 2 (ADC_0_THRHLR2)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="404">  404   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="405">  405   </A>    ADC_0.THRHLR[2].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="406">  406   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="407">  407   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="408">  408   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="409">  409   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="410">  410   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="411">  411   </A>    <SPAN CLASS="CT">/*            Threshold Register 3 (ADC_0_THRHLR3)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="412">  412   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="413">  413   </A>    ADC_0.THRHLR[3].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="414">  414   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="415">  415   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="416">  416   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="417">  417   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="418">  418   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="419">  419   </A>    <SPAN CLASS="CT">/*Watchdog Threshold Interrupt Mask Register (ADC_0_WTIMR) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="420">  420   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="421">  421   </A>    ADC_0.WTIMR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="422">  422   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="423">  423   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 0 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="424">  424   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 1 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="425">  425   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 2 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="426">  426   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 3 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="427">  427   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 0 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="428">  428   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 1 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="429">  429   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 2 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="430">  430   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 3 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="431">  431   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="432">  432   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="433">  433   </A>    <SPAN CLASS="CT">/*                ADC 1 Channel Setup            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="434">  434   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="435">  435   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="436">  436   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="437">  437   </A>    <SPAN CLASS="CT">/*    Normal Channel Conversion Mask Register 0(ADC_1_NCMR0)*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="438">  438   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="439">  439   </A>    ADC_1.NCMR[0].R = 0x0000FFFF;
+</SPAN><SPAN><A CLASS="LN" NAME="440">  440   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="441">  441   </A>    <SPAN CLASS="CT">/* ADC Channel 0 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="442">  442   </A>    <SPAN CLASS="CT">/* ADC Channel 1 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="443">  443   </A>    <SPAN CLASS="CT">/* ADC Channel 2 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="444">  444   </A>    <SPAN CLASS="CT">/* ADC Channel 3 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="445">  445   </A>    <SPAN CLASS="CT">/* ADC Channel 4 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="446">  446   </A>    <SPAN CLASS="CT">/* ADC Channel 5 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="447">  447   </A>    <SPAN CLASS="CT">/* ADC Channel 6 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="448">  448   </A>    <SPAN CLASS="CT">/* ADC Channel 7 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="449">  449   </A>    <SPAN CLASS="CT">/* ADC Channel 8 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="450">  450   </A>    <SPAN CLASS="CT">/* ADC Channel 9 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="451">  451   </A>    <SPAN CLASS="CT">/* ADC Channel 10 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="452">  452   </A>    <SPAN CLASS="CT">/* ADC Channel 11 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="453">  453   </A>    <SPAN CLASS="CT">/* ADC Channel 12 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="454">  454   </A>    <SPAN CLASS="CT">/* ADC Channel 13 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="455">  455   </A>    <SPAN CLASS="CT">/* ADC Channel 14 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="456">  456   </A>    <SPAN CLASS="CT">/* ADC Channel 15 in Normal Mode : Enabled  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="457">  457   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="458">  458   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="459">  459   </A>    <SPAN CLASS="CT">/*        Injected Channel Conversion Mask Register 0(ADC_1_JCMR0)*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="460">  460   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="461">  461   </A>    ADC_1.JCMR[0].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="462">  462   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="463">  463   </A>    <SPAN CLASS="CT">/* ADC Channel 0 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="464">  464   </A>    <SPAN CLASS="CT">/* ADC Channel 1 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="465">  465   </A>    <SPAN CLASS="CT">/* ADC Channel 2 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="466">  466   </A>    <SPAN CLASS="CT">/* ADC Channel 3 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="467">  467   </A>    <SPAN CLASS="CT">/* ADC Channel 4 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="468">  468   </A>    <SPAN CLASS="CT">/* ADC Channel 5 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="469">  469   </A>    <SPAN CLASS="CT">/* ADC Channel 6 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="470">  470   </A>    <SPAN CLASS="CT">/* ADC Channel 7 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="471">  471   </A>    <SPAN CLASS="CT">/* ADC Channel 8 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="472">  472   </A>    <SPAN CLASS="CT">/* ADC Channel 9 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="473">  473   </A>    <SPAN CLASS="CT">/* ADC Channel 10 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="474">  474   </A>    <SPAN CLASS="CT">/* ADC Channel 11 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="475">  475   </A>    <SPAN CLASS="CT">/* ADC Channel 12 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="476">  476   </A>    <SPAN CLASS="CT">/* ADC Channel 13 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="477">  477   </A>    <SPAN CLASS="CT">/* ADC Channel 14 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="478">  478   </A>    <SPAN CLASS="CT">/* ADC Channel 15 in Injected Mode : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="479">  479   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="480">  480   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="481">  481   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 0 (ADC_1_TRC0)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="482">  482   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="483">  483   </A>    ADC_1.TRC[0].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="484">  484   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="485">  485   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 0 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="486">  486   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 0:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="487">  487   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 0 : 0*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="488">  488   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="489">  489   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="490">  490   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 1 (ADC_1_TRC1)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="491">  491   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="492">  492   </A>    ADC_1.TRC[1].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="493">  493   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="494">  494   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 1 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="495">  495   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 1:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="496">  496   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 1 : 0*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="497">  497   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="498">  498   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="499">  499   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 2 (ADC_1_TRC2)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="500">  500   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="501">  501   </A>    ADC_1.TRC[2].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="502">  502   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="503">  503   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 2 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="504">  504   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 2:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="505">  505   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 2 : 0*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="506">  506   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="507">  507   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="508">  508   </A>    <SPAN CLASS="CT">/*         Threshold Control Register 3 (ADC_1_TRC3)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="509">  509   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="510">  510   </A>    ADC_1.TRC[3].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="511">  511   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="512">  512   </A>    <SPAN CLASS="CT">/* Threshold detection for WatchDog 3 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="513">  513   </A>    <SPAN CLASS="CT">/* Threshold Inversion for WatchDog 3:DIsabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="514">  514   </A>    <SPAN CLASS="CT">/* Threshold Channel Select for WatchDog 3 : 0*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="515">  515   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="516">  516   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="517">  517   </A>    <SPAN CLASS="CT">/*            Threshold Register 0 (ADC_1_THRHLR0)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="518">  518   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="519">  519   </A>    ADC_1.THRHLR[0].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="520">  520   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="521">  521   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="522">  522   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="523">  523   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="524">  524   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="525">  525   </A>    <SPAN CLASS="CT">/*            Threshold Register 1 (ADC_1_THRHLR1)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="526">  526   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="527">  527   </A>    ADC_1.THRHLR[1].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="528">  528   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="529">  529   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="530">  530   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="531">  531   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="532">  532   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="533">  533   </A>    <SPAN CLASS="CT">/*            Threshold Register 2 (ADC_1_THRHLR2)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="534">  534   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="535">  535   </A>    ADC_1.THRHLR[2].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="536">  536   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="537">  537   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="538">  538   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="539">  539   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="540">  540   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="541">  541   </A>    <SPAN CLASS="CT">/*            Threshold Register 3 (ADC_1_THRHLR3)          */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="542">  542   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="543">  543   </A>    ADC_1.THRHLR[3].R = 0x03FF0000;
+</SPAN><SPAN><A CLASS="LN" NAME="544">  544   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="545">  545   </A>    <SPAN CLASS="CT">/* Lower Threshold value : 0    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="546">  546   </A>    <SPAN CLASS="CT">/* Higher Threshold value : 1023    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="547">  547   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="548">  548   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="549">  549   </A>    <SPAN CLASS="CT">/*Watchdog Threshold Interrupt Mask Register (ADC_1_WTIMR) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="550">  550   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="551">  551   </A>    ADC_1.WTIMR.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="552">  552   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="553">  553   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 0 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="554">  554   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 1 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="555">  555   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 2 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="556">  556   </A>    <SPAN CLASS="CT">/* Low Threshold Interrupt for Watchdog 3 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="557">  557   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 0 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="558">  558   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 1 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="559">  559   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 2 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="560">  560   </A>    <SPAN CLASS="CT">/* High Threshold Interrupt for Watchdog 3 : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="561">  561   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="562">  562   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="563">  563   </A>  <SPAN CLASS="CT">/*********************  DMA Setup Function(s)************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="564">  564   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="565">  565   </A><SPAN CLASS="CT">   *   Function:  adc_dma_setup_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="566">  566   </A><SPAN CLASS="CT">     @brief    ADC DMA Setup Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="567">  567   </A><SPAN CLASS="CT">     @details       ADC DMA Setup Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="568">  568   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="569">  569   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="570">  570   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="571">  571   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_dma_setup_fnc">adc_dma_setup_fnc</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="572">  572   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="573">  573   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="574">  574   </A>    <SPAN CLASS="CT">/*            ADC 0  DMA Enable Register (DMAE)            */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="575">  575   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="576">  576   </A>    ADC_0.DMAE.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="577">  577   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="578">  578   </A>    <SPAN CLASS="CT">/*DMA Global : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="579">  579   </A>    <SPAN CLASS="CT">/*DMA clear sequence : ACK from DMA */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="580">  580   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="581">  581   </A>    <SPAN CLASS="CT">/*            ADC 0  DMA Channel Select Registers DMAR_0        */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="582">  582   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="583">  583   </A>    ADC_0.DMAR[0].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="584">  584   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="585">  585   </A>    <SPAN CLASS="CT">/* DMA 0 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="586">  586   </A>    <SPAN CLASS="CT">/* DMA 1 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="587">  587   </A>    <SPAN CLASS="CT">/* DMA 2 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="588">  588   </A>    <SPAN CLASS="CT">/* DMA 3 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="589">  589   </A>    <SPAN CLASS="CT">/* DMA 4 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="590">  590   </A>    <SPAN CLASS="CT">/* DMA 5 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="591">  591   </A>    <SPAN CLASS="CT">/* DMA 6 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="592">  592   </A>    <SPAN CLASS="CT">/* DMA 7 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="593">  593   </A>    <SPAN CLASS="CT">/* DMA 8 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="594">  594   </A>    <SPAN CLASS="CT">/* DMA 9 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="595">  595   </A>    <SPAN CLASS="CT">/* DMA 10 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="596">  596   </A>    <SPAN CLASS="CT">/* DMA 11 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="597">  597   </A>    <SPAN CLASS="CT">/* DMA 12 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="598">  598   </A>    <SPAN CLASS="CT">/* DMA 13 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="599">  599   </A>    <SPAN CLASS="CT">/* DMA 14 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="600">  600   </A>    <SPAN CLASS="CT">/* DMA 15 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="601">  601   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="602">  602   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="603">  603   </A>    <SPAN CLASS="CT">/*             ADC 1 DMA Enable Register (DMAE)        */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="604">  604   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="605">  605   </A>    ADC_1.DMAE.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="606">  606   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="607">  607   </A>    <SPAN CLASS="CT">/*DMA Global : Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="608">  608   </A>    <SPAN CLASS="CT">/*DMA clear sequence : ACK from DMA */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="609">  609   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="610">  610   </A>    <SPAN CLASS="CT">/*            ADC 1  DMA Channel Select Registers DMAR_0        */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="611">  611   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="612">  612   </A>    ADC_1.DMAR[0].R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="613">  613   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="614">  614   </A>    <SPAN CLASS="CT">/* DMA 0 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="615">  615   </A>    <SPAN CLASS="CT">/* DMA 1 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="616">  616   </A>    <SPAN CLASS="CT">/* DMA 2 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="617">  617   </A>    <SPAN CLASS="CT">/* DMA 3 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="618">  618   </A>    <SPAN CLASS="CT">/* DMA 4 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="619">  619   </A>    <SPAN CLASS="CT">/* DMA 5 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="620">  620   </A>    <SPAN CLASS="CT">/* DMA 6 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="621">  621   </A>    <SPAN CLASS="CT">/* DMA 7 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="622">  622   </A>    <SPAN CLASS="CT">/* DMA 8 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="623">  623   </A>    <SPAN CLASS="CT">/* DMA 9 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="624">  624   </A>    <SPAN CLASS="CT">/* DMA 10 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="625">  625   </A>    <SPAN CLASS="CT">/* DMA 11 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="626">  626   </A>    <SPAN CLASS="CT">/* DMA 12 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="627">  627   </A>    <SPAN CLASS="CT">/* DMA 13 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="628">  628   </A>    <SPAN CLASS="CT">/* DMA 14 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="629">  629   </A>    <SPAN CLASS="CT">/* DMA 15 Disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="630">  630   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="631">  631   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="632">  632   </A>  <SPAN CLASS="CT">/*********************  CTU Initialization Function(s)  ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="633">  633   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="634">  634   </A><SPAN CLASS="CT">   *   Function:  adc_ctu_fnc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="635">  635   </A><SPAN CLASS="CT">     @brief    ADC CTU Initialization Function .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="636">  636   </A><SPAN CLASS="CT">     @details       ADC CTU Initialization Function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="637">  637   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="638">  638   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="639">  639   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="640">  640   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_adc_ctu_fnc">adc_ctu_fnc</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="641">  641   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="642">  642   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="643">  643   </A>    <SPAN CLASS="CT">/*             ADC 0 CTU Control         */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="644">  644   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="645">  645   </A>    ADC_0.MCR.B.CTUEN = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="646">  646   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="647">  647   </A>    <SPAN CLASS="CT">/* Cross Triggering Unit :  Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="648">  648   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="649">  649   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="650">  650   </A>    <SPAN CLASS="CT">/*             ADC 1 CTU Control             */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="651">  651   </A>    <SPAN CLASS="CT">/*-----------------------------------------------------------*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="652">  652   </A>    ADC_1.MCR.B.CTUEN = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="653">  653   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="654">  654   </A>    <SPAN CLASS="CT">/* Cross Triggering Unit :  Disabled */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="655">  655   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="656">  656   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="657">  657   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __cplusplus
+</SPAN><SPAN><A CLASS="LN" NAME="658">  658   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="659">  659   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="660">  660   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="661">  661   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="662">  662   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="663">  663   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="664">  664   </A><SPAN CLASS="CT"> *                           End of File</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="665">  665   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="666">  666   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="667">  667   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

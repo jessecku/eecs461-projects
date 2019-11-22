@@ -1,0 +1,864 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - flexcan_564xl_library.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\Final_Project.mdl' 'H:\\EECS_461\\project\\Final_Project_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\Final_Project_rappid_rtw\flexcan_564xl_library.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\Final_Project_rappid_rtw\flexcan_564xl_library.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/**</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> *                (c) Copyright 2011 Freescale Semiconductor, Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> *                         ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> *    @file    flexcan_564xl_library.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A><SPAN CLASS="CT"> *    @version M4_SRC_SW_VERSION_MAJOR.M4_SRC_SW_VERSION_MINOR.M4_SRC_SW_VERSION_PATCH</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT"> *    @brief   FlexCAN module support.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT"> *    @details Implementation of FlexCAN module functions.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT"> *    Project M4_SRC_PROJECT_NAME</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT"> *    Platform M4_SRC_MCU_FAMILY</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT"> *   Creation date:		23-May-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT"> *   Author:                         B14423</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __cplusplus
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="DT">extern</SPAN> <FONT COLOR="#1122ff">&quot;C&quot;</FONT><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><SPAN CLASS="CT">   *                  Includes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><SPAN CLASS="CT">   ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;flexcan_564xl_library.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A>  <SPAN CLASS="CT">/**/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT">   *                   Global functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><SPAN CLASS="CT">   ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><SPAN CLASS="CT">   *   Function:  flexcan_564xl_init</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><SPAN CLASS="CT">     @brief    Initialize FlexCAN module .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A><SPAN CLASS="CT">     @details   Initialize FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A><SPAN CLASS="CT">     @param[in]     MCR     	MCR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A><SPAN CLASS="CT">     @param[in]     CR     	CR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A><SPAN CLASS="CT">     @return status</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_init">flexcan_564xl_init</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> MCR, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> CR)
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> x = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> i = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> status = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>    <SPAN CLASS="KW">switch</SPAN> (flex_can) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_0:
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>        CAN_0.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A>        CAN_0.MCR.B.SOFT_RST = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>        <SPAN CLASS="KW">while</SPAN> (CAN_0.MCR.B.SOFT_RST ==1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>        CAN_0.MCR.B.MDIS = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>        CAN_0.CR.B.CLK_SRC = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>        <SPAN CLASS="CT">/*Enable the CAN module */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>        CAN_0.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>        <SPAN CLASS="CT">/* Set FRZ bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>        CAN_0.MCR.B.FRZ = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>        <SPAN CLASS="CT">/* Set HALT bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A>        CAN_0.MCR.B.HALT = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A>        CAN_0.MCR.R = MCR;
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>        CAN_0.CR.R = CR;
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A>        <SPAN CLASS="CT">/* Set the FlexCAN Maximum Buffer Number */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>        CAN_0.MCR.B.MAXMB = 32;
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>        <SPAN CLASS="CT">/* clear memory from message buffer 0 to 15 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>        <SPAN CLASS="KW">for</SPAN> (x=0; x &lt; 32; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>          CAN_0.BUF[x].CS.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>          CAN_0.BUF[x].ID.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A>          <SPAN CLASS="KW">for</SPAN> (i=0; i &lt; 2; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>            CAN_0.BUF[x].DATA.W[i] = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>        <SPAN CLASS="KW">for</SPAN> (x=0 ; x&lt;32 ; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>          CAN_0.RXIMR[x].R = 0xFFFFFFFF;
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A>        CAN_0.IMRL.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>        CAN_0.MCR.B.HALT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A>        CAN_0.MCR.B.FRZ = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A>        <SPAN CLASS="CT">/* await synchronization (delay) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>        <SPAN CLASS="KW">for</SPAN> (x=1; x &lt; 255; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>        <SPAN CLASS="KW">if</SPAN> (CAN_0.MCR.B.NOT_RDY == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A>          status = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>          status = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_1:
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A>        CAN_1.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>        CAN_1.MCR.B.SOFT_RST = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A>        <SPAN CLASS="KW">while</SPAN> (CAN_1.MCR.B.SOFT_RST ==1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>        CAN_1.MCR.B.MDIS = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A>        CAN_1.CR.B.CLK_SRC = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A>        <SPAN CLASS="CT">/*Enable the CAN module */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A>        CAN_1.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A>        <SPAN CLASS="CT">/* Set FRZ bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A>        CAN_1.MCR.B.FRZ = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A>        <SPAN CLASS="CT">/* Set HALT bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A>        CAN_1.MCR.B.HALT = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A>        CAN_1.MCR.R = MCR;
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A>        CAN_1.CR.R = CR;
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A>        <SPAN CLASS="CT">/* Set the FlexCAN Maximum Buffer Number */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A>        CAN_1.MCR.B.MAXMB = 32;
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A>        <SPAN CLASS="CT">/* clear memory from message buffer 0 to 15 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A>        <SPAN CLASS="KW">for</SPAN> (x=0; x &lt; 32; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A>          CAN_1.BUF[x].CS.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A>          CAN_1.BUF[x].ID.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A>          <SPAN CLASS="KW">for</SPAN> (i=0; i &lt; 2; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A>            CAN_1.BUF[x].DATA.W[i] = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A>        <SPAN CLASS="KW">for</SPAN> (x=0 ; x&lt;32 ; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>          CAN_1.RXIMR[x].R = 0xFFFFFFFF;
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>        CAN_1.IMRL.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>        CAN_1.MCR.B.HALT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A>        CAN_1.MCR.B.FRZ = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>        <SPAN CLASS="CT">/* await synchronization (delay) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A>        <SPAN CLASS="KW">for</SPAN> (x=1; x &lt; 255; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>        <SPAN CLASS="KW">if</SPAN> (CAN_1.MCR.B.NOT_RDY == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A>          status = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A>          status = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A>     <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A>      <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A>    <SPAN CLASS="KW">return</SPAN> status;
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A><SPAN CLASS="CT">   *	Function:  flexcan_564xl_init_CCP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A><SPAN CLASS="CT">     @brief    Initialize FlexCAN module .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A><SPAN CLASS="CT">     @details   Initialize FlexCAN module and don't update MB reserved by CCP module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A><SPAN CLASS="CT">     @param[in]     MCR     	MCR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A><SPAN CLASS="CT">     @param[in]     CR     	CR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A><SPAN CLASS="CT">     @param[in]	   mb0		MB0 for CCP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A><SPAN CLASS="CT">     @param[in]	   mb1		MB1 for CCP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A><SPAN CLASS="CT">     @return status</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_init_CCP">flexcan_564xl_init_CCP</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> MCR, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> CR,
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb0, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb1)
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A>    <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> mb0_data = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A>    <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> mb1_data = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> out = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A>      mb0_data = CAN_0.RXIMR[mb0].R;
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A>      mb1_data = CAN_0.RXIMR[mb1].R;
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A>      out = <A HREF="flexcan_564xl_library_c.html#fcn_flexcan_564xl_init" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_flexcan_564xl_init');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">flexcan_564xl_init</FONT></A>(flex_can, MCR, CR);
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A>      CAN_0.RXIMR[mb0].R = mb0_data;
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A>      CAN_0.RXIMR[mb1].R = mb1_data;
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A>      mb0_data = CAN_1.RXIMR[mb0].R;
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A>      mb1_data = CAN_1.RXIMR[mb1].R;
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A>      out = <A HREF="flexcan_564xl_library_c.html#fcn_flexcan_564xl_init" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_flexcan_564xl_init');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">flexcan_564xl_init</FONT></A>(flex_can, MCR, CR);
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A>      CAN_1.RXIMR[mb0].R = mb0_data;
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A>      CAN_1.RXIMR[mb1].R = mb1_data;
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A>    <SPAN CLASS="KW">return</SPAN> out;
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A><SPAN CLASS="CT">   *	Function:  flexcan_564xl_init_CCP_FM</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A><SPAN CLASS="CT">     @brief    Initialize FlexCAN module .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A><SPAN CLASS="CT">     @details   Initialize FlexCAN module and don't update MB reserved by FreeMaster and CCP modules</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A><SPAN CLASS="CT">     @param[in]     MCR     	MCR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A><SPAN CLASS="CT">     @param[in]     CR     	CR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A><SPAN CLASS="CT">     @param[in]	   mb0		MB0 for CCP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A><SPAN CLASS="CT">     @param[in]	   mb1		MB1 for CCP</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A><SPAN CLASS="CT">     @return status</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_init_CCP_FM">flexcan_564xl_init_CCP_FM</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> MCR, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> CR,
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb0, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb1)
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A>    <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> mb0_data = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A>    <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> mb1_data = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> out = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A>      mb0_data = CAN_0.RXIMR[mb0].R;
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A>      mb1_data = CAN_0.RXIMR[mb1].R;
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A>      out = <A HREF="flexcan_564xl_library_c.html#fcn_flexcan_564xl_init_FM" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_flexcan_564xl_init_FM');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">flexcan_564xl_init_FM</FONT></A>(flex_can, MCR, CR);
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A>      CAN_0.RXIMR[mb0].R = mb0_data;
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A>      CAN_0.RXIMR[mb1].R = mb1_data;
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A>      mb0_data = CAN_1.RXIMR[mb0].R;
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A>      mb1_data = CAN_1.RXIMR[mb1].R;
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A>      out = <A HREF="flexcan_564xl_library_c.html#fcn_flexcan_564xl_init_FM" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_flexcan_564xl_init_FM');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">flexcan_564xl_init_FM</FONT></A>(flex_can, MCR, CR);
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A>      CAN_1.RXIMR[mb0].R = mb0_data;
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A>      CAN_1.RXIMR[mb1].R = mb1_data;
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>    <SPAN CLASS="KW">return</SPAN> out;
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A><SPAN CLASS="CT">   *	Function:  flexcan_564xl_init_FM</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A><SPAN CLASS="CT">     @brief    Initialize FlexCAN module .</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A><SPAN CLASS="CT">     @details   Initialize FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A><SPAN CLASS="CT">     this function doesn't initialize MB0, MB1 because it was done before by FreeMaster</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A><SPAN CLASS="CT">     @param[in]     MCR     	MCR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A><SPAN CLASS="CT">     @param[in]     CR     	CR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A><SPAN CLASS="CT">     @return status</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_init_FM">flexcan_564xl_init_FM</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> MCR, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> CR)
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> x = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> i = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> status = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A>    <SPAN CLASS="KW">switch</SPAN> (flex_can) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_0:
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A>        CAN_0.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A>        CAN_0.MCR.B.SOFT_RST = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A>        <SPAN CLASS="KW">while</SPAN> (CAN_0.MCR.B.SOFT_RST ==1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A>        CAN_0.MCR.B.MDIS = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A>        CAN_0.CR.B.CLK_SRC = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A>        <SPAN CLASS="CT">/*Enable the CAN module */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A>        CAN_0.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A>        <SPAN CLASS="CT">/* Set FRZ bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A>        CAN_0.MCR.B.FRZ = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A>        <SPAN CLASS="CT">/* Set HALT bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A>        CAN_0.MCR.B.HALT = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A>        CAN_0.MCR.R = MCR;
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A>        CAN_0.CR.R = CR;
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A>        <SPAN CLASS="CT">/* Set the FlexCAN Maximum Buffer Number */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A>        CAN_0.MCR.B.MAXMB = 32;
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A>        <SPAN CLASS="CT">/* clear memory from message buffer 0 to 15 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>        <SPAN CLASS="KW">for</SPAN> (x=2; x &lt; 32; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A>          CAN_0.BUF[x].CS.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A>          CAN_0.BUF[x].ID.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A>          <SPAN CLASS="KW">for</SPAN> (i=0; i &lt; 2; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A>            CAN_0.BUF[x].DATA.W[i] = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A>        <SPAN CLASS="KW">for</SPAN> (x=2 ; x&lt;32 ; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A>          CAN_0.RXIMR[x].R = 0xFFFFFFFF;
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A>        CAN_0.IMRL.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A>        CAN_0.MCR.B.HALT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A>        CAN_0.MCR.B.FRZ = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A>        <SPAN CLASS="CT">/* await synchronization (delay) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="301">  301   </A>        <SPAN CLASS="KW">for</SPAN> (x=1; x &lt; 255; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="302">  302   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="303">  303   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="304">  304   </A>        <SPAN CLASS="KW">if</SPAN> (CAN_0.MCR.B.NOT_RDY == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A>          status = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A>          status = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="312">  312   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_1:
+</SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A>        CAN_1.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A>        CAN_1.MCR.B.SOFT_RST = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A>        <SPAN CLASS="KW">while</SPAN> (CAN_1.MCR.B.SOFT_RST ==1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A>        CAN_1.MCR.B.MDIS = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A>        CAN_1.CR.B.CLK_SRC = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A>        <SPAN CLASS="CT">/*Enable the CAN module */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A>        CAN_1.MCR.B.MDIS = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A>        <SPAN CLASS="CT">/* Set FRZ bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A>        CAN_1.MCR.B.FRZ = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A>        <SPAN CLASS="CT">/* Set HALT bit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A>        CAN_1.MCR.B.HALT = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A>        CAN_1.MCR.R = MCR;
+</SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A>        CAN_1.CR.R = CR;
+</SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A>        <SPAN CLASS="CT">/* Set the FlexCAN Maximum Buffer Number */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="334">  334   </A>        CAN_1.MCR.B.MAXMB = 32;
+</SPAN><SPAN><A CLASS="LN" NAME="335">  335   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A>        <SPAN CLASS="CT">/* clear memory from message buffer 0 to 15 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A>        <SPAN CLASS="KW">for</SPAN> (x=2; x &lt; 32; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A>          CAN_1.BUF[x].CS.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A>          CAN_1.BUF[x].ID.R = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A>          <SPAN CLASS="KW">for</SPAN> (i=0; i &lt; 2; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A>            CAN_1.BUF[x].DATA.W[i] = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="343">  343   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="344">  344   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="345">  345   </A>        <SPAN CLASS="KW">for</SPAN> (x=2 ; x&lt;32 ; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="346">  346   </A>          CAN_1.RXIMR[x].R = 0xFFFFFFFF;
+</SPAN><SPAN><A CLASS="LN" NAME="347">  347   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="348">  348   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="349">  349   </A>        CAN_1.IMRL.R = 0x00000000;
+</SPAN><SPAN><A CLASS="LN" NAME="350">  350   </A>        CAN_1.MCR.B.HALT = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="351">  351   </A>        CAN_1.MCR.B.FRZ = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="352">  352   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="353">  353   </A>        <SPAN CLASS="CT">/* await synchronization (delay) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="354">  354   </A>        <SPAN CLASS="KW">for</SPAN> (x=1; x &lt; 255; x++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A>        <SPAN CLASS="KW">if</SPAN> (CAN_1.MCR.B.NOT_RDY == 1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A>          status = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A>          status = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="362">  362   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="363">  363   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="364">  364   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="365">  365   </A>     <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="366">  366   </A>      <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="367">  367   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="368">  368   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="369">  369   </A>    <SPAN CLASS="KW">return</SPAN> status;
+</SPAN><SPAN><A CLASS="LN" NAME="370">  370   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="371">  371   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="372">  372   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="373">  373   </A><SPAN CLASS="CT">   *   Function:  flexcan_564xl_pin_init</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="374">  374   </A><SPAN CLASS="CT">     @brief    Initialize FlexCAN module pins.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="375">  375   </A><SPAN CLASS="CT">     @details   Initialize FlexCAN module pins</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="376">  376   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="377">  377   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="378">  378   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="379">  379   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="380">  380   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="381">  381   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="382">  382   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_pin_init">flexcan_564xl_pin_init</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can)
+</SPAN><SPAN><A CLASS="LN" NAME="383">  383   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="384">  384   </A>    <SPAN CLASS="KW">switch</SPAN> (flex_can) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="385">  385   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_0:
+</SPAN><SPAN><A CLASS="LN" NAME="386">  386   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="387">  387   </A>        <SPAN CLASS="CT">//Modified by Josh Kirschenheiter</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="388">  388   </A>        <SPAN CLASS="CT">//11/1/14</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="389">  389   </A>        <SPAN CLASS="CT">//Reason: CAN does not work</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="390">  390   </A>        <SPAN CLASS="CT">//SIU.PCR[16].R = 0x0624;</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="391">  391   </A>        SIU.PCR[16].R = 0x0600;
+</SPAN><SPAN><A CLASS="LN" NAME="392">  392   </A>        SIU.PCR[17].R = 0x0100;
+</SPAN><SPAN><A CLASS="LN" NAME="393">  393   </A>        SIU.PSMI[33].R = 0x01;
+</SPAN><SPAN><A CLASS="LN" NAME="394">  394   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="395">  395   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="396">  396   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="397">  397   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_1:
+</SPAN><SPAN><A CLASS="LN" NAME="398">  398   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="399">  399   </A>        <SPAN CLASS="CT">//Modified by Josh Kirschenheiter</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="400">  400   </A>        <SPAN CLASS="CT">//11/1/14</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="401">  401   </A>        <SPAN CLASS="CT">//Reason: CAN does not work</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="402">  402   </A>        <SPAN CLASS="CT">//SIU.PCR[14].R = 0x0624;</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="403">  403   </A>        SIU.PCR[14].R = 0x0600;
+</SPAN><SPAN><A CLASS="LN" NAME="404">  404   </A>        SIU.PCR[15].R = 0x0100;
+</SPAN><SPAN><A CLASS="LN" NAME="405">  405   </A>        SIU.PSMI[34].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="406">  406   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="407">  407   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="408">  408   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="409">  409   </A>     <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="410">  410   </A>      <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="411">  411   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="412">  412   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="413">  413   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="414">  414   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="415">  415   </A><SPAN CLASS="CT">   *   Function:  flexcan_564xl_buffer_init</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="416">  416   </A><SPAN CLASS="CT">     @brief    Initialize FlexCAN module buffer.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="417">  417   </A><SPAN CLASS="CT">     @details   Initialize FlexCAN module buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="418">  418   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="419">  419   </A><SPAN CLASS="CT">     @param[in]     ptr_FLEXCAN_MsgBufferStructure     pointer to structure</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="420">  420   </A><SPAN CLASS="CT">     @param[in]     BufferNo     buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="421">  421   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="422">  422   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="423">  423   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="424">  424   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="425">  425   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_buffer_init">flexcan_564xl_buffer_init</A>(<SPAN CLASS="DT">const</SPAN> <A HREF="flexcan_564xl_library_h.html#type_FLEXCAN_MsgBufferStructure" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FLEXCAN_MsgBufferStructure');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FLEXCAN_MsgBufferStructure</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="426">  426   </A>    *ptr_FLEXCAN_MsgBufferStructure,<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo,<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can)
+</SPAN><SPAN><A CLASS="LN" NAME="427">  427   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="428">  428   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="429">  429   </A>      <SPAN CLASS="CT">/* clear message buffer memory */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="430">  430   </A>      CAN_0.BUF[BufferNo].CS.R = ptr_FLEXCAN_MsgBufferStructure-&gt;code;
+</SPAN><SPAN><A CLASS="LN" NAME="431">  431   </A>      CAN_0.BUF[BufferNo].MSG_ID.R = ptr_FLEXCAN_MsgBufferStructure-&gt;id;
+</SPAN><SPAN><A CLASS="LN" NAME="432">  432   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="433">  433   </A>      <SPAN CLASS="CT">/* clear message buffer memory */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="434">  434   </A>      CAN_1.BUF[BufferNo].CS.R = ptr_FLEXCAN_MsgBufferStructure-&gt;code;
+</SPAN><SPAN><A CLASS="LN" NAME="435">  435   </A>      CAN_1.BUF[BufferNo].MSG_ID.R = ptr_FLEXCAN_MsgBufferStructure-&gt;id;
+</SPAN><SPAN><A CLASS="LN" NAME="436">  436   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="437">  437   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="438">  438   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="439">  439   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="440">  440   </A><SPAN CLASS="CT">   *   Function:flexcan_564xl_buffer_transmit</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="441">  441   </A><SPAN CLASS="CT">     @brief    transmit  FlexCAN module buffer.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="442">  442   </A><SPAN CLASS="CT">     @details   transmit FlexCAN module buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="443">  443   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="444">  444   </A><SPAN CLASS="CT">     @param[in]     ptr_FLEXCAN_MsgBufferStructure     pointer to structure</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="445">  445   </A><SPAN CLASS="CT">     @param[in]     BufferNo     buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="446">  446   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="447">  447   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="448">  448   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="449">  449   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="450">  450   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_buffer_transmit">flexcan_564xl_buffer_transmit</A>(<SPAN CLASS="DT">const</SPAN> <A HREF="flexcan_564xl_library_h.html#type_FLEXCAN_MsgBufferStructure" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FLEXCAN_MsgBufferStructure');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FLEXCAN_MsgBufferStructure</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="451">  451   </A>    *ptr_FLEXCAN_MsgBufferStructure,<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo,<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can)
+</SPAN><SPAN><A CLASS="LN" NAME="452">  452   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="453">  453   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> i;
+</SPAN><SPAN><A CLASS="LN" NAME="454">  454   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can==FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="455">  455   </A>      <SPAN CLASS="KW">if</SPAN> (ptr_FLEXCAN_MsgBufferStructure-&gt;ext) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="456">  456   </A>        CAN_0.BUF[BufferNo].CS.B.IDE = 1;<SPAN CLASS="CT">/* extended ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="457">  457   </A>        CAN_0.BUF[BufferNo].ID.R = ptr_FLEXCAN_MsgBufferStructure-&gt;id;
+</SPAN><SPAN><A CLASS="LN" NAME="458">  458   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="459">  459   </A>        CAN_0.BUF[BufferNo].CS.B.IDE = 0;<SPAN CLASS="CT">/* standart ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="460">  460   </A>        CAN_0.BUF[BufferNo].ID.B.STD_ID = (<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>)
+</SPAN><SPAN><A CLASS="LN" NAME="461">  461   </A>          ptr_FLEXCAN_MsgBufferStructure-&gt;id;
+</SPAN><SPAN><A CLASS="LN" NAME="462">  462   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="463">  463   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="464">  464   </A>      CAN_0.BUF[BufferNo].CS.B.RTR = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="465">  465   </A>      CAN_0.BUF[BufferNo].CS.B.LENGTH = ptr_FLEXCAN_MsgBufferStructure-&gt;length;
+</SPAN><SPAN><A CLASS="LN" NAME="466">  466   </A>      <SPAN CLASS="KW">for</SPAN> (i=0; i &lt; ptr_FLEXCAN_MsgBufferStructure-&gt;length; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="467">  467   </A>        CAN_0.BUF[BufferNo].DATA.B[i] = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="468">  468   </A>        CAN_0.BUF[BufferNo].DATA.B[i] = ptr_FLEXCAN_MsgBufferStructure-&gt;data[i];
+</SPAN><SPAN><A CLASS="LN" NAME="469">  469   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="470">  470   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="471">  471   </A>      CAN_0.BUF[BufferNo].CS.B.SRR = 1;<SPAN CLASS="CT">/* Tx frame */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="472">  472   </A>      CAN_0.BUF[BufferNo].CS.B.CODE |= ptr_FLEXCAN_MsgBufferStructure-&gt;code;
+</SPAN><SPAN><A CLASS="LN" NAME="473">  473   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can==FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="474">  474   </A>      <SPAN CLASS="KW">if</SPAN> (ptr_FLEXCAN_MsgBufferStructure-&gt;ext) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="475">  475   </A>        CAN_1.BUF[BufferNo].CS.B.IDE = 1;<SPAN CLASS="CT">/* extended ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="476">  476   </A>        CAN_1.BUF[BufferNo].ID.R = ptr_FLEXCAN_MsgBufferStructure-&gt;id;
+</SPAN><SPAN><A CLASS="LN" NAME="477">  477   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="478">  478   </A>        CAN_1.BUF[BufferNo].CS.B.IDE = 0;<SPAN CLASS="CT">/* standart ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="479">  479   </A>        CAN_1.BUF[BufferNo].ID.B.STD_ID = (<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>)
+</SPAN><SPAN><A CLASS="LN" NAME="480">  480   </A>          ptr_FLEXCAN_MsgBufferStructure-&gt;id;
+</SPAN><SPAN><A CLASS="LN" NAME="481">  481   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="482">  482   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="483">  483   </A>      CAN_1.BUF[BufferNo].CS.B.RTR = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="484">  484   </A>      CAN_1.BUF[BufferNo].CS.B.LENGTH = ptr_FLEXCAN_MsgBufferStructure-&gt;length;
+</SPAN><SPAN><A CLASS="LN" NAME="485">  485   </A>      <SPAN CLASS="KW">for</SPAN> (i=0; i &lt; ptr_FLEXCAN_MsgBufferStructure-&gt;length; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="486">  486   </A>        CAN_1.BUF[BufferNo].DATA.B[i] = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="487">  487   </A>        CAN_1.BUF[BufferNo].DATA.B[i] = ptr_FLEXCAN_MsgBufferStructure-&gt;data[i];
+</SPAN><SPAN><A CLASS="LN" NAME="488">  488   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="489">  489   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="490">  490   </A>      CAN_1.BUF[BufferNo].CS.B.SRR = 1;<SPAN CLASS="CT">/* Tx frame */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="491">  491   </A>      CAN_1.BUF[BufferNo].CS.B.CODE |= ptr_FLEXCAN_MsgBufferStructure-&gt;code;
+</SPAN><SPAN><A CLASS="LN" NAME="492">  492   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="493">  493   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="494">  494   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="495">  495   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="496">  496   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_rxbuffull</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="497">  497   </A><SPAN CLASS="CT">     @brief      FlexCAN module buffer full.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="498">  498   </A><SPAN CLASS="CT">     @details   FlexCAN module buffer full</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="499">  499   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="500">  500   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="501">  501   </A><SPAN CLASS="CT">     @param[in]     mb     mb</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="502">  502   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="503">  503   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="504">  504   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="505">  505   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_rxbuffull">flexcan_564xl_rxbuffull</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb)
+</SPAN><SPAN><A CLASS="LN" NAME="506">  506   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="507">  507   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> ret = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="508">  508   </A>    <SPAN CLASS="KW">switch</SPAN> (flex_can)<B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="509">  509   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_0:
+</SPAN><SPAN><A CLASS="LN" NAME="510">  510   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="511">  511   </A>        <SPAN CLASS="KW">if</SPAN> (CAN_0.IFLAG1.R &amp; (0x1U &lt;&lt; mb))
+</SPAN><SPAN><A CLASS="LN" NAME="512">  512   </A>          ret= 1;
+</SPAN><SPAN><A CLASS="LN" NAME="513">  513   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="514">  514   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="515">  515   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="516">  516   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_1:
+</SPAN><SPAN><A CLASS="LN" NAME="517">  517   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="518">  518   </A>        <SPAN CLASS="KW">if</SPAN> (CAN_1.IFLAG1.R &amp; (0x1U &lt;&lt; mb))
+</SPAN><SPAN><A CLASS="LN" NAME="519">  519   </A>          ret= 1;
+</SPAN><SPAN><A CLASS="LN" NAME="520">  520   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="521">  521   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="522">  522   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="523">  523   </A>     <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="524">  524   </A>      <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="525">  525   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="526">  526   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="527">  527   </A>    <SPAN CLASS="KW">return</SPAN> ret;
+</SPAN><SPAN><A CLASS="LN" NAME="528">  528   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="529">  529   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="530">  530   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="531">  531   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_buffer_lock</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="532">  532   </A><SPAN CLASS="CT">     @brief      FlexCAN module buffer lock.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="533">  533   </A><SPAN CLASS="CT">     @details   FlexCAN module buffer lock</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="534">  534   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="535">  535   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="536">  536   </A><SPAN CLASS="CT">     @param[in]     BufferNo     BufferNo</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="537">  537   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="538">  538   </A><SPAN CLASS="CT">     @return none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="539">  539   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="540">  540   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_buffer_lock">flexcan_564xl_buffer_lock</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can,<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="541">  541   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="542">  542   </A>    <A HREF="typedefs_h.html#type_vuint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_vuint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">vuint32_t</FONT></A> dummy;
+</SPAN><SPAN><A CLASS="LN" NAME="543">  543   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="544">  544   </A>      dummy = CAN_0.BUF[BufferNo].CS.R;
+</SPAN><SPAN><A CLASS="LN" NAME="545">  545   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="546">  546   </A>      dummy = CAN_1.BUF[BufferNo].CS.R;
+</SPAN><SPAN><A CLASS="LN" NAME="547">  547   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="548">  548   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="549">  549   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="550">  550   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="551">  551   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_buffer_rxbusy</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="552">  552   </A><SPAN CLASS="CT">     @brief      FlexCAN module buffer busy.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="553">  553   </A><SPAN CLASS="CT">     @details   FlexCAN module buffer busy</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="554">  554   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="555">  555   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="556">  556   </A><SPAN CLASS="CT">     @param[in]     BufferNo     BufferNo</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="557">  557   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="558">  558   </A><SPAN CLASS="CT">     @return  status</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="559">  559   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="560">  560   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_buffer_rxbusy">flexcan_564xl_buffer_rxbusy</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="561">  561   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="562">  562   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> ubReturn = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="563">  563   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="564">  564   </A>      <SPAN CLASS="KW">if</SPAN> ((CAN_0.BUF[BufferNo].CS.B.CODE &amp; 0x01) !=0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="565">  565   </A>        ubReturn = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="566">  566   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="567">  567   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="568">  568   </A>      <SPAN CLASS="KW">if</SPAN> ((CAN_1.BUF[BufferNo].CS.B.CODE &amp; 0x01) !=0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="569">  569   </A>        ubReturn = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="570">  570   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="571">  571   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="572">  572   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="573">  573   </A>    <SPAN CLASS="KW">return</SPAN> ubReturn;
+</SPAN><SPAN><A CLASS="LN" NAME="574">  574   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="575">  575   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="576">  576   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="577">  577   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_get_id</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="578">  578   </A><SPAN CLASS="CT">     @brief      returns message ID.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="579">  579   </A><SPAN CLASS="CT">     @details   returns message ID</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="580">  580   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="581">  581   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="582">  582   </A><SPAN CLASS="CT">     @param[in]     BufferNo     BufferNo</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="583">  583   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="584">  584   </A><SPAN CLASS="CT">     @return  id</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="585">  585   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="586">  586   </A>  <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> <A NAME="fcn_flexcan_564xl_get_id">flexcan_564xl_get_id</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="587">  587   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="588">  588   </A>    <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> id = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="589">  589   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="590">  590   </A>      <SPAN CLASS="KW">if</SPAN> ((CAN_0.BUF[BufferNo].CS.B.IDE &amp; 0x01) ==0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="591">  591   </A>        <SPAN CLASS="CT">/* Standard ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="592">  592   </A>        id = CAN_0.BUF[BufferNo].MSG_ID.B.STD_ID;
+</SPAN><SPAN><A CLASS="LN" NAME="593">  593   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> ((CAN_0.BUF[BufferNo].CS.B.IDE &amp; 0x01) !=0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="594">  594   </A>        <SPAN CLASS="CT">/* Extended ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="595">  595   </A>        id = CAN_0.BUF[BufferNo].MSG_ID.R;
+</SPAN><SPAN><A CLASS="LN" NAME="596">  596   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="597">  597   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="598">  598   </A>      <SPAN CLASS="KW">if</SPAN> ((CAN_1.BUF[BufferNo].CS.B.IDE &amp; 0x01) ==0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="599">  599   </A>        <SPAN CLASS="CT">/* Standard ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="600">  600   </A>        id = CAN_1.BUF[BufferNo].MSG_ID.B.STD_ID;
+</SPAN><SPAN><A CLASS="LN" NAME="601">  601   </A>      <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> ((CAN_1.BUF[BufferNo].CS.B.IDE &amp; 0x01) !=0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="602">  602   </A>        <SPAN CLASS="CT">/* Extended ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="603">  603   </A>        id = CAN_1.BUF[BufferNo].MSG_ID.R;
+</SPAN><SPAN><A CLASS="LN" NAME="604">  604   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="605">  605   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="606">  606   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="607">  607   </A>    <SPAN CLASS="KW">return</SPAN> id;
+</SPAN><SPAN><A CLASS="LN" NAME="608">  608   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="609">  609   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="610">  610   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="611">  611   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_get_mb</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="612">  612   </A><SPAN CLASS="CT">     @brief      returns message ID.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="613">  613   </A><SPAN CLASS="CT">     @details   returns message ID</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="614">  614   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="615">  615   </A><SPAN CLASS="CT">     @param[in]     ptr_FLEXCAN_MsgBufferStructure     pointer to structure</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="616">  616   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="617">  617   </A><SPAN CLASS="CT">     @param[in]     BufferNo     BufferNo</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="618">  618   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="619">  619   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="620">  620   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="621">  621   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_get_mb">flexcan_564xl_get_mb</A>(<A HREF="flexcan_564xl_library_h.html#type_FLEXCAN_MsgBufferStructure" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FLEXCAN_MsgBufferStructure');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FLEXCAN_MsgBufferStructure</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="622">  622   </A>    *ptr_FLEXCAN_MsgBufferStructure, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="623">  623   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="624">  624   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> i= 0;
+</SPAN><SPAN><A CLASS="LN" NAME="625">  625   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="626">  626   </A>      ptr_FLEXCAN_MsgBufferStructure-&gt;length = CAN_0.BUF[BufferNo].CS.B.LENGTH;
+</SPAN><SPAN><A CLASS="LN" NAME="627">  627   </A>      <SPAN CLASS="KW">for</SPAN> (i=0;i&lt;ptr_FLEXCAN_MsgBufferStructure-&gt;length;i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="628">  628   </A>        ptr_FLEXCAN_MsgBufferStructure-&gt;data[i] = CAN_0.BUF[BufferNo].DATA.B[i];
+</SPAN><SPAN><A CLASS="LN" NAME="629">  629   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="630">  630   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="631">  631   </A>      ptr_FLEXCAN_MsgBufferStructure-&gt;length = CAN_1.BUF[BufferNo].CS.B.LENGTH;
+</SPAN><SPAN><A CLASS="LN" NAME="632">  632   </A>      <SPAN CLASS="KW">for</SPAN> (i=0;i&lt;ptr_FLEXCAN_MsgBufferStructure-&gt;length;i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="633">  633   </A>        ptr_FLEXCAN_MsgBufferStructure-&gt;data[i] = CAN_1.BUF[BufferNo].DATA.B[i];
+</SPAN><SPAN><A CLASS="LN" NAME="634">  634   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="635">  635   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="636">  636   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="637">  637   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="638">  638   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="639">  639   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_get_idtype</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="640">  640   </A><SPAN CLASS="CT">     @brief      returns message ID type.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="641">  641   </A><SPAN CLASS="CT">     @details   returns message ID type</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="642">  642   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="643">  643   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="644">  644   </A><SPAN CLASS="CT">     @param[in]     BufferNo     BufferNo</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="645">  645   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="646">  646   </A><SPAN CLASS="CT">     @return  id type</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="647">  647   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="648">  648   </A>  <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> <A NAME="fcn_flexcan_564xl_get_idtype">flexcan_564xl_get_idtype</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="649">  649   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="650">  650   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> idtype = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="651">  651   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="652">  652   </A>      idtype = (<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A>) CAN_0.BUF[BufferNo].CS.B.IDE;
+</SPAN><SPAN><A CLASS="LN" NAME="653">  653   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="654">  654   </A>      idtype = (<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A>) CAN_1.BUF[BufferNo].CS.B.IDE;
+</SPAN><SPAN><A CLASS="LN" NAME="655">  655   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="656">  656   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="657">  657   </A>    <SPAN CLASS="KW">return</SPAN> idtype;
+</SPAN><SPAN><A CLASS="LN" NAME="658">  658   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="659">  659   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="660">  660   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="661">  661   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_release_mb_lock</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="662">  662   </A><SPAN CLASS="CT">     @brief      release mb lock.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="663">  663   </A><SPAN CLASS="CT">     @details   release mb lock</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="664">  664   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="665">  665   </A><SPAN CLASS="CT">     @param[in]     flexcan     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="666">  666   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="667">  667   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="668">  668   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="669">  669   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_release_mb_lock">flexcan_564xl_release_mb_lock</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flexcan)
+</SPAN><SPAN><A CLASS="LN" NAME="670">  670   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="671">  671   </A>    <A HREF="typedefs_h.html#type_vuint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_vuint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">vuint32_t</FONT></A> dummy;
+</SPAN><SPAN><A CLASS="LN" NAME="672">  672   </A>    <SPAN CLASS="KW">if</SPAN> (flexcan == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="673">  673   </A>      dummy = CAN_0.TIMER.R;
+</SPAN><SPAN><A CLASS="LN" NAME="674">  674   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flexcan == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="675">  675   </A>      dummy = CAN_1.TIMER.R;
+</SPAN><SPAN><A CLASS="LN" NAME="676">  676   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="677">  677   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="678">  678   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="679">  679   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="680">  680   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_clear_isr_flag</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="681">  681   </A><SPAN CLASS="CT">     @brief      clear_isr_flag</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="682">  682   </A><SPAN CLASS="CT">     @details   clear_isr_flag</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="683">  683   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="684">  684   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="685">  685   </A><SPAN CLASS="CT">     @param[in]     BufferNo     buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="686">  686   </A><SPAN CLASS="CT">     @param[in]     IFR_Mask     mask</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="687">  687   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="688">  688   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="689">  689   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="690">  690   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_clear_isr_flag">flexcan_564xl_clear_isr_flag</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="691">  691   </A>    IFR_Mask)
+</SPAN><SPAN><A CLASS="LN" NAME="692">  692   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="693">  693   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="694">  694   </A>      <SPAN CLASS="CT">/* Write 1 to clear */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="695">  695   </A>      CAN_0.IFLAG1.R &amp;= IFR_Mask;
+</SPAN><SPAN><A CLASS="LN" NAME="696">  696   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="697">  697   </A>      <SPAN CLASS="CT">/* Write 1 to clear */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="698">  698   </A>      CAN_1.IFLAG1.R &amp;= IFR_Mask;
+</SPAN><SPAN><A CLASS="LN" NAME="699">  699   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="700">  700   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="701">  701   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="702">  702   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="703">  703   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_clear_mask</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="704">  704   </A><SPAN CLASS="CT">     @brief      clear mask</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="705">  705   </A><SPAN CLASS="CT">     @details   clear mask</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="706">  706   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="707">  707   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="708">  708   </A><SPAN CLASS="CT">     @param[in]     mb     mb</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="709">  709   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="710">  710   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="711">  711   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="712">  712   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_clear_mask">flexcan_564xl_clear_mask</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb)
+</SPAN><SPAN><A CLASS="LN" NAME="713">  713   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="714">  714   </A>    <SPAN CLASS="KW">switch</SPAN> (flex_can) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="715">  715   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_0:
+</SPAN><SPAN><A CLASS="LN" NAME="716">  716   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="717">  717   </A>        CAN_0.IFLAG1.R = (0x1U &lt;&lt; mb);
+</SPAN><SPAN><A CLASS="LN" NAME="718">  718   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="719">  719   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="720">  720   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="721">  721   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_1:
+</SPAN><SPAN><A CLASS="LN" NAME="722">  722   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="723">  723   </A>        CAN_1.IFLAG1.R = (0x1U &lt;&lt; mb);
+</SPAN><SPAN><A CLASS="LN" NAME="724">  724   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="725">  725   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="726">  726   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="727">  727   </A>     <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="728">  728   </A>      <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="729">  729   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="730">  730   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="731">  731   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="732">  732   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="733">  733   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_set_filter_id</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="734">  734   </A><SPAN CLASS="CT">     @brief      set_filter_id</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="735">  735   </A><SPAN CLASS="CT">     @details   set_filter_id</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="736">  736   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="737">  737   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="738">  738   </A><SPAN CLASS="CT">     @param[in]     mb			mb</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="739">  739   </A><SPAN CLASS="CT">     @param[in]	   id			id</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="740">  740   </A><SPAN CLASS="CT">     @param[in]     ext			ext</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="741">  741   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="742">  742   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="743">  743   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="744">  744   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_set_filter_id">flexcan_564xl_set_filter_id</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> mb, <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> id,
+</SPAN><SPAN><A CLASS="LN" NAME="745">  745   </A>    <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> ext)
+</SPAN><SPAN><A CLASS="LN" NAME="746">  746   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="747">  747   </A>    <SPAN CLASS="KW">switch</SPAN> (flex_can) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="748">  748   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_0:
+</SPAN><SPAN><A CLASS="LN" NAME="749">  749   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="750">  750   </A>        <SPAN CLASS="KW">if</SPAN> (ext) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="751">  751   </A>          CAN_0.BUF[mb].CS.B.IDE = 1;  <SPAN CLASS="CT">/* MB for extended ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="752">  752   </A>          CAN_0.BUF[mb].ID.R = id;     <SPAN CLASS="CT">/* MB ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="753">  753   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="754">  754   </A>          CAN_0.BUF[mb].CS.B.IDE = 0;  <SPAN CLASS="CT">/* MB for standard ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="755">  755   </A>          CAN_0.BUF[mb].ID.B.STD_ID = (<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>)id;<SPAN CLASS="CT">/* MB ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="756">  756   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="757">  757   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="758">  758   </A>        CAN_0.BUF[mb].CS.B.CODE = CAN_RX_EMPTY;<SPAN CLASS="CT">/* Set rx MB empty */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="759">  759   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="760">  760   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="761">  761   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="762">  762   </A>     <SPAN CLASS="KW">case</SPAN> FLEXCAN_1:
+</SPAN><SPAN><A CLASS="LN" NAME="763">  763   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="764">  764   </A>        <SPAN CLASS="KW">if</SPAN> (ext) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="765">  765   </A>          CAN_1.BUF[mb].CS.B.IDE = 1;  <SPAN CLASS="CT">/* MB for extended ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="766">  766   </A>          CAN_1.BUF[mb].ID.R = id;     <SPAN CLASS="CT">/* MB ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="767">  767   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="768">  768   </A>          CAN_1.BUF[mb].CS.B.IDE = 0;  <SPAN CLASS="CT">/* MB for standard ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="769">  769   </A>          CAN_1.BUF[mb].ID.B.STD_ID = (<A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A>)id;<SPAN CLASS="CT">/* MB ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="770">  770   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="771">  771   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="772">  772   </A>        CAN_1.BUF[mb].CS.B.CODE = CAN_RX_EMPTY;<SPAN CLASS="CT">/* Set rx MB empty */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="773">  773   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="774">  774   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="775">  775   </A>       <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="776">  776   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="777">  777   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="778">  778   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="779">  779   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="780">  780   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="781">  781   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="782">  782   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_readytoreceive</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="783">  783   </A><SPAN CLASS="CT">     @brief      ready to receive</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="784">  784   </A><SPAN CLASS="CT">     @details   ready to receive</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="785">  785   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="786">  786   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="787">  787   </A><SPAN CLASS="CT">     @param[in]     BufferNo     buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="788">  788   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="789">  789   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="790">  790   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="791">  791   </A>  <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_flexcan_564xl_readytoreceive">flexcan_564xl_readytoreceive</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="792">  792   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="793">  793   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="794">  794   </A>      <SPAN CLASS="CT">/* MB active and empty */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="795">  795   </A>      CAN_0.BUF[BufferNo].CS.B.CODE = 0x04;
+</SPAN><SPAN><A CLASS="LN" NAME="796">  796   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="797">  797   </A>      <SPAN CLASS="CT">/* MB active and empty */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="798">  798   </A>      CAN_1.BUF[BufferNo].CS.B.CODE = 0x04;
+</SPAN><SPAN><A CLASS="LN" NAME="799">  799   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="800">  800   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="801">  801   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="802">  802   </A>  <SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="803">  803   </A><SPAN CLASS="CT">   *	Function: flexcan_564xl_get_ts</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="804">  804   </A><SPAN CLASS="CT">     @brief      get  timestamp</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="805">  805   </A><SPAN CLASS="CT">     @details   get  timestamp</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="806">  806   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="807">  807   </A><SPAN CLASS="CT">     @param[in]     flex_can     FlexCAN module</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="808">  808   </A><SPAN CLASS="CT">     @param[in]     BufferNo     buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="809">  809   </A><SPAN CLASS="CT"></SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="810">  810   </A><SPAN CLASS="CT">     @return  none</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="811">  811   </A><SPAN CLASS="CT">   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="812">  812   </A>  <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> <A NAME="fcn_flexcan_564xl_get_ts">flexcan_564xl_get_ts</A>(<A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> flex_can, <A HREF="typedefs_h.html#type_uint8_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint8_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint8_t</FONT></A> BufferNo)
+</SPAN><SPAN><A CLASS="LN" NAME="813">  813   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="814">  814   </A>    <A HREF="typedefs_h.html#type_uint16_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint16_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint16_t</FONT></A> ts = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="815">  815   </A>    <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_0) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="816">  816   </A>      ts = CAN_0.BUF[BufferNo].MSG_CS.B.TIMESTAMP;
+</SPAN><SPAN><A CLASS="LN" NAME="817">  817   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (flex_can == FLEXCAN_1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="818">  818   </A>      ts = CAN_1.BUF[BufferNo].MSG_CS.B.TIMESTAMP;
+</SPAN><SPAN><A CLASS="LN" NAME="819">  819   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="820">  820   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="821">  821   </A>    <SPAN CLASS="KW">return</SPAN> ts;
+</SPAN><SPAN><A CLASS="LN" NAME="822">  822   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="823">  823   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="824">  824   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __cplusplus
+</SPAN><SPAN><A CLASS="LN" NAME="825">  825   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="826">  826   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="827">  827   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="828">  828   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="829">  829   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="830">  830   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="831">  831   </A><SPAN CLASS="CT"> *                           End of File</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="832">  832   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="833">  833   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="834">  834   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

@@ -1,0 +1,1231 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_serial.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_serial.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_serial.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2011 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster_serial.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER serial communication routines</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.1.28.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Jun-6-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_private.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_protocol.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SERIAL
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><SPAN CLASS="CT"> *  local variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT">/* FreeMASTER communication buffer (in/out) plus the STS and LEN bytes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> pcm_pCommBuffer[<A NAME="var_FMSTR_COMM_BUFFER_SIZE">FMSTR_COMM_BUFFER_SIZE</A>+3];
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><SPAN CLASS="CT">/* FreeMASTER runtime flags */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT">/*lint -e{960} using union */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><SPAN CLASS="KW">typedef</SPAN> <SPAN CLASS="DT">volatile</SPAN> <SPAN CLASS="KW">union</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_FLAGS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_FLAGS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_FLAGS</FONT></A> all;
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A>  <SPAN CLASS="KW">struct</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A>    <SPAN CLASS="DT">unsigned</SPAN> bTxActive : 1;            <SPAN CLASS="CT">/* response is being transmitted */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>    <SPAN CLASS="DT">unsigned</SPAN> bTxWaitTC : 1;            <SPAN CLASS="CT">/* response sent, wait for transmission complete */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>    <SPAN CLASS="DT">unsigned</SPAN> bTxLastCharSOB : 1;       <SPAN CLASS="CT">/* last transmitted char was equal to SOB  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>    <SPAN CLASS="DT">unsigned</SPAN> bRxLastCharSOB : 1;       <SPAN CLASS="CT">/* last received character was SOB */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A>    <SPAN CLASS="DT">unsigned</SPAN> bRxMsgLengthNext : 1;     <SPAN CLASS="CT">/* expect the length byte next time */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>    <SPAN CLASS="DT">unsigned</SPAN> bJtagRIEPending : 1;      <SPAN CLASS="CT">/* JTAG RIE bit failed to be set, try again later */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC || FMSTR_USE_MQX_IO || FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>    <SPAN CLASS="DT">unsigned</SPAN> bTxFirstSobSend : 1;      <SPAN CLASS="CT">/* to send SOB char at the begin of the packet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>    <SPAN CLASS="DT">unsigned</SPAN> bMqxReadyToSend : 1;      <SPAN CLASS="CT">/* to send next character in transmit routine */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A>    <SPAN CLASS="DT">unsigned</SPAN> bUsbCdcStartApp : 1;      <SPAN CLASS="CT">/* FreeMASTER USB CDC Application start Init Flag */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A>    <SPAN CLASS="DT">unsigned</SPAN> bUsbCdcStartTrans : 1;    <SPAN CLASS="CT">/* FreeMASTER USB CDC Application Carrier Activate Flag */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>    <SPAN CLASS="DT">unsigned</SPAN> bUsbReadyToDecode : 1;    <SPAN CLASS="CT">/* FreeMASTER packet is received, ready to decode in Poll function in Short Interrupt mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>  <B>}</B> flg;
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A><B>}</B> <A NAME="type_FMSTR_SERIAL_FLAGS">FMSTR_SERIAL_FLAGS</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_serial_c.html#type_FMSTR_SERIAL_FLAGS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SERIAL_FLAGS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SERIAL_FLAGS</FONT></A> <A NAME="var_pcm_wFlags">pcm_wFlags</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A><SPAN CLASS="CT">/* receive and transmit buffers and counters */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> <A NAME="var_pcm_nTxTodo">pcm_nTxTodo</A>;        <SPAN CLASS="CT">/* transmission to-do counter (0 when tx is idle) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> <A NAME="var_pcm_nRxTodo">pcm_nRxTodo</A>;        <SPAN CLASS="CT">/* reception to-do counter (0 when rx is idle) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="var_pcm_pTxBuff">pcm_pTxBuff</A>;         <SPAN CLASS="CT">/* pointer to next byte to transmit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="var_pcm_pRxBuff">pcm_pRxBuff</A>;         <SPAN CLASS="CT">/* pointer to next free place in RX buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> <A NAME="var_pcm_nRxCheckSum">pcm_nRxCheckSum</A>;     <SPAN CLASS="CT">/* checksum of data being received */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A><SPAN CLASS="CT"> *  local function prototypes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_Listen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Listen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Listen</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendError" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendError');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendError</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nErrCode);
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* FMSTR_USE_SERIAL */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A><SPAN CLASS="CT">/*lint -efile(766, freemaster_protocol.h) include file is not used in this case */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_SERIAL */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI || FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A><SPAN CLASS="CT"> *  local variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A><SPAN CLASS="CT">/* SHORT_INTR receive queue (circular buffer) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> pcm_pRQueueBuffer[<A NAME="var_FMSTR_COMM_RQUEUE_SIZE">FMSTR_COMM_RQUEUE_SIZE</A>];
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="var_pcm_pRQueueRP">pcm_pRQueueRP</A>;       <SPAN CLASS="CT">/* SHORT_INTR queue read-pointer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="var_pcm_pRQueueWP">pcm_pRQueueWP</A>;       <SPAN CLASS="CT">/* SHORT_INTR queue write-pointer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A><SPAN CLASS="CT"> *  local function prototypes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_RxQueue" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_RxQueue');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_RxQueue</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nRxChar);
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_RxDequeue" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_RxDequeue');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_RxDequeue</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="CT">/*lint -esym(752,FMSTR_RxQueue) this may be unreferenced in some cases */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A><SPAN CLASS="CT">/*lint -esym(752,FMSTR_RxDequeue) this may be unreferenced in some cases */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A><SPAN CLASS="CT">/*******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A><SPAN CLASS="CT"> * @brief    Routine to quick-receive a character (put to a queue only)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A><SPAN CLASS="CT"> * This function puts received character into a queue and exits as soon as possible.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_RxQueue">FMSTR_RxQueue</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nRxChar)
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A>  <SPAN CLASS="CT">/* future value of write pointer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> wpnext = <A HREF="freemaster_serial_c.html#var_pcm_pRQueueWP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueWP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueWP</FONT></A> + 1;
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A>  <SPAN CLASS="CT">/*lint -e{946} pointer arithmetic is okay here (same array) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A>  <SPAN CLASS="KW">if</SPAN> (wpnext &gt;= (pcm_pRQueueBuffer + <A HREF="freemaster_serial_c.html#var_FMSTR_COMM_RQUEUE_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_COMM_RQUEUE_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_COMM_RQUEUE_SIZE</FONT></A>)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>    wpnext = pcm_pRQueueBuffer;
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A>  <SPAN CLASS="CT">/* any space in queue? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>  <SPAN CLASS="KW">if</SPAN> (wpnext != <A HREF="freemaster_serial_c.html#var_pcm_pRQueueRP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueRP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueRP</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A>    *<A HREF="freemaster_serial_c.html#var_pcm_pRQueueWP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueWP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueWP</FONT></A> = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>) nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A>    <A HREF="freemaster_serial_c.html#var_pcm_pRQueueWP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueWP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueWP</FONT></A> = wpnext;
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_SHORT_INTR  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A><SPAN CLASS="CT">/*******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A><SPAN CLASS="CT"> * @brief    Late processing of queued characters</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A><SPAN CLASS="CT"> * This function takes the queued characters and calls FMSTR_Rx() for each of them,</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A><SPAN CLASS="CT"> * just like as the characters would be received from SCI one by one.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_RxDequeue">FMSTR_RxDequeue</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nChar = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A>  <SPAN CLASS="CT">/* get all queued characters */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A>  <SPAN CLASS="KW">while</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_pRQueueRP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueRP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueRP</FONT></A> != <A HREF="freemaster_serial_c.html#var_pcm_pRQueueWP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueWP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueWP</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A>    nChar = *<A HREF="freemaster_serial_c.html#var_pcm_pRQueueRP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueRP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueRP</FONT></A>++;
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A>    <SPAN CLASS="CT">/*lint -e{946} pointer arithmetic is okay here (same array) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_pRQueueRP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueRP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueRP</FONT></A> &gt;= (pcm_pRQueueBuffer + <A HREF="freemaster_serial_c.html#var_FMSTR_COMM_RQUEUE_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_COMM_RQUEUE_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_COMM_RQUEUE_SIZE</FONT></A>)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A>      <A HREF="freemaster_serial_c.html#var_pcm_pRQueueRP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueRP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueRP</FONT></A> = pcm_pRQueueBuffer;
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A>    <SPAN CLASS="CT">/* emulate the SCI receive event */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A>    <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A>      (<SPAN CLASS="DT">void</SPAN>)<A HREF="freemaster_serial_c.html#fcn_FMSTR_Rx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Rx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Rx</FONT></A>(nChar);
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_SHORT_INTR */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_SCI || FMSTR_USE_JTAG */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A><SPAN CLASS="CT"> * @brief    Handle SCI communication (both TX and RX)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A><SPAN CLASS="CT"> * This function checks the SCI flags and calls the Rx and/or Tx functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A><SPAN CLASS="CT"> * @note This function can be called either from SCI ISR or from the polling routine</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_ProcessSCI">FMSTR_ProcessSCI</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A>  <SPAN CLASS="CT">/* read & clear status     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SCISR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SCISR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SCISR</FONT></A> wSciSR = <A HREF="freemaster_MPC56xx_h.html#fcn_FMSTR_SCI_RDCLRSR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SCI_RDCLRSR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SCI_RDCLRSR</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A>  <SPAN CLASS="CT">/* transmitter active and empty? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A>    <SPAN CLASS="CT">/* able to accept another character? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A>    <SPAN CLASS="KW">if</SPAN> (wSciSR &amp; FMSTR_SCISR_TDRE) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A>      <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> ch;
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A>      <SPAN CLASS="CT">//(void)FMSTR_Tx(&ch);</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A>      <SPAN CLASS="CT">/* just put the byte into the SCI transmit buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A>      <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_serial_c.html#fcn_FMSTR_Tx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Tx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Tx</FONT></A>(&amp;ch))
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A>        FMSTR_SCI_PUTCHAR((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>) ch);
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SCI_HAS_TXQUEUE
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A>    <SPAN CLASS="CT">/* waiting for transmission complete flag? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxWaitTC &amp;&amp; (wSciSR &amp; FMSTR_SCISR_TC)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A>      <SPAN CLASS="CT">/* after TC, we can switch to listen mode safely */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A>      <A HREF="freemaster_serial_c.html#fcn_FMSTR_Listen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Listen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Listen</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_SCI_TWOWIRE_ONLY
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A>    <SPAN CLASS="CT">/* read-out and ignore any received character (loopback) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A>    <SPAN CLASS="KW">if</SPAN> (wSciSR &amp; FMSTR_SCISR_RDRF) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A>      <SPAN CLASS="CT">/*lint -esym(550, nRxChar) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A>      <SPAN CLASS="DT">volatile</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A>      nRxChar = FMSTR_SCI_GETCHAR();
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A>  <SPAN CLASS="CT">/* transmitter not active, able to receive */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A>  <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A>    <SPAN CLASS="CT">/* data byte received? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A>    <SPAN CLASS="KW">if</SPAN> (wSciSR &amp; FMSTR_SCISR_RDRF) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A>      <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nRxChar = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A>      nRxChar = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A>) FMSTR_SCI_GETCHAR();
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A>      <A HREF="freemaster_serial_c.html#fcn_FMSTR_RxQueue" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_RxQueue');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_RxQueue</FONT></A>(nRxChar);
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A>      (<SPAN CLASS="DT">void</SPAN>)<A HREF="freemaster_serial_c.html#fcn_FMSTR_Rx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Rx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Rx</FONT></A>(nRxChar);
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_SCI */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A><SPAN CLASS="CT"> *  local function prototypes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_FlushJtagTx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_FlushJtagTx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_FlushJtagTx</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A><SPAN CLASS="CT"> * @brief    Flush one communication JTAG word</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A><SPAN CLASS="CT"> * This function gets the 4 bytes from FreeMASTER TX buffer and place them to</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A><SPAN CLASS="CT"> * JTAG transmit register.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_FlushJtagTx">FMSTR_FlushJtagTx</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> i;
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U32" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U32');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U32</FONT></A> wJtagTxData;
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A>  <SPAN CLASS="DT">register</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> wJtagSR = FMSTR_JTAG_GETSR();
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A>  <SPAN CLASS="CT">/* complete word to send */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A>  <SPAN CLASS="KW">for</SPAN> (i=0; i&lt;4; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A>    <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> ch;
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#fcn_FMSTR_Tx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Tx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Tx</FONT></A>(&amp;ch))
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A>      ch = 0xff;
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A>    wJtagTxData = (wJtagTxData &lt;&lt; 8) | ch;
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A>  <SPAN CLASS="CT">/* send the word just completed */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A>  FMSTR_JTAG_PUTDWORD(wJtagTxData);
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="301">  301   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="302">  302   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="303">  303   </A><SPAN CLASS="CT"> * @brief    Handle JTAG communication (both TX and RX)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="304">  304   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A><SPAN CLASS="CT"> * This function checks the JTAG flags and calls the Rx and/or Tx functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A><SPAN CLASS="CT"> * @note This function can be called either from JTAG ISR or from the polling routine</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_ProcessJTAG">FMSTR_ProcessJTAG</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="312">  312   </A>  <SPAN CLASS="CT">/* read & clear status     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>  <SPAN CLASS="DT">register</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> wJtagSR = FMSTR_JTAG_GETSR();
+</SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A>  <SPAN CLASS="CT">/* transmitter active? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A>    <SPAN CLASS="CT">/* able to transmit a new character? (TX must be empty = read-out by PC) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A>    <SPAN CLASS="KW">if</SPAN> (!(wJtagSR &amp; FMSTR_JTAG_OTXRXSR_TDF)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_JTAG_TXFIX
+</SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A>      <SPAN CLASS="CT">/* if TDF bit is useless due to silicon bug, use the RX flag */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A>      <SPAN CLASS="CT">/* instead (PC sends us a dummy word to kick the RX flag on) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A>      <SPAN CLASS="KW">if</SPAN> (wJtagSR &amp; FMSTR_JTAG_OTXRXSR_RDF)
+</SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A>        <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A>          <A HREF="freemaster_serial_c.html#fcn_FMSTR_FlushJtagTx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_FlushJtagTx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_FlushJtagTx</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A>    <SPAN CLASS="CT">/* ignore (read-out) the JTAG-received word */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A>    <SPAN CLASS="KW">if</SPAN> (wJtagSR &amp; FMSTR_JTAG_OTXRXSR_RDF) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="334">  334   </A>      <SPAN CLASS="CT">/*lint -esym(550, nRxWord) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="335">  335   </A>      <SPAN CLASS="DT">volatile</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> nRxWord;
+</SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A>      nRxWord = FMSTR_JTAG_GETWORD();
+</SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A>  <SPAN CLASS="CT">/* transmitter not active */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A>  <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A>    <SPAN CLASS="CT">/* JTAG 32bit word (four bytes) received? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="343">  343   </A>    <SPAN CLASS="KW">if</SPAN> (wJtagSR &amp; FMSTR_JTAG_OTXRXSR_RDF) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="344">  344   </A>      <SPAN CLASS="DT">register</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U32" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U32');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U32</FONT></A> nRxDWord;
+</SPAN><SPAN><A CLASS="LN" NAME="345">  345   </A>      <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_INDEX" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_INDEX');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_INDEX</FONT></A> i;
+</SPAN><SPAN><A CLASS="LN" NAME="346">  346   </A>      nRxDWord = FMSTR_JTAG_GETDWORD();
+</SPAN><SPAN><A CLASS="LN" NAME="347">  347   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="348">  348   </A>      <SPAN CLASS="CT">/* process all bytes, MSB first */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="349">  349   </A>      <SPAN CLASS="KW">for</SPAN> (i=0; i&lt;4; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="350">  350   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="351">  351   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="352">  352   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="353">  353   </A>        <A HREF="freemaster_serial_c.html#fcn_FMSTR_RxQueue" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_RxQueue');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_RxQueue</FONT></A>((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A>)((nRxDWord &gt;&gt; 24U) &amp; 0xffU));
+</SPAN><SPAN><A CLASS="LN" NAME="354">  354   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A>        (<SPAN CLASS="DT">void</SPAN>)<A HREF="freemaster_serial_c.html#fcn_FMSTR_Rx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Rx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Rx</FONT></A>((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A>)((nRxDWord &gt;&gt; 24U) &amp; 0xffU));
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A>        <SPAN CLASS="CT">/* ignore the rest if previous bytes triggered a transmission */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A>        <SPAN CLASS="CT">/* (i.e. the packet was complete and only filled-up to 32bit word) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="362">  362   </A>          <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="363">  363   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="364">  364   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="365">  365   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="366">  366   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="367">  367   </A>        <SPAN CLASS="CT">/* next byte of 32bit word */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="368">  368   </A>        nRxDWord = nRxDWord &lt;&lt; 8;
+</SPAN><SPAN><A CLASS="LN" NAME="369">  369   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="370">  370   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="371">  371   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="372">  372   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="373">  373   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="374">  374   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_JTAG */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="375">  375   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="376">  376   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="377">  377   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="378">  378   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="379">  379   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="380">  380   </A><SPAN CLASS="CT"> * FreeMASTER MQX IO serial communication routines</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="381">  381   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="382">  382   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="383">  383   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="384">  384   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&lt;mqx.h&gt;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="385">  385   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&lt;bsp.h&gt;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="386">  386   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="387">  387   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="388">  388   </A><SPAN CLASS="CT"> *  local variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="389">  389   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="390">  390   </A><SPAN CLASS="DT">static</SPAN> FILE_PTR <A NAME="var_devfd">devfd</A> = NULL;          <SPAN CLASS="CT">/* pointer to open FreeMASTER communication interface */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="391">  391   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="392">  392   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="393">  393   </A><SPAN CLASS="CT"> *  local function prototypes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="394">  394   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="395">  395   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_serial_c.html#fcn_FMSTR_InitMQX" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitMQX');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitMQX</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="396">  396   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessMQXIO" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessMQXIO');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessMQXIO</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="397">  397   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="398">  398   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="399">  399   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="400">  400   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="401">  401   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="402">  402   </A><SPAN CLASS="CT"> * @brief    MQX communication interface initialization</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="403">  403   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="404">  404   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="405">  405   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_InitMQX">FMSTR_InitMQX</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="406">  406   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="407">  407   </A>  <SPAN CLASS="CT">/* Open communication port */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="408">  408   </A>  <A HREF="freemaster_serial_c.html#var_devfd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_devfd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">devfd</FONT></A> = fopen (FMSTR_MQX_IO_CHANNEL, (pointer) FMSTR_MQX_IO_PARAMETER);
+</SPAN><SPAN><A CLASS="LN" NAME="409">  409   </A>  <SPAN CLASS="KW">return</SPAN> (<A HREF="freemaster_serial_c.html#var_devfd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_devfd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">devfd</FONT></A> != NULL);
+</SPAN><SPAN><A CLASS="LN" NAME="410">  410   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="411">  411   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="412">  412   </A><SPAN CLASS="CT">/*******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="413">  413   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="414">  414   </A><SPAN CLASS="CT"> * @brief    Handle MQX IO serial communication (both TX and RX)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="415">  415   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="416">  416   </A><SPAN CLASS="CT"> * This function calls MQX IO fread() function to get character and process it by</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="417">  417   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="418">  418   </A><SPAN CLASS="CT"> * FMSTR_Rx function when FreeMASTER packet is receiving. This function also transmit</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="419">  419   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="420">  420   </A><SPAN CLASS="CT"> * FreeMASTER response. Character to be send is provided by call of FMSTR_Tx function</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="421">  421   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="422">  422   </A><SPAN CLASS="CT"> * and passed down to fwrite() function.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="423">  423   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="424">  424   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="425">  425   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_ProcessMQXIO">FMSTR_ProcessMQXIO</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="426">  426   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="427">  427   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_devfd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_devfd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">devfd</FONT></A> != NULL) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="428">  428   </A>    <SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> TxChar = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="429">  429   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="430">  430   </A>    <SPAN CLASS="CT">/* transmitter not active, able to receive */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="431">  431   </A>    <SPAN CLASS="KW">if</SPAN> ((!<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) &amp;&amp; (!<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bMqxReadyToSend)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="432">  432   </A>      <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="433">  433   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="434">  434   </A>      <SPAN CLASS="CT">/* read all available bytes from communication interface */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="435">  435   </A>      <SPAN CLASS="KW">while</SPAN> (fread(&amp;nRxChar, 1, 1, <A HREF="freemaster_serial_c.html#var_devfd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_devfd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">devfd</FONT></A>)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="436">  436   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#fcn_FMSTR_Rx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Rx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Rx</FONT></A>(nRxChar))
+</SPAN><SPAN><A CLASS="LN" NAME="437">  437   </A>          <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="438">  438   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="439">  439   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="440">  440   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="441">  441   </A>    <SPAN CLASS="CT">/* transmitter active and empty? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="442">  442   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive || <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bMqxReadyToSend) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="443">  443   </A>      <SPAN CLASS="KW">while</SPAN> (1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="444">  444   </A>        <SPAN CLASS="CT">/* write character when is valid */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="445">  445   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bMqxReadyToSend) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="446">  446   </A>          <SPAN CLASS="KW">if</SPAN> (fwrite(&amp;TxChar, 1, 1, <A HREF="freemaster_serial_c.html#var_devfd" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_devfd');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">devfd</FONT></A>))<SPAN CLASS="CT">/* character was successfully send, ready to get next character */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="447">  447   </A>            <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bMqxReadyToSend = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="448">  448   </A>          <SPAN CLASS="KW">else</SPAN>                         <SPAN CLASS="CT">/* character write failed, needs to be send next call */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="449">  449   </A>            <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="450">  450   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="451">  451   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="452">  452   </A>        <SPAN CLASS="CT">/* is ready to get next character? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="453">  453   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#fcn_FMSTR_Tx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Tx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Tx</FONT></A>((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>*)&amp;TxChar))<SPAN CLASS="CT">/* FreeMASTER packet is sent, exit loop */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="454">  454   </A>          <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="455">  455   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="456">  456   </A>        <SPAN CLASS="CT">/* read next character, set its validity to be send */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="457">  457   </A>        <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bMqxReadyToSend = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="458">  458   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="459">  459   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="460">  460   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="461">  461   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="462">  462   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="463">  463   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* FMSTR_USE_MQX_IO */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="464">  464   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="465">  465   </A><SPAN CLASS="CT">/*lint -efile(766, freemaster_protocol.h) include file is not used in this case */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="466">  466   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_MQX_IO */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="467">  467   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="468">  468   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="469">  469   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="470">  470   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="471">  471   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="472">  472   </A><SPAN CLASS="CT"> * FreeMASTER USB CDC serial communication routines</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="473">  473   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="474">  474   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="475">  475   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="476">  476   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;usb_cdc.h&quot;</FONT>                   <SPAN CLASS="CT">/* USB CDC Class Header File */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="477">  477   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="478">  478   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="479">  479   </A><SPAN CLASS="CT"> *  Global variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="480">  480   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="481">  481   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> send_buf[<A NAME="var_DIC_BULK_IN_ENDP_PACKET_SIZE">DIC_BULK_IN_ENDP_PACKET_SIZE</A>];<SPAN CLASS="CT">//buffer for store packet to send</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="482">  482   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="483">  483   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="484">  484   </A><SPAN CLASS="CT"> *  local function prototypes</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="485">  485   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="486">  486   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_serial_c.html#fcn_FMSTR_InitUSB" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitUSB');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitUSB</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="487">  487   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessUSB" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessUSB');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessUSB</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="488">  488   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendUsbPacket" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendUsbPacket');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendUsbPacket</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="489">  489   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_USB_CDC_Callback" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_USB_CDC_Callback');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_USB_CDC_Callback</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> controller_ID,
+</SPAN><SPAN><A CLASS="LN" NAME="490">  490   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> event_type, <SPAN CLASS="DT">void</SPAN>* val);
+</SPAN><SPAN><A CLASS="LN" NAME="491">  491   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_serial_c.html#fcn_FMSTR_USB_CDC_Notify_Callback" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_USB_CDC_Notify_Callback');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_USB_CDC_Notify_Callback</FONT></A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> controller_ID,
+</SPAN><SPAN><A CLASS="LN" NAME="492">  492   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> event_type, <SPAN CLASS="DT">void</SPAN>* val);
+</SPAN><SPAN><A CLASS="LN" NAME="493">  493   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="494">  494   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="495">  495   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="496">  496   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="497">  497   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="498">  498   </A><SPAN CLASS="CT"> * @brief    USB CDC communication interface initialization</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="499">  499   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="500">  500   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="501">  501   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_InitUSB">FMSTR_InitUSB</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="502">  502   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="503">  503   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> error;
+</SPAN><SPAN><A CLASS="LN" NAME="504">  504   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="505">  505   </A>  <SPAN CLASS="CT">/* Initialize the USB interface */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="506">  506   </A>  error = USB_Class_CDC_Init(FMSTR_USB_CDC_ID,<A HREF="freemaster_serial_c.html#fcn_FMSTR_USB_CDC_Callback" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_USB_CDC_Callback');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_USB_CDC_Callback</FONT></A>,
+</SPAN><SPAN><A CLASS="LN" NAME="507">  507   </A>    NULL,<A HREF="freemaster_serial_c.html#fcn_FMSTR_USB_CDC_Notify_Callback" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_USB_CDC_Notify_Callback');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_USB_CDC_Notify_Callback</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="508">  508   </A>  <SPAN CLASS="KW">if</SPAN> (error != USB_OK) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="509">  509   </A>    <SPAN CLASS="CT">/* Error initializing USB-CDC Class */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="510">  510   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="511">  511   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="512">  512   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="513">  513   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="514">  514   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="515">  515   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="516">  516   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="517">  517   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="518">  518   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="519">  519   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="520">  520   </A><SPAN CLASS="CT"> * @brief    Handle USB CDC class periodic task and initialize FreeMASTER TX packet</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="521">  521   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="522">  522   </A><SPAN CLASS="CT"> * This function perform USB CDC periodic task. In Short Interrupt mode also decode</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="523">  523   </A><SPAN CLASS="CT"> * received FreeMASTER packet and initialize transmit</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="524">  524   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="525">  525   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="526">  526   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_ProcessUSB">FMSTR_ProcessUSB</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="527">  527   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="528">  528   </A>  <SPAN CLASS="CT">/* call the periodic task function */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="529">  529   </A>  USB_Class_CDC_Periodic_Task();
+</SPAN><SPAN><A CLASS="LN" NAME="530">  530   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="531">  531   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="532">  532   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="533">  533   </A>  <SPAN CLASS="CT">/*check whether enumeration is complete or not */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="534">  534   </A>  <SPAN CLASS="KW">if</SPAN> ((<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp) &amp;&amp; (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartTrans)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="535">  535   </A>    <SPAN CLASS="CT">/*transmitter not active, able to receive */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="536">  536   </A>    <SPAN CLASS="KW">if</SPAN> ((!<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) &amp;&amp; (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbReadyToDecode)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="537">  537   </A>      <A HREF="freemaster_protocol_c.html#fcn_FMSTR_ProtocolDecoder" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProtocolDecoder');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProtocolDecoder</FONT></A>(pcm_pCommBuffer);
+</SPAN><SPAN><A CLASS="LN" NAME="538">  538   </A>      <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbReadyToDecode = 0;
+</SPAN><SPAN><A CLASS="LN" NAME="539">  539   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="540">  540   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="541">  541   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="542">  542   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="543">  543   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="544">  544   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="545">  545   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="546">  546   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="547">  547   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="548">  548   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="549">  549   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="550">  550   </A><SPAN CLASS="CT"> * @brief    Get data from FreeMASTER TX buffer and send the data to USB device</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="551">  551   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="552">  552   </A><SPAN CLASS="CT"> * This function checks the FreeMASTER transmit state and when FreeMASTER is</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="553">  553   </A><SPAN CLASS="CT"> * ready to send response to PC, copy FreeMASTER TX data to local buffer and</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="554">  554   </A><SPAN CLASS="CT"> * pass down the buffer to USB CDC TX function.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="555">  555   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="556">  556   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="557">  557   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_SendUsbPacket">FMSTR_SendUsbPacket</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="558">  558   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="559">  559   </A>  <SPAN CLASS="CT">/* transmitter active and empty? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="560">  560   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="561">  561   </A>    <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> index;
+</SPAN><SPAN><A CLASS="LN" NAME="562">  562   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="563">  563   </A>    <SPAN CLASS="CT">/* fill in the transmitter buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="564">  564   </A>    <SPAN CLASS="KW">for</SPAN> (index = 0; index &lt; <A HREF="freemaster_serial_c.html#var_DIC_BULK_IN_ENDP_PACKET_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_DIC_BULK_IN_ENDP_PACKET_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">DIC_BULK_IN_ENDP_PACKET_SIZE</FONT></A>; index++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="565">  565   </A>      <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> TxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="566">  566   </A>      <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#fcn_FMSTR_Tx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Tx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Tx</FONT></A>(&amp;TxChar))
+</SPAN><SPAN><A CLASS="LN" NAME="567">  567   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="568">  568   </A>      send_buf[index] = TxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="569">  569   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="570">  570   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="571">  571   </A>    USB_Class_CDC_Interface_DIC_Send_Data(FMSTR_USB_CDC_ID, send_buf,index);
+</SPAN><SPAN><A CLASS="LN" NAME="572">  572   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="573">  573   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="574">  574   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="575">  575   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="576">  576   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="577">  577   </A><SPAN CLASS="CT"> *    @name        FMSTR_USB_CDC_Callback</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="578">  578   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="579">  579   </A><SPAN CLASS="CT"> *    @brief       This function handles Class callback</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="580">  580   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="581">  581   </A><SPAN CLASS="CT"> *    @param       controller_ID    : Controller ID</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="582">  582   </A><SPAN CLASS="CT"> *    @param       event_type       : Value of the event</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="583">  583   </A><SPAN CLASS="CT"> *    @param       val              : gives the configuration value</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="584">  584   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="585">  585   </A><SPAN CLASS="CT"> *    @return      None</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="586">  586   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="587">  587   </A><SPAN CLASS="CT"> *****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="588">  588   </A><SPAN CLASS="CT"> * This function is called from the class layer whenever reset occurs or enum</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="589">  589   </A><SPAN CLASS="CT"> * is complete. After the enum is complete this function sets a variable so</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="590">  590   </A><SPAN CLASS="CT"> * that the application can start.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="591">  591   </A><SPAN CLASS="CT"> * This function also receives DATA Send and RECEIVED Events</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="592">  592   </A><SPAN CLASS="CT"> *****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="593">  593   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_USB_CDC_Callback">FMSTR_USB_CDC_Callback</A> (
+</SPAN><SPAN><A CLASS="LN" NAME="594">  594   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> controller_ID,              <SPAN CLASS="CT">/* [IN] Controller ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="595">  595   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> event_type,                 <SPAN CLASS="CT">/* [IN] value of the event */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="596">  596   </A>  <SPAN CLASS="DT">void</SPAN>* val                            <SPAN CLASS="CT">/* [IN] gives the configuration value */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="597">  597   </A>  )
+</SPAN><SPAN><A CLASS="LN" NAME="598">  598   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="599">  599   </A>  UNUSED (controller_ID)
+</SPAN><SPAN><A CLASS="LN" NAME="600">  600   </A>    UNUSED (val)
+</SPAN><SPAN><A CLASS="LN" NAME="601">  601   </A>    <SPAN CLASS="KW">if</SPAN>(event_type == USB_APP_BUS_RESET)
+</SPAN><SPAN><A CLASS="LN" NAME="602">  602   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="603">  603   </A>    <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="604">  604   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="605">  605   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="606">  606   </A>  <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN>(event_type == USB_APP_ENUM_COMPLETE)
+</SPAN><SPAN><A CLASS="LN" NAME="607">  607   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="608">  608   </A>    <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="609">  609   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="610">  610   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="611">  611   </A>  <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN>((event_type == USB_APP_DATA_RECEIVED) &amp;&amp;
+</SPAN><SPAN><A CLASS="LN" NAME="612">  612   </A>          (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartTrans))
+</SPAN><SPAN><A CLASS="LN" NAME="613">  613   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="614">  614   </A>    <SPAN CLASS="CT">/* manage received data */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="615">  615   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="616">  616   </A>      <SPAN CLASS="CT">/* Copy Received Data buffer to Application Buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="617">  617   </A>      USB_PACKET_SIZE BytesToBeCopied;
+</SPAN><SPAN><A CLASS="LN" NAME="618">  618   </A>      APP_DATA_STRUCT* dp_rcv = (APP_DATA_STRUCT*)val;
+</SPAN><SPAN><A CLASS="LN" NAME="619">  619   </A>      BytesToBeCopied = dp_rcv-&gt;data_size;
+</SPAN><SPAN><A CLASS="LN" NAME="620">  620   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="621">  621   </A>      <SPAN CLASS="CT">/* transmitter not active, able to receive */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="622">  622   </A>      <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="623">  623   </A>        <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> index;
+</SPAN><SPAN><A CLASS="LN" NAME="624">  624   </A>        <SPAN CLASS="KW">for</SPAN> (index = 0 ; index&lt;BytesToBeCopied ; index++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="625">  625   </A>          <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#fcn_FMSTR_Rx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Rx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Rx</FONT></A>(dp_rcv-&gt;data_ptr[index])) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="626">  626   </A>            <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="627">  627   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="628">  628   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="629">  629   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="630">  630   </A>        <SPAN CLASS="CT">/* continue receiving, when packet is not decoded */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="631">  631   </A>        <SPAN CLASS="KW">if</SPAN> (index == BytesToBeCopied)  <SPAN CLASS="CT">/* receive next packet only when are not received all bytes of packet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="632">  632   </A>          (<SPAN CLASS="DT">void</SPAN>)USB_Class_CDC_Interface_DIC_Recv_Data(FMSTR_USB_CDC_ID, NULL, 0);
+</SPAN><SPAN><A CLASS="LN" NAME="633">  633   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="634">  634   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="635">  635   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="636">  636   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="637">  637   </A>  <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN>((event_type == USB_APP_SEND_COMPLETE) &amp;&amp;
+</SPAN><SPAN><A CLASS="LN" NAME="638">  638   </A>          (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartTrans))
+</SPAN><SPAN><A CLASS="LN" NAME="639">  639   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="640">  640   </A>    <SPAN CLASS="KW">if</SPAN> ((<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp) &amp;&amp; (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive))<SPAN CLASS="CT">/* Finalize USB packet to transmit and send packet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="641">  641   </A>      <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendUsbPacket" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendUsbPacket');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendUsbPacket</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="642">  642   </A>    <SPAN CLASS="KW">else</SPAN>                               <SPAN CLASS="CT">/* Previous Send is complete. Queue next receive */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="643">  643   </A>      (<SPAN CLASS="DT">void</SPAN>)USB_Class_CDC_Interface_DIC_Recv_Data(FMSTR_USB_CDC_ID, NULL, 0);
+</SPAN><SPAN><A CLASS="LN" NAME="644">  644   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="645">  645   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="646">  646   </A>  <SPAN CLASS="KW">return</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="647">  647   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="648">  648   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="649">  649   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="650">  650   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="651">  651   </A><SPAN CLASS="CT"> *    @name        FMSTR_USB_CDC_Notify_Callback</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="652">  652   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="653">  653   </A><SPAN CLASS="CT"> *    @brief       This function handles PSTN Sub Class callbacks</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="654">  654   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="655">  655   </A><SPAN CLASS="CT"> *    @param       controller_ID    : Controller ID</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="656">  656   </A><SPAN CLASS="CT"> *    @param       event_type       : PSTN Event Type</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="657">  657   </A><SPAN CLASS="CT"> *    @param       val              : gives the configuration value</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="658">  658   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="659">  659   </A><SPAN CLASS="CT"> *    @return      None</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="660">  660   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="661">  661   </A><SPAN CLASS="CT"> *****************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="662">  662   </A><SPAN CLASS="CT"> * This function handles USB_APP_CDC_CARRIER_ACTIVATED and</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="663">  663   </A><SPAN CLASS="CT"> * USB_APP_CDC_CARRIER_DEACTIVATED PSTN Events</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="664">  664   </A><SPAN CLASS="CT"> *****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="665">  665   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_USB_CDC_Notify_Callback">FMSTR_USB_CDC_Notify_Callback</A> (
+</SPAN><SPAN><A CLASS="LN" NAME="666">  666   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> controller_ID,              <SPAN CLASS="CT">/* [IN] Controller ID */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="667">  667   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> event_type,                 <SPAN CLASS="CT">/* [IN] PSTN Event Type */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="668">  668   </A>  <SPAN CLASS="DT">void</SPAN>* val                            <SPAN CLASS="CT">/* [IN] gives the configuration value */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="669">  669   </A>  )
+</SPAN><SPAN><A CLASS="LN" NAME="670">  670   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="671">  671   </A>  UNUSED (controller_ID)
+</SPAN><SPAN><A CLASS="LN" NAME="672">  672   </A>    UNUSED (val)
+</SPAN><SPAN><A CLASS="LN" NAME="673">  673   </A>    <SPAN CLASS="KW">if</SPAN>(<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp)
+</SPAN><SPAN><A CLASS="LN" NAME="674">  674   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="675">  675   </A>    <SPAN CLASS="KW">if</SPAN> (event_type == USB_APP_CDC_CARRIER_ACTIVATED) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="676">  676   </A>      <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartTrans = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="677">  677   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> (event_type == USB_APP_CDC_CARRIER_DEACTIVATED) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="678">  678   </A>      <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartTrans = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="679">  679   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="680">  680   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="681">  681   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="682">  682   </A>  <SPAN CLASS="KW">return</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="683">  683   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="684">  684   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="685">  685   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* FMSTR_USE_USB_CDC */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="686">  686   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="687">  687   </A><SPAN CLASS="CT">/*lint -efile(766, freemaster_protocol.h) include file is not used in this case */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="688">  688   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_USB_CDC */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="689">  689   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="690">  690   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SERIAL
+</SPAN><SPAN><A CLASS="LN" NAME="691">  691   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="692">  692   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="693">  693   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="694">  694   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="695">  695   </A><SPAN CLASS="CT"> * @brief    Start listening on a serial line</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="696">  696   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="697">  697   </A><SPAN CLASS="CT"> * Reset the receiver machine and start listening on a serial line</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="698">  698   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="699">  699   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="700">  700   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_Listen">FMSTR_Listen</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="701">  701   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="702">  702   </A>  <A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="703">  703   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="704">  704   </A>  <SPAN CLASS="CT">/* disable transmitter state machine */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="705">  705   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="706">  706   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="707">  707   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="708">  708   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="709">  709   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxWaitTC = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="710">  710   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="711">  711   </A>  <SPAN CLASS="CT">/* disable transmitter, enable receiver (enables single-wire connection) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="712">  712   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_SCI_TWOWIRE_ONLY
+</SPAN><SPAN><A CLASS="LN" NAME="713">  713   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="714">  714   </A>  FMSTR_SCI_TD();
+</SPAN><SPAN><A CLASS="LN" NAME="715">  715   </A>  FMSTR_SCI_RE();
+</SPAN><SPAN><A CLASS="LN" NAME="716">  716   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="717">  717   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="718">  718   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_SCI */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="719">  719   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="720">  720   </A>  <SPAN CLASS="CT">/* disable transmit, enable receive interrupts */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="721">  721   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR || FMSTR_LONG_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="722">  722   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="723">  723   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="724">  724   </A>  FMSTR_SCI_DTXI();                    <SPAN CLASS="CT">/* disable SCI transmit interrupt */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="725">  725   </A>  FMSTR_SCI_ERXI();                    <SPAN CLASS="CT">/* enable SCI receive interrupt */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="726">  726   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="727">  727   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="728">  728   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="729">  729   </A>  FMSTR_JTAG_DTXI();                   <SPAN CLASS="CT">/* disable JTAG transmit interrupt  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="730">  730   </A>  FMSTR_JTAG_ERXI();                   <SPAN CLASS="CT">/* enable JTAG receive interrupt  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="731">  731   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="732">  732   </A>  <SPAN CLASS="CT">/* RIE bit is forced low by HW until EONCE is first accessed, we will try again in FMSTR_Poll */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="733">  733   </A>  <SPAN CLASS="KW">if</SPAN> (!FMSTR_JTAG_ERXI_CHECK())
+</SPAN><SPAN><A CLASS="LN" NAME="734">  734   </A>    <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bJtagRIEPending = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="735">  735   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="736">  736   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_SCI / FMSTR_USE_JTAG  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="737">  737   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_SHORT_INTR || FMSTR_LONG_INTR */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="738">  738   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="739">  739   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="740">  740   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="741">  741   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="742">  742   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="743">  743   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="744">  744   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="745">  745   </A><SPAN CLASS="CT"> * @brief    Send response of given error code (no data)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="746">  746   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="747">  747   </A><SPAN CLASS="CT"> * @param    nErrCode - error code to be sent</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="748">  748   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="749">  749   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="750">  750   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_SendError">FMSTR_SendError</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nErrCode)
+</SPAN><SPAN><A CLASS="LN" NAME="751">  751   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="752">  752   </A>  <SPAN CLASS="CT">/* fill & send single-byte response */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="753">  753   </A>  *pcm_pCommBuffer = nErrCode;
+</SPAN><SPAN><A CLASS="LN" NAME="754">  754   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendResponse" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendResponse');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendResponse</FONT></A>(pcm_pCommBuffer, 1U);
+</SPAN><SPAN><A CLASS="LN" NAME="755">  755   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="756">  756   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="757">  757   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="758">  758   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="759">  759   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="760">  760   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="761">  761   </A><SPAN CLASS="CT"> * @brief    Finalize transmit buffer before transmitting</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="762">  762   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="763">  763   </A><SPAN CLASS="CT"> * @param    nLength - response length (1 for status + data length)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="764">  764   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="765">  765   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="766">  766   </A><SPAN CLASS="CT"> * This Function takes the data already prepared in the transmit buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="767">  767   </A><SPAN CLASS="CT"> * (inlcuding the status byte). It computes the check sum and kicks on tx.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="768">  768   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="769">  769   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="770">  770   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_SendResponse">FMSTR_SendResponse</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pResponse, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nLength)
+</SPAN><SPAN><A CLASS="LN" NAME="771">  771   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="772">  772   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> chSum = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="773">  773   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> i, c;
+</SPAN><SPAN><A CLASS="LN" NAME="774">  774   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="775">  775   </A>  <SPAN CLASS="CT">/* remember the buffer to be sent */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="776">  776   </A>  <A HREF="freemaster_serial_c.html#var_pcm_pTxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pTxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pTxBuff</FONT></A> = pResponse;
+</SPAN><SPAN><A CLASS="LN" NAME="777">  777   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="778">  778   </A>  <SPAN CLASS="CT">/* status byte and data are already there, compute checksum only     */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="779">  779   </A>  <SPAN CLASS="KW">for</SPAN> (i=0U; i&lt;nLength; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="780">  780   </A>    c = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="781">  781   </A>    pResponse = FMSTR_ValueFromBuffer8(&amp;c, pResponse);
+</SPAN><SPAN><A CLASS="LN" NAME="782">  782   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="783">  783   </A>    <SPAN CLASS="CT">/* add character to checksum */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="784">  784   </A>    chSum += c;
+</SPAN><SPAN><A CLASS="LN" NAME="785">  785   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="786">  786   </A>    <SPAN CLASS="CT">/* prevent saturation to happen on DSP platforms */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="787">  787   </A>    chSum &amp;= 0xffU;
+</SPAN><SPAN><A CLASS="LN" NAME="788">  788   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="789">  789   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="790">  790   </A>  <SPAN CLASS="CT">/* store checksum after the message */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="791">  791   </A>  pResponse = FMSTR_ValueToBuffer8(pResponse, (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>) (((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A>)~(chSum))
+</SPAN><SPAN><A CLASS="LN" NAME="792">  792   </A>    + 1U));
+</SPAN><SPAN><A CLASS="LN" NAME="793">  793   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="794">  794   </A>  <SPAN CLASS="CT">/* send the message and the checksum and the SOB */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="795">  795   </A>  <A HREF="freemaster_serial_c.html#var_pcm_nTxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTxTodo</FONT></A> = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>) (nLength + 1U);
+</SPAN><SPAN><A CLASS="LN" NAME="796">  796   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="797">  797   </A>  <SPAN CLASS="CT">/* now transmitting the response */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="798">  798   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="799">  799   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="800">  800   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC || FMSTR_USE_MQX_IO || FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="801">  801   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="802">  802   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxFirstSobSend = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="803">  803   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="804">  804   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="805">  805   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="806">  806   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="807">  807   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="808">  808   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxWaitTC = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="809">  809   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="810">  810   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="811">  811   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="812">  812   </A>  <SPAN CLASS="CT">/* do not replicate the initial SOB  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="813">  813   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxLastCharSOB = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="814">  814   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="815">  815   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="816">  816   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="817">  817   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="818">  818   </A>    <SPAN CLASS="CT">/*lint -esym(550, dummySR) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="819">  819   </A>    <SPAN CLASS="DT">volatile</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SCISR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SCISR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SCISR</FONT></A> dummySR;
+</SPAN><SPAN><A CLASS="LN" NAME="820">  820   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="821">  821   </A>    <SPAN CLASS="CT">/* disable receiver, enable transmitter (single-wire communication) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="822">  822   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_SCI_TWOWIRE_ONLY
+</SPAN><SPAN><A CLASS="LN" NAME="823">  823   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="824">  824   </A>    FMSTR_SCI_RD();
+</SPAN><SPAN><A CLASS="LN" NAME="825">  825   </A>    FMSTR_SCI_TE();
+</SPAN><SPAN><A CLASS="LN" NAME="826">  826   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="827">  827   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="828">  828   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="829">  829   </A>    <SPAN CLASS="CT">/* kick on the SCI transmission (also clears TX Empty flag on some platforms) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="830">  830   </A>    dummySR = FMSTR_SCI_GETSR();
+</SPAN><SPAN><A CLASS="LN" NAME="831">  831   </A>    FMSTR_SCI_PUTCHAR(FMSTR_SOB);
+</SPAN><SPAN><A CLASS="LN" NAME="832">  832   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="833">  833   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="834">  834   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="835">  835   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="836">  836   </A>  <SPAN CLASS="CT">/* kick on the JTAG transmission */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="837">  837   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_FlushJtagTx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_FlushJtagTx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_FlushJtagTx</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="838">  838   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="839">  839   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="840">  840   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="841">  841   </A>  <SPAN CLASS="CT">/* TX interrupt enable, RX interrupt disable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="842">  842   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_LONG_INTR || FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="843">  843   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="844">  844   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="845">  845   </A>  FMSTR_SCI_DRXI();
+</SPAN><SPAN><A CLASS="LN" NAME="846">  846   </A>  FMSTR_SCI_ETXI();
+</SPAN><SPAN><A CLASS="LN" NAME="847">  847   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="848">  848   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="849">  849   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_JTAG_TXFIX
+</SPAN><SPAN><A CLASS="LN" NAME="850">  850   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="851">  851   </A>  <SPAN CLASS="CT">/* in TX-bugfix mode, keep the RX interrupt enabled as it */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="852">  852   </A>  <SPAN CLASS="CT">/* is used as "able-to-TX" notification from the PC */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="853">  853   </A>  FMSTR_JTAG_ERXI();
+</SPAN><SPAN><A CLASS="LN" NAME="854">  854   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="855">  855   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="856">  856   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="857">  857   </A>  <SPAN CLASS="CT">/* otherwise, JTAG is very same as the SCI */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="858">  858   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive)        <SPAN CLASS="CT">//enable TX interrupt only when is not one word response</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="859">  859   </A>  <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="860">  860   </A>    FMSTR_JTAG_DRXI();
+</SPAN><SPAN><A CLASS="LN" NAME="861">  861   </A>    FMSTR_JTAG_ETXI();
+</SPAN><SPAN><A CLASS="LN" NAME="862">  862   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="863">  863   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="864">  864   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="865">  865   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="866">  866   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="867">  867   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="868">  868   </A>  <SPAN CLASS="KW">if</SPAN> ((<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartApp) &amp;&amp; (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxActive) &amp;&amp;
+</SPAN><SPAN><A CLASS="LN" NAME="869">  869   </A>      (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bUsbCdcStartTrans))<SPAN CLASS="CT">/* Finalize USB packet to transmit and send packet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="870">  870   </A>    <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendUsbPacket" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendUsbPacket');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendUsbPacket</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="871">  871   </A>  <SPAN CLASS="KW">else</SPAN>                                 <SPAN CLASS="CT">/* Previous Send is complete. Queue next receive */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="872">  872   </A>    (<SPAN CLASS="DT">void</SPAN>)USB_Class_CDC_Interface_DIC_Recv_Data(FMSTR_USB_CDC_ID, NULL, 0);
+</SPAN><SPAN><A CLASS="LN" NAME="873">  873   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="874">  874   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="875">  875   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_LONG_INTR || FMSTR_SHORT_INTR */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="876">  876   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="877">  877   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="878">  878   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="879">  879   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="880">  880   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="881">  881   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="882">  882   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="883">  883   </A><SPAN CLASS="CT"> * @brief    Output buffer transmission</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="884">  884   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="885">  885   </A><SPAN CLASS="CT"> * @param  pTxChar  The character to be transmit</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="886">  886   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="887">  887   </A><SPAN CLASS="CT"> * get ready buffer(prepare data to send)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="888">  888   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="889">  889   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="890">  890   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Tx">FMSTR_Tx</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>* pTxChar)
+</SPAN><SPAN><A CLASS="LN" NAME="891">  891   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="892">  892   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="893">  893   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC || FMSTR_USE_MQX_IO || FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="894">  894   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="895">  895   </A>  <SPAN CLASS="CT">/* to send first SOB byte*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="896">  896   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxFirstSobSend) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="897">  897   </A>    *pTxChar = FMSTR_SOB;
+</SPAN><SPAN><A CLASS="LN" NAME="898">  898   </A>    <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxFirstSobSend = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="899">  899   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="900">  900   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="901">  901   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="902">  902   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="903">  903   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="904">  904   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_nTxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTxTodo</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="905">  905   </A>    <SPAN CLASS="CT">/* fetch & send character ready to transmit */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="906">  906   </A>    <SPAN CLASS="CT">/*lint -e{534} ignoring return value */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="907">  907   </A>    FMSTR_ValueFromBuffer8(pTxChar, <A HREF="freemaster_serial_c.html#var_pcm_pTxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pTxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pTxBuff</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="908">  908   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="909">  909   </A>    <SPAN CLASS="CT">/* first, handle the replicated SOB characters */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="910">  910   </A>    <SPAN CLASS="KW">if</SPAN> (*pTxChar == FMSTR_SOB) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="911">  911   </A>      <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxLastCharSOB ^= 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="912">  912   </A>      <SPAN CLASS="KW">if</SPAN> ((<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxLastCharSOB)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="913">  913   </A>        <SPAN CLASS="CT">/* yes, repeat the SOB next time */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="914">  914   </A>        <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="915">  915   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="916">  916   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="917">  917   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="918">  918   </A>    <SPAN CLASS="CT">/* no, advance tx buffer pointer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="919">  919   </A>    <A HREF="freemaster_serial_c.html#var_pcm_nTxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTxTodo</FONT></A>--;
+</SPAN><SPAN><A CLASS="LN" NAME="920">  920   </A>    <A HREF="freemaster_serial_c.html#var_pcm_pTxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pTxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pTxBuff</FONT></A> = FMSTR_SkipInBuffer(<A HREF="freemaster_serial_c.html#var_pcm_pTxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pTxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pTxBuff</FONT></A>, 1U);
+</SPAN><SPAN><A CLASS="LN" NAME="921">  921   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="922">  922   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="923">  923   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="924">  924   </A>  <SPAN CLASS="CT">/* when SCI TX buffering is enabled, we must first wait until all</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="925">  925   </A><SPAN CLASS="CT">     characters are physically transmitted (before disabling transmitter) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="926">  926   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="927">  927   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SCI_HAS_TXQUEUE
+</SPAN><SPAN><A CLASS="LN" NAME="928">  928   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="929">  929   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bTxWaitTC = 1;
+</SPAN><SPAN><A CLASS="LN" NAME="930">  930   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="931">  931   </A>  <SPAN CLASS="CT">/* wait for SCI TC interrupt */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="932">  932   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR || FMSTR_LONG_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="933">  933   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="934">  934   </A>  FMSTR_SCI_ETCI();
+</SPAN><SPAN><A CLASS="LN" NAME="935">  935   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="936">  936   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="937">  937   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="938">  938   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="939">  939   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="940">  940   </A>  <SPAN CLASS="CT">/* start listening immediately */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="941">  941   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_Listen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Listen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Listen</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="942">  942   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="943">  943   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="944">  944   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="945">  945   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="946">  946   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="947">  947   </A>  <SPAN CLASS="CT">/* start listening immediately */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="948">  948   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_Listen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Listen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Listen</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="949">  949   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="950">  950   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="951">  951   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="952">  952   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="953">  953   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="954">  954   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="955">  955   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="956">  956   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="957">  957   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="958">  958   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="959">  959   </A><SPAN CLASS="CT"> * @brief  Handle received character</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="960">  960   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="961">  961   </A><SPAN CLASS="CT"> * @param  nRxChar  The character to be processed</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="962">  962   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="963">  963   </A><SPAN CLASS="CT"> * Handle the character received and -if the message is complete- call the</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="964">  964   </A><SPAN CLASS="CT"> * protocol decode routine.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="965">  965   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="966">  966   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="967">  967   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Rx">FMSTR_Rx</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BCHR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BCHR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BCHR</FONT></A> nRxChar)
+</SPAN><SPAN><A CLASS="LN" NAME="968">  968   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="969">  969   </A>  <A HREF="freemaster_serial_c.html#type_FMSTR_SERIAL_FLAGS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SERIAL_FLAGS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SERIAL_FLAGS</FONT></A> * pflg = &amp;<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="970">  970   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="971">  971   </A>  <SPAN CLASS="CT">/* first, handle the replicated SOB characters */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="972">  972   </A>  <SPAN CLASS="KW">if</SPAN> (nRxChar == FMSTR_SOB) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="973">  973   </A>    pflg-&gt;flg.bRxLastCharSOB ^= 1;
+</SPAN><SPAN><A CLASS="LN" NAME="974">  974   </A>    <SPAN CLASS="KW">if</SPAN> (pflg-&gt;flg.bRxLastCharSOB) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="975">  975   </A>      <SPAN CLASS="CT">/* this is either the first byte of replicated SOB or a  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="976">  976   </A>      <SPAN CLASS="CT">/* real Start-of-Block mark - we will decide next time in FMSTR_Rx */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="977">  977   </A>      <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="978">  978   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="979">  979   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="980">  980   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="981">  981   </A>  <SPAN CLASS="CT">/* we have got a common character preceded by the SOB -  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="982">  982   </A>  <SPAN CLASS="CT">/* this is the command code! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="983">  983   </A>  <SPAN CLASS="KW">if</SPAN> (pflg-&gt;flg.bRxLastCharSOB) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="984">  984   </A>    <SPAN CLASS="CT">/* reset receiving process */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="985">  985   </A>    <A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A> = pcm_pCommBuffer;
+</SPAN><SPAN><A CLASS="LN" NAME="986">  986   </A>    *<A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A>++ = nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="987">  987   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="988">  988   </A>    <SPAN CLASS="CT">/* start computing the checksum */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="989">  989   </A>    <A HREF="freemaster_serial_c.html#var_pcm_nRxCheckSum" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxCheckSum');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxCheckSum</FONT></A> = nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="990">  990   </A>    <A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="991">  991   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="992">  992   </A>    <SPAN CLASS="CT">/* if the standard command was received, the message length will come in next byte */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="993">  993   </A>    pflg-&gt;flg.bRxMsgLengthNext = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="994">  994   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="995">  995   </A>    <SPAN CLASS="CT">/* fast command? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="996">  996   </A>    <SPAN CLASS="KW">if</SPAN> (!((~nRxChar) &amp; FMSTR_FASTCMD)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="997">  997   </A>      <SPAN CLASS="CT">/* fast command received, there will be no length information */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="998">  998   </A>      pflg-&gt;flg.bRxMsgLengthNext = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="999">  999   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1000"> 1000   </A>      <SPAN CLASS="CT">/* as it is encoded in the command byte directly */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1001"> 1001   </A>      <A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A> = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>)
+</SPAN><SPAN><A CLASS="LN" NAME="1002"> 1002   </A>        (((((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>)nRxChar) &amp; FMSTR_FASTCMD_DATALEN_MASK) &gt;&gt;
+</SPAN><SPAN><A CLASS="LN" NAME="1003"> 1003   </A>          FMSTR_FASTCMD_DATALEN_SHIFT) + 1U);
+</SPAN><SPAN><A CLASS="LN" NAME="1004"> 1004   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1005"> 1005   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1006"> 1006   </A>    <SPAN CLASS="CT">/* command code stored & processed */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1007"> 1007   </A>    pflg-&gt;flg.bRxLastCharSOB = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1008"> 1008   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="1009"> 1009   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1010"> 1010   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1011"> 1011   </A>  <SPAN CLASS="CT">/* we are waiting for the length byte */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1012"> 1012   </A>  <SPAN CLASS="KW">if</SPAN> (pflg-&gt;flg.bRxMsgLengthNext) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1013"> 1013   </A>    <SPAN CLASS="CT">/* this byte, total data length and the checksum */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1014"> 1014   </A>    <A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A> = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>) (1U + ((<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>)nRxChar) + 1U);
+</SPAN><SPAN><A CLASS="LN" NAME="1015"> 1015   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1016"> 1016   </A>    <SPAN CLASS="CT">/* now read the data bytes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1017"> 1017   </A>    pflg-&gt;flg.bRxMsgLengthNext = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1018"> 1018   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1019"> 1019   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1020"> 1020   </A>  <SPAN CLASS="CT">/* waiting for a data byte? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1021"> 1021   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1022"> 1022   </A>    <SPAN CLASS="CT">/* add this byte to checksum */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1023"> 1023   </A>    <A HREF="freemaster_serial_c.html#var_pcm_nRxCheckSum" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxCheckSum');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxCheckSum</FONT></A> += nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="1024"> 1024   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1025"> 1025   </A>    <SPAN CLASS="CT">/* decrease number of expected bytes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1026"> 1026   </A>    <A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A>--;
+</SPAN><SPAN><A CLASS="LN" NAME="1027"> 1027   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1028"> 1028   </A>    <SPAN CLASS="CT">/* was it the last byte of the message (checksum)? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1029"> 1029   </A>    <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_serial_c.html#var_pcm_nRxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxTodo</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1030"> 1030   </A>      <SPAN CLASS="CT">/* receive buffer overflow? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1031"> 1031   </A>      <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A> == NULL) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1032"> 1032   </A>        <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendError" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendError');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendError</FONT></A>(FMSTR_STC_CMDTOOLONG);
+</SPAN><SPAN><A CLASS="LN" NAME="1033"> 1033   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1034"> 1034   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1035"> 1035   </A>      <SPAN CLASS="CT">/* checksum error? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1036"> 1036   </A>      <SPAN CLASS="KW">else</SPAN> <SPAN CLASS="KW">if</SPAN> ((<A HREF="freemaster_serial_c.html#var_pcm_nRxCheckSum" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRxCheckSum');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRxCheckSum</FONT></A> &amp; 0xffU) != 0U) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1037"> 1037   </A>        <A HREF="freemaster_serial_c.html#fcn_FMSTR_SendError" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SendError');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SendError</FONT></A>(FMSTR_STC_CMDCSERR);
+</SPAN><SPAN><A CLASS="LN" NAME="1038"> 1038   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1039"> 1039   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1040"> 1040   </A>      <SPAN CLASS="CT">/* message is okay */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1041"> 1041   </A>      <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1042"> 1042   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1043"> 1043   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC &amp;&amp; FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="1044"> 1044   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1045"> 1045   </A>        <SPAN CLASS="CT">/* Decode protocol and send response in Poll function */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1046"> 1046   </A>        pflg-&gt;flg.bUsbReadyToDecode = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="1047"> 1047   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1048"> 1048   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1049"> 1049   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1050"> 1050   </A>        <SPAN CLASS="CT">/* do decode now! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1051"> 1051   </A>        <A HREF="freemaster_protocol_c.html#fcn_FMSTR_ProtocolDecoder" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProtocolDecoder');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProtocolDecoder</FONT></A>(pcm_pCommBuffer);
+</SPAN><SPAN><A CLASS="LN" NAME="1052"> 1052   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1053"> 1053   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1054"> 1054   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1055"> 1055   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1056"> 1056   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1057"> 1057   </A>      <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="1058"> 1058   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1059"> 1059   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1060"> 1060   </A>    <SPAN CLASS="CT">/* not the last character yet */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1061"> 1061   </A>    <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1062"> 1062   </A>      <SPAN CLASS="CT">/* is there still a space in the buffer? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1063"> 1063   </A>      <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1064"> 1064   </A>        <SPAN CLASS="CT">/*lint -e{946} pointer arithmetic is okay here (same array) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1065"> 1065   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A> &lt; (pcm_pCommBuffer + <A HREF="freemaster_serial_c.html#var_FMSTR_COMM_BUFFER_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_COMM_BUFFER_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_COMM_BUFFER_SIZE</FONT></A>)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1066"> 1066   </A>          <SPAN CLASS="CT">/* store byte  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1067"> 1067   </A>          *<A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A>++ = nRxChar;
+</SPAN><SPAN><A CLASS="LN" NAME="1068"> 1068   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1069"> 1069   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1070"> 1070   </A>        <SPAN CLASS="CT">/* buffer is full! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1071"> 1071   </A>        <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1072"> 1072   </A>          <SPAN CLASS="CT">/* NULL rx pointer means buffer overflow - but we still need */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1073"> 1073   </A>          <SPAN CLASS="CT">/* to receive all message characters (for the single-wire mode) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1074"> 1074   </A>          <SPAN CLASS="CT">/* so keep "receiving" - but throw away all characters from now */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1075"> 1075   </A>          <A HREF="freemaster_serial_c.html#var_pcm_pRxBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRxBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRxBuff</FONT></A> = NULL;
+</SPAN><SPAN><A CLASS="LN" NAME="1076"> 1076   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1077"> 1077   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1078"> 1078   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1079"> 1079   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1080"> 1080   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1081"> 1081   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="1082"> 1082   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1083"> 1083   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1084"> 1084   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1085"> 1085   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1086"> 1086   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1087"> 1087   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1088"> 1088   </A><SPAN CLASS="CT"> * @brief    Serial communication initialization</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1089"> 1089   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1090"> 1090   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1091"> 1091   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_InitSerial">FMSTR_InitSerial</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="1092"> 1092   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1093"> 1093   </A>  <SPAN CLASS="CT">/* initialize all state variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1094"> 1094   </A>  <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.all = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1095"> 1095   </A>  <A HREF="freemaster_serial_c.html#var_pcm_nTxTodo" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTxTodo');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTxTodo</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1096"> 1096   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1097"> 1097   </A>  <SPAN CLASS="CT">/* Initialize SCI and JTAG interface */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1098"> 1098   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI &amp;&amp; FMSTR_SCI_TWOWIRE_ONLY
+</SPAN><SPAN><A CLASS="LN" NAME="1099"> 1099   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1100"> 1100   </A>  <SPAN CLASS="CT">/* to enable TX and RX together in FreeMASTER initialization */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1101"> 1101   </A>  FMSTR_SCI_TE_RE();
+</SPAN><SPAN><A CLASS="LN" NAME="1102"> 1102   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1103"> 1103   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1104"> 1104   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1105"> 1105   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_SHORT_INTR &amp; (FMSTR_USE_SCI || FMSTR_USE_JTAG)
+</SPAN><SPAN><A CLASS="LN" NAME="1106"> 1106   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1107"> 1107   </A>  <A HREF="freemaster_serial_c.html#var_pcm_pRQueueRP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueRP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueRP</FONT></A> = pcm_pRQueueBuffer;
+</SPAN><SPAN><A CLASS="LN" NAME="1108"> 1108   </A>  <A HREF="freemaster_serial_c.html#var_pcm_pRQueueWP" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRQueueWP');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRQueueWP</FONT></A> = pcm_pRQueueBuffer;
+</SPAN><SPAN><A CLASS="LN" NAME="1109"> 1109   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1110"> 1110   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1111"> 1111   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1112"> 1112   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="1113"> 1113   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1114"> 1114   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_serial_c.html#fcn_FMSTR_InitMQX" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitMQX');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitMQX</FONT></A>())
+</SPAN><SPAN><A CLASS="LN" NAME="1115"> 1115   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="1116"> 1116   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1117"> 1117   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1118"> 1118   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1119"> 1119   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="1120"> 1120   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1121"> 1121   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_serial_c.html#fcn_FMSTR_InitUSB" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_InitUSB');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_InitUSB</FONT></A>())
+</SPAN><SPAN><A CLASS="LN" NAME="1122"> 1122   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="1123"> 1123   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1124"> 1124   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1125"> 1125   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1126"> 1126   </A>  <SPAN CLASS="CT">/* start listening for commands */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1127"> 1127   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_Listen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Listen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Listen</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1128"> 1128   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="1129"> 1129   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1130"> 1130   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1131"> 1131   </A><SPAN CLASS="CT">/*******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1132"> 1132   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1133"> 1133   </A><SPAN CLASS="CT"> * @brief    API: Main "Polling" call from the application main loop</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1134"> 1134   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1135"> 1135   </A><SPAN CLASS="CT"> * This function either handles all the SCI communication (polling-only mode =</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1136"> 1136   </A><SPAN CLASS="CT"> * FMSTR_POLL_DRIVEN) or decodes messages received on the background by SCI interrupt</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1137"> 1137   </A><SPAN CLASS="CT"> * (short-interrupt mode = FMSTR_SHORT_INTR).</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1138"> 1138   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1139"> 1139   </A><SPAN CLASS="CT"> * In the JTAG interrupt-driven mode (both short and long), this function also checks</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1140"> 1140   </A><SPAN CLASS="CT"> * if setting the JTAG RIE bit failed recently. This may happen because of the</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1141"> 1141   </A><SPAN CLASS="CT"> * RIE is held low by the EONCE hardware until the EONCE is first accessed from host.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1142"> 1142   </A><SPAN CLASS="CT"> * FMSTR_Init (-&gt;FMSTR_Listen) is often called while the PC-side FreeMASTER is still</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1143"> 1143   </A><SPAN CLASS="CT"> * turned off. So really, the JTAG is not enabled by this time and RIE bit is not set.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1144"> 1144   </A><SPAN CLASS="CT"> * This problem is detected (see how bJtagRIEPending is set above in FSMTR_Listen)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1145"> 1145   </A><SPAN CLASS="CT"> * and it is tried to be fixed periodically here in FMSTR_Poll.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1146"> 1146   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1147"> 1147   </A><SPAN CLASS="CT"> *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1148"> 1148   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_protocol_c.html#fcn_FMSTR_Poll" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Poll');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Poll</FONT></A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="1149"> 1149   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1150"> 1150   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1151"> 1151   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_POLL_DRIVEN &amp;&amp; FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="1152"> 1152   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1153"> 1153   </A>  <SPAN CLASS="CT">/* in the interrupt-driven JTAG mode, the JTAG RIE may have failed to be set recently */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1154"> 1154   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bJtagRIEPending) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1155"> 1155   </A>    FMSTR_JTAG_ERXI();                 <SPAN CLASS="CT">/* try to enable JTAG receive interrupt now */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1156"> 1156   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1157"> 1157   </A>    <SPAN CLASS="CT">/* succeeded? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1158"> 1158   </A>    <SPAN CLASS="KW">if</SPAN> (FMSTR_JTAG_ERXI_CHECK())
+</SPAN><SPAN><A CLASS="LN" NAME="1159"> 1159   </A>      <A HREF="freemaster_serial_c.html#var_pcm_wFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wFlags</FONT></A>.flg.bJtagRIEPending = 0;<SPAN CLASS="CT">/* yes!, enough until it fails again (never?) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1160"> 1160   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1161"> 1161   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1162"> 1162   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1163"> 1163   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1164"> 1164   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_MQX_IO
+</SPAN><SPAN><A CLASS="LN" NAME="1165"> 1165   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1166"> 1166   </A>  <SPAN CLASS="CT">/* polled MQX IO mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1167"> 1167   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessMQXIO" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessMQXIO');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessMQXIO</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1168"> 1168   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1169"> 1169   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1170"> 1170   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1171"> 1171   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_POLL_DRIVEN
+</SPAN><SPAN><A CLASS="LN" NAME="1172"> 1172   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_SCI
+</SPAN><SPAN><A CLASS="LN" NAME="1173"> 1173   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1174"> 1174   </A>  <SPAN CLASS="CT">/* polled SCI mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1175"> 1175   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessSCI" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessSCI');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessSCI</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1176"> 1176   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1177"> 1177   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_JTAG
+</SPAN><SPAN><A CLASS="LN" NAME="1178"> 1178   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1179"> 1179   </A>  <SPAN CLASS="CT">/* polled JTAG mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1180"> 1180   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessJTAG" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessJTAG');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessJTAG</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1181"> 1181   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1182"> 1182   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1183"> 1183   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1184"> 1184   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_SHORT_INTR
+</SPAN><SPAN><A CLASS="LN" NAME="1185"> 1185   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_USB_CDC
+</SPAN><SPAN><A CLASS="LN" NAME="1186"> 1186   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1187"> 1187   </A>  <SPAN CLASS="CT">/*  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1188"> 1188   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_ProcessUSB" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ProcessUSB');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ProcessUSB</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1189"> 1189   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1190"> 1190   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> (FMSTR_USE_SCI || FMSTR_USE_JTAG)
+</SPAN><SPAN><A CLASS="LN" NAME="1191"> 1191   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1192"> 1192   </A>  <SPAN CLASS="CT">/* process queued SCI characters */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1193"> 1193   </A>  <A HREF="freemaster_serial_c.html#fcn_FMSTR_RxDequeue" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_RxDequeue');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_RxDequeue</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1194"> 1194   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1195"> 1195   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1196"> 1196   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1197"> 1197   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1198"> 1198   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1199"> 1199   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1200"> 1200   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1201"> 1201   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

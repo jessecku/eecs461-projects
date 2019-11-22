@@ -1,0 +1,394 @@
+Link map of _start
+
+
+.init section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000004 40000000 00000160  1 .init 	crt0.o 
+
+
+.init_vle section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000092 40000004 00000164  1 .init 	Runtime.PPCEABI.V.UC.a __mem.o
+  00000000 000078 40000004 00000164  2 __fill_mem 	Runtime.PPCEABI.V.UC.a __mem.o
+  00000078 00001a 4000007c 000001dc  2 memset 	Runtime.PPCEABI.V.UC.a __mem.o
+
+
+.exec_vect section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.exec_vect_vle section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000114 40001000 000001f8  1 .exec_vect_vle 	sw_handlers.o 
+  00000000 000000 40001000 000001f8    IVOR4_Handler (entry of .exec_vect_vle) 	sw_handlers.o 
+  00000114 0001be 40001114 0000030c  1 .exec_vect_vle 	excep_handler.o 
+  00000114 000000 40001114 0000030c    IVOR0_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000124 000000 40001124 0000031c    IVOR1_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000134 000000 40001134 0000032c    IVOR2_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000144 000000 40001144 0000033c    IVOR3_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000154 000000 40001154 0000034c    IVOR5_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000164 000000 40001164 0000035c    IVOR6_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000174 000000 40001174 0000036c    IVOR7_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000184 000000 40001184 0000037c    IVOR8_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000194 000000 40001194 0000038c    IVOR9_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  000001a4 000000 400011a4 0000039c    IVOR10_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  000001b4 000000 400011b4 000003ac    IVOR11_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  000001c4 000000 400011c4 000003bc    IVOR12_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  000001d4 000000 400011d4 000003cc    IVOR13_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  000001e4 000000 400011e4 000003dc    IVOR14_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  000001f4 000000 400011f4 000003ec    IVOR15_Handler (entry of .exec_vect_vle) 	excep_handler.o 
+  00000204 000000 40001204 000003fc    e200zX_Interrupt_Setup (entry of .exec_vect_vle) 	excep_handler.o 
+
+
+.ivor4_vector_table section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000400 40002000 000004d0  1 .ivor4_vector_table 	intc_sw_vectable.o 
+  00000000 000400 40002000 000004d0  8 ISRVectorTable 	intc_sw_vectable.o 
+
+
+.text section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.text_vle section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000300 40003000 000008d0  1 .text_vle 	crt0.o 
+  00000000 000000 40003000 000008d0    _start (entry of .text_vle) 	crt0.o 
+  00000300 0004d6 40003300 00000bd0  1 .text 	Wall.o 
+  00000300 0002d8 40003300 00000bd0 16 Wall_step 	Wall.o 
+  000005e0 0001f6 400035e0 00000eb0 16 Wall_initialize 	Wall.o 
+  000007d6 000000 400037d6 000010a6  1 .text.1032 	Wall.o 
+  000007d6 00000a 400037e0 000010b0 16 *fill*
+  000007e0 0009e4 400037e0 000010b0  1 .text 	FlexPWM_564xL_library.o 
+  000007e0 000584 400037e0 000010b0 16 pwm_init_pcr_out_564xL 	FlexPWM_564xL_library.o 
+  00000d70 0002a8 40003d70 00001640 16 pwm_init_564xL_simple 	FlexPWM_564xL_library.o 
+  00001020 0001a4 40004020 000018f0 16 pwm_update_564xL_simple_edge_align 	FlexPWM_564xL_library.o 
+  000011c4 000000 400041c4 00001a94  1 .text.1376 	FlexPWM_564xL_library.o 
+  000011c4 00000c 400041d0 00001aa0 16 *fill*
+  000011d0 0007a4 400041d0 00001aa0  1 .text 	eTimer_564xL_library.o 
+  000011d0 000602 400041d0 00001aa0 16 etimer_init_pcr_in_out_564xL 	eTimer_564xL_library.o 
+  000017e0 000194 400047e0 000020b0 16 etimer_init_564xL 	eTimer_564xL_library.o 
+  00001974 000000 40004974 00002244  1 .text.582 	eTimer_564xL_library.o 
+  00001974 00000c 40004980 00002250 16 *fill*
+  00001980 000304 40004980 00002250  1 .text 	flexpwm_init.o 
+  00001980 00004c 40004980 00002250 16 flexpwm_init_fnc 	flexpwm_init.o 
+  000019d0 000050 400049d0 000022a0 16 flexpwm_GenConfig_fnc 	flexpwm_init.o 
+  00001a20 00009c 40004a20 000022f0 16 flexpwm_sub0_init_fnc 	flexpwm_init.o 
+  00001ac0 00009e 40004ac0 00002390 16 flexpwm_sub1_init_fnc 	flexpwm_init.o 
+  00001b60 00009e 40004b60 00002430 16 flexpwm_sub2_init_fnc 	flexpwm_init.o 
+  00001c00 000084 40004c00 000024d0 16 flexpwm_sub3_init_fnc 	flexpwm_init.o 
+  00001c84 000000 40004c84 00002554  1 .text.372 	flexpwm_init.o 
+  00001c84 00000c 40004c90 00002560 16 *fill*
+  00001c90 000022 40004c90 00002560  1 .text 	gpio_564xl_library.o 
+  00001c90 00000e 40004c90 00002560 16 gpo_pin_update_564xl_fnc 	gpio_564xl_library.o 
+  00001ca0 000012 40004ca0 00002570 16 gpo_init_pcr_out_564xl_fnc 	gpio_564xl_library.o 
+  00001cb2 000000 40004cb2 00002582  1 .text.264 	gpio_564xl_library.o 
+  00001cb2 00000e 40004cc0 00002590 16 *fill*
+  00001cc0 000196 40004cc0 00002590  1 .text 	intc_init.o 
+  00001cc0 000196 40004cc0 00002590 16 intc_init_fnc 	intc_init.o 
+  00001e56 000000 40004e56 00002726  1 .text.243 	intc_init.o 
+  00001e56 00000a 40004e60 00002730 16 *fill*
+  00001e60 000012 40004e60 00002730  1 .text 	intc_sw_vectable.o 
+  00001e60 000012 40004e60 00002730 16 interrupt_handler 	intc_sw_vectable.o 
+  00001e72 000000 40004e72 00002742  1 .text.249 	intc_sw_vectable.o 
+  00001e72 00000e 40004e80 00002750 16 *fill*
+  00001e80 0000aa 40004e80 00002750  1 .text 	rappid_main.o 
+  00001e80 000012 40004e80 00002750 16 PIT_Ch0_ISR 	rappid_main.o 
+  00001ea0 00008a 40004ea0 00002770 16 main 	rappid_main.o 
+  00001f2a 000000 40004f2a 000027fa  1 .text.904 	rappid_main.o 
+  00001f2a 000006 40004f30 00002800 16 *fill*
+  00001f30 000056 40004f30 00002800  1 .text 	rtGetInf.o 
+  00001f30 000014 40004f30 00002800 16 rtGetInf 	rtGetInf.o 
+  00001f50 000006 40004f50 00002820 16 rtGetInfF 	rtGetInf.o 
+  00001f60 000014 40004f60 00002830 16 rtGetMinusInf 	rtGetInf.o 
+  00001f80 000006 40004f80 00002850 16 rtGetMinusInfF 	rtGetInf.o 
+  00001f86 000000 40004f86 00002856  1 .text.46 	rtGetInf.o 
+  00001f86 00000a 40004f90 00002860 16 *fill*
+  00001f90 000024 40004f90 00002860  1 .text 	rtGetNaN.o 
+  00001f90 000014 40004f90 00002860 16 rtGetNaN 	rtGetNaN.o 
+  00001fb0 000004 40004fb0 00002880 16 rtGetNaNF 	rtGetNaN.o 
+  00001fb4 000000 40004fb4 00002884  1 .text.30 	rtGetNaN.o 
+  00001fb4 00000c 40004fc0 00002890 16 *fill*
+  00001fc0 000070 40004fc0 00002890  1 .text 	rt_nonfinite.o 
+  00001fc0 000040 40004fc0 00002890 16 rt_InitInfAndNaN 	rt_nonfinite.o 
+  00002000 00001c 40005000 000028d0 16 rtIsInf 	rt_nonfinite.o 
+  00002020 000010 40005020 000028f0 16 rtIsNaN 	rt_nonfinite.o 
+  00002030 000000 40005030 00002900  1 .text.59 	rt_nonfinite.o 
+  00002030 000438 40005030 00002900  1 .text 	siu_init.o 
+  00002030 000044 40005030 00002900 16 siu_init_fnc 	siu_init.o 
+  00002080 00004c 40005080 00002950 16 siu_portA_init_fnc 	siu_init.o 
+  000020d0 000050 400050d0 000029a0 16 siu_portB_init_fnc 	siu_init.o 
+  00002120 00003c 40005120 000029f0 16 siu_portC_init_fnc 	siu_init.o 
+  00002160 000040 40005160 00002a30 16 siu_portD_init_fnc 	siu_init.o 
+  000021a0 00003c 400051a0 00002a70 16 siu_portE_init_fnc 	siu_init.o 
+  000021e0 000040 400051e0 00002ab0 16 siu_portF_init_fnc 	siu_init.o 
+  00002220 000040 40005220 00002af0 16 siu_portG_init_fnc 	siu_init.o 
+  00002260 000048 40005260 00002b30 16 siu_portH_init_fnc 	siu_init.o 
+  000022b0 00001c 400052b0 00002b80 16 siu_portI_init_fnc 	siu_init.o 
+  000022d0 0000a4 400052d0 00002ba0 16 siu_general_init_fnc 	siu_init.o 
+  00002380 000028 40005380 00002c50 16 siu_parallel_port_init_fnc 	siu_init.o 
+  000023b0 000002 400053b0 00002c80 16 siu_unused_pins_init_fnc 	siu_init.o 
+  000023c0 0000a8 400053c0 00002c90 16 siu_psmi_init_fnc 	siu_init.o 
+  00002468 000000 40005468 00002d38  1 .text.293 	siu_init.o 
+  00002468 000008 40005470 00002d40 16 *fill*
+  00002470 00010a 40005470 00002d40  1 .text 	sys_init.o 
+  00002470 00010a 40005470 00002d40 16 sys_init_fnc 	sys_init.o 
+  0000257a 000000 4000557a 00002e4a  1 .text.271 	sys_init.o 
+  0000257a 000006 40005580 00002e50 16 *fill*
+  00002580 0003ac 40005580 00002e50  1 .text 	sysclk_init.o 
+  00002580 000038 40005580 00002e50 16 sysclk_module_init_fnc 	sysclk_init.o 
+  000025c0 0000de 400055c0 00002e90 16 Mode_Entry_init_fnc 	sysclk_init.o 
+  000026a0 0001ac 400056a0 00002f70 16 sysclk_init_fnc 	sysclk_init.o 
+  00002850 000034 40005850 00003120 16 cmu_init_fnc 	sysclk_init.o 
+  00002890 00009c 40005890 00003160 16 mode_entry_post_config_fnc 	sysclk_init.o 
+  0000292c 000000 4000592c 000031fc  1 .text.310 	sysclk_init.o 
+  0000292c 000094 4000592c 000031fc  1 .text 	Runtime.PPCEABI.V.UC.a runtime.o
+  0000292c 00004a 4000592c 000031fc  2 __save_gpr 	Runtime.PPCEABI.V.UC.a runtime.o
+  0000292c 000000 4000592c 000031fc    _save32gpr_14 (entry of __save_gpr) 	Runtime.PPCEABI.V.UC.a runtime.o
+  0000294c 000000 4000594c 0000321c    _save32gpr_22 (entry of __save_gpr) 	Runtime.PPCEABI.V.UC.a runtime.o
+  00002976 00004a 40005976 00003246  2 __restore_gpr 	Runtime.PPCEABI.V.UC.a runtime.o
+  00002976 000000 40005976 00003246    _rest32gpr_14 (entry of __restore_gpr) 	Runtime.PPCEABI.V.UC.a runtime.o
+  00002996 000000 40005996 00003266    _rest32gpr_22 (entry of __restore_gpr) 	Runtime.PPCEABI.V.UC.a runtime.o
+  000029c0 000000 400059c0 00003290  1 .text.211 	Runtime.PPCEABI.V.UC.a runtime.o
+  000029c0 00012e 400059c0 00003290  1 .text 	MSL_C.PPCEABI.bare.V.SP.UC.a e_fmodf.o
+  000029c0 00012e 400059c0 00003290  2 __ieee754_fmodf 	MSL_C.PPCEABI.bare.V.SP.UC.a e_fmodf.o
+  00002aee 00006c 40005aee 000033be  1 .text 	MSL_C.PPCEABI.bare.V.SP.UC.a s_floorf.o
+  00002aee 00006c 40005aee 000033be  2 floorf 	MSL_C.PPCEABI.bare.V.SP.UC.a s_floorf.o
+  00002b5a 000004 40005b5a 0000342a  1 .text 	MSL_C.PPCEABI.bare.V.SP.UC.a w_fmodf.o
+  00002b5a 000004 40005b5a 0000342a  2 fmodf 	MSL_C.PPCEABI.bare.V.SP.UC.a w_fmodf.o
+
+
+.rodata section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.ctors section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.dtors section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+extab section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+extabindex section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.sdata2 section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000008 40005b60 00003430  1 .sdata2 	MSL_C.PPCEABI.bare.V.SP.UC.a e_fmodf.o
+  00000000 000008 40005b60 00003430  8 Zero 	MSL_C.PPCEABI.bare.V.SP.UC.a e_fmodf.o
+  00000008 000004 40005b68 00003438  1 .sdata2 	MSL_C.PPCEABI.bare.V.SP.UC.a s_floorf.o
+  00000008 000004 40005b68 00003438  4 @63 	MSL_C.PPCEABI.bare.V.SP.UC.a s_floorf.o
+
+
+.sbss2 section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.data section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.j_pdata section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.sdata section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000010 4000a000 00003440  1 .sdata 	FlexPWM_564xL_library.o 
+  00000000 000004 4000a000 00003440  4 sysClk 	FlexPWM_564xL_library.o 
+  00000008 000008 4000a008 00003448  8 FlexPWM_module 	FlexPWM_564xL_library.o 
+  00000010 000008 4000a010 00003450  1 .sdata 	flexpwm_init.o 
+  00000010 000008 4000a010 00003450  8 FlexPWM_module 	flexpwm_init.o 
+
+
+.sbss section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 000008 4000a018 00003458  1 .sbss 	Wall.o 
+  00000000 000008 4000a018 00003458  8 Wall_DWork 	Wall.o 
+  00000008 000018 4000a020 00003460  1 .sbss 	rt_nonfinite.o 
+  00000008 000004 4000a020 00003460  4 rtNaNF 	rt_nonfinite.o 
+  0000000c 000004 4000a024 00003464  4 rtMinusInfF 	rt_nonfinite.o 
+  00000010 000004 4000a028 00003468  4 rtInfF 	rt_nonfinite.o 
+  00000014 000004 4000a02c 0000346c  4 rtNaN 	rt_nonfinite.o 
+  00000018 000004 4000a030 00003470  4 rtMinusInf 	rt_nonfinite.o 
+  0000001c 000004 4000a034 00003474  4 rtInf 	rt_nonfinite.o 
+
+
+.bss section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+  00000000 00001c 4000a038 00003458  1 .bss 	Wall.o 
+  00000000 00001c 4000a038 00003458  4 Wall_B 	Wall.o 
+
+
+.tibss section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+.tidata section layout
+  Starting        Virtual  File
+  address  Size   address  offset
+  ---------------------------------
+
+
+Memory map:
+                       Starting Size     File       S-Record
+                       address           Offset     Line
+                 .init 40000000 00000004 00000160          2
+             .init_vle 40000004 00000094 00000164          3
+        .exec_vect_vle 40001000 000002d4 000001f8         11
+   .ivor4_vector_table 40002000 00000400 000004d0         48
+             .text_vle 40003000 00002b60 000008d0        100
+               .rodata 40005b60 00000000 00003430          0
+                .ctors 40005b60 00000000 00003430          0
+                .dtors 40005b60 00000000 00003430          0
+                 extab 40005b60 00000000 00003430          0
+            extabindex 40005b60 00000000 00003430          0
+               .sdata2 40005b60 0000000c 00003430        656
+                .sbss2 40005b6c 00000000 0000343c          0
+                 .data 4000a000 00000000 00003440          0
+                .sdata 4000a000 00000018 00003440        657
+                 .sbss 4000a018 00000020 00003458          0
+                  .bss 4000a038 0000001c 00003458          0
+      .PPC.EMB.apuinfo 0000d610 00000000 00010a70          0
+         .debug_abbrev          00000163 00003458
+           .debug_info          000074d4 000035bb
+           .debug_line          00003dee 0000aa8f
+            .debug_loc          000008ea 0000e87d
+       .debug_pubnames          000005c2 0000f167
+
+
+Linker generated symbols:
+                   __argv 40003000
+                    __env 40003000
+          __DATA_ROM_ADDR 40005b6c
+         __DATA_SRAM_ADDR 4000a000
+               __DATA_END 4000a018
+              __BSS_START 4000a018
+                __BSS_END 4000a054
+             __HEAP_START 4000a054
+              __DATA_SIZE 00000018
+                __SP_INIT 40010000
+                 __SP_END 4000f800
+          _SRAM_BASE_ADDR 4000a000
+               _SRAM_SIZE 00006000
+               __BSS_SIZE 0000003c
+             __SDATA_SIZE 00000000
+         __SDATA_ROM_ADDR 4000a000
+        __SDATA_SRAM_ADDR 4000a000
+             __IVPR_VALUE 40001000
+                  _f_init 40000000
+              _f_init_rom 40000000
+                  _e_init 40000004
+              _f_init_vle 40000004
+          _f_init_vle_rom 40000004
+              _e_init_vle 40000098
+             _f_exec_vect 40001000
+         _f_exec_vect_rom 40001000
+             _e_exec_vect 40001000
+         _f_exec_vect_vle 40001000
+     _f_exec_vect_vle_rom 40001000
+         _e_exec_vect_vle 400012d4
+    _f_ivor4_vector_table 40002000
+_f_ivor4_vector_table_rom 40002000
+    _e_ivor4_vector_table 40002400
+                  _f_text 40003000
+              _f_text_rom 40003000
+                  _e_text 40003000
+              _f_text_vle 40003000
+          _f_text_vle_rom 40003000
+              _e_text_vle 40005b60
+                _f_rodata 40005b60
+            _f_rodata_rom 40005b60
+                _e_rodata 40005b60
+                 _f_ctors 40005b60
+             _f_ctors_rom 40005b60
+                 _e_ctors 40005b60
+                 _f_dtors 40005b60
+             _f_dtors_rom 40005b60
+                 _e_dtors 40005b60
+                  _fextab 40005b60
+              _fextab_rom 40005b60
+                  _eextab 40005b60
+             _fextabindex 40005b60
+         _fextabindex_rom 40005b60
+             _eextabindex 40005b60
+                _f_sdata2 40005b60
+            _f_sdata2_rom 40005b60
+                _e_sdata2 40005b6c
+                 _f_sbss2 40005b6c
+                 _e_sbss2 40005b6c
+                  _f_data 4000a000
+              _f_data_rom 4000a000
+                  _e_data 4000a000
+               _f_j_pdata 4000a000
+           _f_j_pdata_rom 4000a000
+               _e_j_pdata 4000a000
+                 _f_sdata 4000a000
+             _f_sdata_rom 4000a000
+                 _e_sdata 4000a018
+                  _f_sbss 4000a018
+                  _e_sbss 4000a038
+                   _f_bss 4000a038
+                   _e_bss 4000a054
+                 _f_tibss 4000a054
+             _f_tibss_rom 4000a054
+                 _e_tibss 4000a054
+                _f_tidata 4000a054
+            _f_tidata_rom 4000a054
+                _e_tidata 4000a054
+              _stack_addr 003dfff0
+               _stack_end 003cfff0
+               _heap_addr 002cfff0
+                _heap_end 003cfff0
+             _nbfunctions 00000037
+           SIZEOF_HEADERS 00000160
+               _SDA_BASE_ 40012000
+              _SDA2_BASE_ 4000db60
+           _ABS_SDA_BASE_ 40012000
+          _ABS_SDA2_BASE_ 4000db60

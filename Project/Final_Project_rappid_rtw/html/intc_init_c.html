@@ -1,0 +1,158 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - intc_init.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\Final_Project.mdl' 'H:\\EECS_461\\project\\Final_Project_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\Final_Project_rappid_rtw\intc_init.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\Final_Project_rappid_rtw\intc_init.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> * File: intc_init.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * Code generated for Simulink model 'Final_Project'.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> * Model version                  : 1.191</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> * Simulink Coder version         : 8.1 (R2011b) 08-Jul-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A><SPAN CLASS="CT"> * TLC version                    : 8.1 (Jul  9 2011)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT"> * C/C++ source code generated on : Tue Mar 29 16:39:55 2016</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT"> * Target selection: rappid564xl.tlc</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT"> * Embedded hardware selection: Motorola PowerPC</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT"> * Code generation objectives: Unspecified</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT"> * Validation result: Not run</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">/********************  Dependent Include files here **********************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;rappid_ref.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;intc_init.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><SPAN CLASS="DT">extern</SPAN> <A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A> IntcIsrVectorTable [];
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="CT">/*********************  Initialization Function(s) ************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_intc_init_fnc">intc_init_fnc</A> (<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A>  e200zX_Interrupt_Setup();
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A>  INTC.MCR.B.HVEN_PRC0 = 0;            <SPAN CLASS="CT">/* Initialize INTC for software vector mode */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A>  INTC.MCR.B.VTES_PRC0 = 0;            <SPAN CLASS="CT">/* Use default vector table entry offsets of 4 B */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A>  INTC.IACKR.R = (<A HREF="typedefs_h.html#type_uint32_t" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_uint32_t');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">uint32_t</FONT></A>) &amp;<A HREF="intc_sw_vectable_c.html#var_ISRVectorTable" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ISRVectorTable');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">ISRVectorTable</FONT></A>[0];<SPAN CLASS="CT">/* Set INTC ISR vector table base address */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A>  INTC.PSR[79].R = 14;                 <SPAN CLASS="CT">/* LIN_0 Rx for PIL */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A>  INTC.PSR[59].R = 0x0B;
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A>  INTC.PSR[60].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A>  INTC.PSR[61].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A>  INTC.PSR[127].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A>  INTC.PSR[62].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A>  INTC.PSR[64].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A>  INTC.PSR[82].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A>  INTC.PSR[84].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A>  INTC.PSR[78].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A>  INTC.PSR[98].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A>  INTC.PSR[118].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>  INTC.PSR[74].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A>  INTC.PSR[75].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>  INTC.PSR[76].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A>  INTC.PSR[77].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>  INTC.PSR[94].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A>  INTC.PSR[95].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>  INTC.PSR[96].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A>  INTC.PSR[97].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>  INTC.PSR[114].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A>  INTC.PSR[115].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>  INTC.PSR[116].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A>  INTC.PSR[117].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>  INTC.PSR[65].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A>  INTC.PSR[85].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>  INTC.PSR[66].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A>  INTC.PSR[86].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>  INTC.PSR[68].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>  INTC.PSR[69].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>  INTC.PSR[70].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>  INTC.PSR[71].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>  INTC.PSR[72].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>  INTC.PSR[88].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>  INTC.PSR[89].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>  INTC.PSR[90].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>  INTC.PSR[91].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>  INTC.PSR[92].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>  INTC.PSR[157].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A>  INTC.PSR[158].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>  INTC.PSR[159].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A>  INTC.PSR[160].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A>  INTC.PSR[161].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>  INTC.PSR[162].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>  INTC.PSR[168].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A>  INTC.PSR[169].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>  INTC.PSR[170].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>  INTC.PSR[171].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>  INTC.PSR[172].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>  INTC.PSR[173].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>  INTC.PSR[222].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>  INTC.PSR[223].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A>  INTC.PSR[224].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>  INTC.PSR[225].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>  INTC.PSR[226].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A>  INTC.PSR[227].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>  INTC.PSR[180].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>  INTC.PSR[179].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>  INTC.PSR[183].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A>  INTC.PSR[182].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>  INTC.PSR[186].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A>  INTC.PSR[185].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>  INTC.PSR[189].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A>  INTC.PSR[188].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>  INTC.PSR[192].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A>  INTC.PSR[193].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A>  INTC.PSR[194].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A>  INTC.PSR[195].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A>  INTC.PSR[196].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>  INTC.PSR[197].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A>  INTC.PSR[198].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>  INTC.PSR[199].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>  INTC.PSR[200].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A>  INTC.PSR[201].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A>  INTC.PSR[206].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>  INTC.PSR[207].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>  INTC.PSR[234].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A>  INTC.PSR[233].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>  INTC.PSR[237].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A>  INTC.PSR[236].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>  INTC.PSR[240].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A>  INTC.PSR[239].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>  INTC.PSR[243].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A>  INTC.PSR[242].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>  INTC.PSR[246].R = 0x00;
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A><SPAN CLASS="CT"> *                           End of File</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><SPAN CLASS="CT"> *######################################################################</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A><SPAN CLASS="CT">/*</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A><SPAN CLASS="CT"> * File trailer for generated code.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A><SPAN CLASS="CT"> * [EOF]</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A><SPAN CLASS="CT"> */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

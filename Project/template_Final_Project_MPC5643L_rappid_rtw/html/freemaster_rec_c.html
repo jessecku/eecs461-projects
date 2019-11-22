@@ -1,0 +1,1096 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_rec.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_rec.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_rec.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2011 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster_rec.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER Recorder implementation.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.0.24.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Aug-3-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_private.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_protocol.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_RECORDER &amp;&amp; (!FMSTR_DISABLE)
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_rec.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_FASTREC
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_fastrec.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A><SPAN CLASS="CT">/********************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><SPAN CLASS="CT"> *  global variables (shared with FastRecorder if used)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><SPAN CLASS="CT"> ********************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT">/* configuration variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A NAME="var_pcm_wRecTotalSmps">pcm_wRecTotalSmps</A>;           <SPAN CLASS="CT">/* number of samples to measure */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_STATIC_POSTTRIG == 0
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A NAME="var_pcm_wRecPostTrigger">pcm_wRecPostTrigger</A>;         <SPAN CLASS="CT">/* number of post-trigger samples to keep */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> <A NAME="var_pcm_nRecTriggerMode">pcm_nRecTriggerMode</A>;          <SPAN CLASS="CT">/* trigger mode (0 = disabled, 1 = _/, 2 = \_) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_DIVISOR) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A NAME="var_pcm_wRecTimeDiv">pcm_wRecTimeDiv</A>;             <SPAN CLASS="CT">/* divisor of recorder "clock" */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> <A NAME="var_pcm_nRecVarCount">pcm_nRecVarCount</A>;             <SPAN CLASS="CT">/* number of active recorder variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A><A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> pcm_pRecVarAddr[<A NAME="var_FMSTR_MAX_SCOPE_VARS">FMSTR_MAX_SCOPE_VARS</A>];<SPAN CLASS="CT">/* addresses of recorded variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> <A NAME="var_pcm_pRecVarSize">pcm_pRecVarSize</A>[<A HREF="freemaster_rec_c.html#var_FMSTR_MAX_SCOPE_VARS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_MAX_SCOPE_VARS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_MAX_SCOPE_VARS</FONT></A>];<SPAN CLASS="CT">/* sizes of recorded variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A><SPAN CLASS="CT">/* runtime variables  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_DIVISOR) != 1
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A NAME="var_pcm_wRecTimeDivCtr">pcm_wRecTimeDivCtr</A>;          <SPAN CLASS="CT">/* recorder "clock" divisor counter */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A NAME="var_pcm_wStoprecCountDown">pcm_wStoprecCountDown</A>;       <SPAN CLASS="CT">/* post-trigger countdown counter */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A><SPAN CLASS="CT">/* recorder flags */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A><A HREF="freemaster_rec_h.html#type_FMSTR_REC_FLAGS" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_REC_FLAGS');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_REC_FLAGS</FONT></A> <A NAME="var_pcm_wRecFlags">pcm_wRecFlags</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A><SPAN CLASS="CT"> *  local variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> <A NAME="var_pcm_wRecBuffStartIx">pcm_wRecBuffStartIx</A>;         <SPAN CLASS="CT">/* first sample index */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A><SPAN CLASS="CT">/* Recorder buffer pointers */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A><A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> <A NAME="var_pcm_dwRecWritePtr">pcm_dwRecWritePtr</A>;          <SPAN CLASS="CT">/* write pointer in recorder buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A><A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> <A NAME="var_pcm_dwRecEndBuffPtr">pcm_dwRecEndBuffPtr</A>;        <SPAN CLASS="CT">/* pointer to end of active recorder buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A><SPAN CLASS="CT">/* configuration variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> <A NAME="var_pcm_nTrgVarAddr">pcm_nTrgVarAddr</A>;     <SPAN CLASS="CT">/* trigger variable address */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> <A NAME="var_pcm_nTrgVarSize">pcm_nTrgVarSize</A>;       <SPAN CLASS="CT">/* trigger variable threshold size */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> <A NAME="var_pcm_bTrgVarSigned">pcm_bTrgVarSigned</A>;     <SPAN CLASS="CT">/* trigger compare mode (0 = unsigned, 1 = signed) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A><SPAN CLASS="CT">/*lint -e{960} using union */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="KW">union</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <A NAME="var_FMSTR_CFG_BUS_WIDTH">FMSTR_CFG_BUS_WIDTH</A> == 1
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> u8;
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_S8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_S8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_S8</FONT></A> s8;
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> u16;
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_S16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_S16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_S16</FONT></A> s16;
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U32" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U32');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U32</FONT></A> u32;
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_S32" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_S32');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_S32</FONT></A> s32;
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_FLOAT_TRIG
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_FLOAT" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_FLOAT');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_FLOAT</FONT></A> fp;
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A><B>}</B> pcm_uTrgThreshold;                   <SPAN CLASS="CT">/* trigger threshold level (1,2 or 4 bytes) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> <A NAME="var_pcm_nRecBuffAddr">pcm_nRecBuffAddr</A>;    <SPAN CLASS="CT">/* recorder buffer address */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_OWNBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> <A NAME="var_pcm_wRecBuffSize">pcm_wRecBuffSize</A>;    <SPAN CLASS="CT">/* recorder buffer size */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><SPAN CLASS="CT">/* compare functions prototype */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A><SPAN CLASS="KW">typedef</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> (*FMSTR_PCOMPAREFUNC)(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A><SPAN CLASS="CT">/*/ pointer to active compare function */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="DT">static</SPAN> FMSTR_PCOMPAREFUNC <A NAME="var_pcm_pCompareFunc">pcm_pCompareFunc</A>;
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> !FMSTR_REC_OWNBUFF &amp;&amp; (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A><SPAN CLASS="CT">/* put buffer into far memory ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_FARBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">pragma</SPAN> section fardata begin
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_REC_FARBUFF */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A><SPAN CLASS="CT">/* statically allocated recorder buffer (FMSTR_REC_OWNBUFF is FALSE) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> pcm_pOwnRecBuffer[<A NAME="var_FMSTR_REC_BUFF_SIZE">FMSTR_REC_BUFF_SIZE</A>];
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A><SPAN CLASS="CT">/* end of far memory section */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_FARBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">pragma</SPAN> section fardata end
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_REC_FARBUFF */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_REC_OWNBUFF */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A><SPAN CLASS="CT">/***********************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A><SPAN CLASS="CT"> *  local functions</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A><SPAN CLASS="CT"> ***********************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare8S" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare8S');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare8S</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare8U" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare8U');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare8U</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare16S" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare16S');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare16S</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare16U" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare16U');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare16U</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare32S" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare32S');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare32S</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare32U" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare32U');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare32U</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_FLOAT_TRIG
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Comparefloat" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Comparefloat');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Comparefloat</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Recorder2" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Recorder2');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Recorder2</FONT></A>(<SPAN CLASS="DT">void</SPAN>);
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A><SPAN CLASS="CT"> * @brief    Recorder Initialization</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_InitRec">FMSTR_InitRec</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A>  <SPAN CLASS="CT">/* initialize Recorder flags*/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.all = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A>  <SPAN CLASS="CT">/* setup buffer pointer and size so IsInRecBuffer works even</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A><SPAN CLASS="CT">     before the recorder is first initialized and used */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_OWNBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A>  <SPAN CLASS="CT">/* user wants to use his own buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A>  <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffSize</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> FMSTR_USE_FASTREC
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A>  <SPAN CLASS="CT">/* Initialize Fast Recorder Buffer  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A>  FMSTR_InitFastRec();
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A>  <SPAN CLASS="CT">/* size in native sizeof units (=bytes on most platforms) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A>  FMSTR_ARR2ADDR(<A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A>, pcm_pOwnRecBuffer);
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A>  <SPAN CLASS="CT">/*lint -esym(528, pcm_pOwnRecBuffer) this symbol is used outside of lint sight */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A><SPAN CLASS="CT"> * @brief    Abort and de-initialize recorder</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_HC08) || <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_HC12)
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">pragma</SPAN> INLINE
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A><SPAN CLASS="CT">//inline</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_AbortRec">FMSTR_AbortRec</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A>  <SPAN CLASS="CT">/* clear flags */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.all = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A><SPAN CLASS="CT"> * @brief    API: Replacing the recorder buffer with the user's one</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A><SPAN CLASS="CT"> * @param    pBuffer - user buffer pointer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A><SPAN CLASS="CT"> * @param    wBuffSize - buffer size</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A><SPAN CLASS="CT"> * @note Use the FMSTR_SetUpBuff32 to pass the forced 32bit address in SDM</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_SetUpRecBuff">FMSTR_SetUpRecBuff</A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> pBuffer, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> nBuffSize)
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_OWNBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A>  <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A> = pBuffer;
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffSize</FONT></A> = nBuffSize;
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A>  FMSTR_UNUSED(pBuffer);
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A>  FMSTR_UNUSED(nBuffSize);
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A><SPAN CLASS="CT"> * @brief    Handling SETUPREC and SETUPREC_EX commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A><SPAN CLASS="CT"> *           pointer where the response output finished (except checksum)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_SetUpRec">FMSTR_SetUpRec</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pResponse = pMessageIO;
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nRecVarsetSize;
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A>  <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> blen;
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> i, sz;
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> nResponseCode;
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A>  <SPAN CLASS="CT">/* de-initialize first   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A>  <A HREF="freemaster_rec_c.html#fcn_FMSTR_AbortRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AbortRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AbortRec</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_OWNBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A>  <SPAN CLASS="CT">/* user wants to use his own buffer, check if it is valid */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A> || !<A HREF="freemaster_rec_c.html#var_pcm_wRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffSize</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pResponse, FMSTR_STC_INVBUFF);
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">elif</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A>  <SPAN CLASS="CT">/* size in native sizeof units (=bytes on most platforms) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>  FMSTR_ARR2ADDR(<A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A>, pcm_pOwnRecBuffer);
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A>  <SPAN CLASS="CT">/* seek the setup data */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 2U);
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A>  pMessageIO = FMSTR_ValueFromBuffer8(&amp;<A HREF="freemaster_rec_c.html#var_pcm_nRecTriggerMode" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecTriggerMode');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecTriggerMode</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 3U);
+</SPAN><SPAN><A CLASS="LN" NAME="297">  297   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="298">  298   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="299">  299   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="300">  300   </A>  pMessageIO = FMSTR_ValueFromBuffer16(&amp;<A HREF="freemaster_rec_c.html#var_pcm_wRecTotalSmps" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTotalSmps');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTotalSmps</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="301">  301   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="302">  302   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_POSTTRIG) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="303">  303   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="304">  304   </A>  pMessageIO = FMSTR_ValueFromBuffer16(&amp;<A HREF="freemaster_rec_c.html#var_pcm_wRecPostTrigger" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecPostTrigger');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecPostTrigger</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="305">  305   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="306">  306   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* (FMSTR_REC_STATIC_POSTTRIG) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="307">  307   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="308">  308   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 2U);
+</SPAN><SPAN><A CLASS="LN" NAME="309">  309   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="310">  310   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_REC_STATIC_POSTTRIG) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="311">  311   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="312">  312   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_DIVISOR) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="313">  313   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="314">  314   </A>  pMessageIO = FMSTR_ValueFromBuffer16(&amp;<A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDiv" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDiv');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDiv</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="315">  315   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="316">  316   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* (FMSTR_REC_STATIC_DIVISOR) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="317">  317   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="318">  318   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 2U);
+</SPAN><SPAN><A CLASS="LN" NAME="319">  319   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="320">  320   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_REC_STATIC_DIVISOR) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="321">  321   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="322">  322   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="323">  323   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="324">  324   </A>  <SPAN CLASS="CT">/* address & size of trigger variable */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="325">  325   </A>  pMessageIO = <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_AddressFromBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AddressFromBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AddressFromBuffer</FONT></A>(&amp;<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="326">  326   </A>  pMessageIO = FMSTR_ValueFromBuffer8(&amp;<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarSize</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="327">  327   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="328">  328   </A>  <SPAN CLASS="CT">/* trigger compare mode  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="329">  329   </A>  pMessageIO = FMSTR_ValueFromBuffer8(&amp;<A HREF="freemaster_rec_c.html#var_pcm_bTrgVarSigned" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_bTrgVarSigned');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_bTrgVarSigned</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="330">  330   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="331">  331   </A>  <SPAN CLASS="CT">/* threshold value  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="332">  332   </A>  pMessageIO = FMSTR_ValueFromBuffer32(&amp;pcm_uTrgThreshold.u32, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="333">  333   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="334">  334   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="335">  335   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="336">  336   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 8U);
+</SPAN><SPAN><A CLASS="LN" NAME="337">  337   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="338">  338   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="339">  339   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="340">  340   </A>  <SPAN CLASS="CT">/* recorder variable count */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="341">  341   </A>  pMessageIO = FMSTR_ValueFromBuffer8(&amp;<A HREF="freemaster_rec_c.html#var_pcm_nRecVarCount" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecVarCount');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecVarCount</FONT></A>, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="342">  342   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="343">  343   </A>  <SPAN CLASS="CT">/* rec variable information must fit into our buffers */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="344">  344   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_nRecVarCount" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecVarCount');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecVarCount</FONT></A> || <A HREF="freemaster_rec_c.html#var_pcm_nRecVarCount" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecVarCount');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecVarCount</FONT></A> &gt; (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>)FMSTR_MAX_REC_VARS) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="345">  345   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="346">  346   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="347">  347   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="348">  348   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="349">  349   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="350">  350   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="351">  351   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="352">  352   </A>    nResponseCode = FMSTR_STC_INVBUFF;
+</SPAN><SPAN><A CLASS="LN" NAME="353">  353   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="354">  354   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="355">  355   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="356">  356   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="357">  357   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="358">  358   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="359">  359   </A>  <SPAN CLASS="CT">/* calculate sum of sizes of all variables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="360">  360   </A>  nRecVarsetSize = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="361">  361   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="362">  362   </A>  <SPAN CLASS="CT">/* get all addresses and sizes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="363">  363   </A>  <SPAN CLASS="KW">for</SPAN> (i=0U; i&lt;<A HREF="freemaster_rec_c.html#var_pcm_nRecVarCount" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecVarCount');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecVarCount</FONT></A>; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="364">  364   </A>    <SPAN CLASS="CT">/* variable size */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="365">  365   </A>    pMessageIO = FMSTR_ValueFromBuffer8(&amp;sz, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="366">  366   </A>    <A HREF="freemaster_rec_c.html#var_pcm_pRecVarSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRecVarSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRecVarSize</FONT></A>[i] = sz;
+</SPAN><SPAN><A CLASS="LN" NAME="367">  367   </A>    nRecVarsetSize += sz;
+</SPAN><SPAN><A CLASS="LN" NAME="368">  368   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="369">  369   </A>    <SPAN CLASS="CT">/* variable address */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="370">  370   </A>    pMessageIO = <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_AddressFromBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AddressFromBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AddressFromBuffer</FONT></A>(&amp;pcm_pRecVarAddr[i], pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="371">  371   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="372">  372   </A>    <SPAN CLASS="CT">/* valid numeric variable sizes only */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="373">  373   </A>    <SPAN CLASS="KW">if</SPAN> (sz == 0U || sz &gt; 8U) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="374">  374   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="375">  375   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="376">  376   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="377">  377   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="378">  378   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="379">  379   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="380">  380   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="381">  381   </A>      nResponseCode = FMSTR_STC_INVSIZE;
+</SPAN><SPAN><A CLASS="LN" NAME="382">  382   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="383">  383   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="384">  384   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="385">  385   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="386">  386   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="387">  387   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="388">  388   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <A HREF="freemaster_rec_c.html#var_FMSTR_CFG_BUS_WIDTH" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CFG_BUS_WIDTH');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CFG_BUS_WIDTH</FONT></A> &gt; 1U
+</SPAN><SPAN><A CLASS="LN" NAME="389">  389   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="390">  390   </A>    <SPAN CLASS="CT">/* even sizes only */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="391">  391   </A>    <SPAN CLASS="KW">if</SPAN> (sz &amp; 0x1) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="392">  392   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="393">  393   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="394">  394   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="395">  395   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="396">  396   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="397">  397   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="398">  398   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="399">  399   </A>      nResponseCode = FMSTR_STC_INVSIZE;
+</SPAN><SPAN><A CLASS="LN" NAME="400">  400   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="401">  401   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="402">  402   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="403">  403   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="404">  404   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="405">  405   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="406">  406   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_CFG_BUS_WIDTH &gt; 1U */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="407">  407   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="408">  408   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_TSA &amp;&amp; FMSTR_USE_TSA_SAFETY
+</SPAN><SPAN><A CLASS="LN" NAME="409">  409   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="410">  410   </A>    <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckTsaSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckTsaSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckTsaSpace</FONT></A>(pcm_pRecVarAddr[i], (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>)sz, 0U)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="411">  411   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="412">  412   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="413">  413   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="414">  414   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="415">  415   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="416">  416   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="417">  417   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="418">  418   </A>      nResponseCode = FMSTR_STC_EACCESS;
+</SPAN><SPAN><A CLASS="LN" NAME="419">  419   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="420">  420   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="421">  421   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="422">  422   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="423">  423   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="424">  424   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="425">  425   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_TSA && FMSTR_USE_TSA_SAFETY */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="426">  426   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="427">  427   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="428">  428   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="429">  429   </A>  <SPAN CLASS="CT">/* fast recorder handles trigger by itself */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="430">  430   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="431">  431   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="432">  432   </A>  <SPAN CLASS="CT">/* any trigger? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="433">  433   </A>  <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A> = NULL;
+</SPAN><SPAN><A CLASS="LN" NAME="434">  434   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_nRecTriggerMode" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecTriggerMode');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecTriggerMode</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="435">  435   </A>    <SPAN CLASS="CT">/* access to trigger variable? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="436">  436   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_TSA &amp;&amp; FMSTR_USE_TSA_SAFETY
+</SPAN><SPAN><A CLASS="LN" NAME="437">  437   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="438">  438   </A>    <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckTsaSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckTsaSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckTsaSpace</FONT></A>(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>, (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>)<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarSize</FONT></A>, 0U))
+</SPAN><SPAN><A CLASS="LN" NAME="439">  439   </A>    <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="440">  440   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="441">  441   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="442">  442   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="443">  443   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="444">  444   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="445">  445   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="446">  446   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="447">  447   </A>      nResponseCode = FMSTR_STC_EACCESS;
+</SPAN><SPAN><A CLASS="LN" NAME="448">  448   </A>      <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="449">  449   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="450">  450   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="451">  451   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="452">  452   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="453">  453   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="454">  454   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_TSA && FMSTR_USE_TSA_SAFETY */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="455">  455   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="456">  456   </A>    <SPAN CLASS="CT">/* get compare function */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="457">  457   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_FLOAT_TRIG
+</SPAN><SPAN><A CLASS="LN" NAME="458">  458   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="459">  459   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_bTrgVarSigned" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_bTrgVarSigned');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_bTrgVarSigned</FONT></A>&amp;FMSTR_REC_FLOAT_TRIG_MASK) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="460">  460   </A>      <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A> = <A HREF="freemaster_rec_c.html#fcn_FMSTR_Comparefloat" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Comparefloat');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Comparefloat</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="461">  461   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="462">  462   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="463">  463   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="464">  464   </A>      <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_bTrgVarSigned" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_bTrgVarSigned');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_bTrgVarSigned</FONT></A>&amp;FMSTR_REC_FLOAT_TRIG_MASK) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="465">  465   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="466">  466   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="467">  467   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="468">  468   </A>        <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="469">  469   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="470">  470   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="471">  471   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="472">  472   </A>        nResponseCode = FMSTR_STC_FLOATDISABLED;
+</SPAN><SPAN><A CLASS="LN" NAME="473">  473   </A>        <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="474">  474   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="475">  475   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="476">  476   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="477">  477   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="478">  478   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="479">  479   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="480">  480   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="481">  481   </A>    <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="482">  482   </A>      <SPAN CLASS="KW">switch</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarSize</FONT></A>)
+</SPAN><SPAN><A CLASS="LN" NAME="483">  483   </A>      <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="484">  484   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="485">  485   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <A HREF="freemaster_rec_c.html#var_FMSTR_CFG_BUS_WIDTH" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CFG_BUS_WIDTH');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CFG_BUS_WIDTH</FONT></A> == 1U
+</SPAN><SPAN><A CLASS="LN" NAME="486">  486   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="487">  487   </A>       <SPAN CLASS="KW">case</SPAN> 1:
+</SPAN><SPAN><A CLASS="LN" NAME="488">  488   </A>        <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_bTrgVarSigned" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_bTrgVarSigned');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_bTrgVarSigned</FONT></A> ? <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare8S" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare8S');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare8S</FONT></A> : <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare8U" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare8U');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare8U</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="489">  489   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="490">  490   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="491">  491   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="492">  492   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="493">  493   </A>       <SPAN CLASS="KW">case</SPAN> 2:
+</SPAN><SPAN><A CLASS="LN" NAME="494">  494   </A>        <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_bTrgVarSigned" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_bTrgVarSigned');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_bTrgVarSigned</FONT></A> ? <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare16S" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare16S');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare16S</FONT></A> :
+</SPAN><SPAN><A CLASS="LN" NAME="495">  495   </A>          <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare16U" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare16U');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare16U</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="496">  496   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="497">  497   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="498">  498   </A>       <SPAN CLASS="KW">case</SPAN> 4:
+</SPAN><SPAN><A CLASS="LN" NAME="499">  499   </A>        <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_bTrgVarSigned" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_bTrgVarSigned');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_bTrgVarSigned</FONT></A> ? <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare32S" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare32S');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare32S</FONT></A> :
+</SPAN><SPAN><A CLASS="LN" NAME="500">  500   </A>          <A HREF="freemaster_rec_c.html#fcn_FMSTR_Compare32U" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Compare32U');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Compare32U</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="501">  501   </A>        <SPAN CLASS="KW">break</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="502">  502   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="503">  503   </A>        <SPAN CLASS="CT">/* invalid trigger variable size  */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="504">  504   </A>       <SPAN CLASS="KW">default</SPAN>:
+</SPAN><SPAN><A CLASS="LN" NAME="505">  505   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="506">  506   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="507">  507   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="508">  508   </A>        <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="509">  509   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="510">  510   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="511">  511   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="512">  512   </A>        nResponseCode = FMSTR_STC_INVSIZE;
+</SPAN><SPAN><A CLASS="LN" NAME="513">  513   </A>        <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="514">  514   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="515">  515   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="516">  516   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="517">  517   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="518">  518   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="519">  519   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="520">  520   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="521">  521   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="522">  522   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="523">  523   </A>  <SPAN CLASS="CT">/* total recorder buffer length in native sizeof units (=bytes on most platforms) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="524">  524   </A>  blen = (<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>) (<A HREF="freemaster_rec_c.html#var_pcm_wRecTotalSmps" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTotalSmps');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTotalSmps</FONT></A> * nRecVarsetSize / <A HREF="freemaster_rec_c.html#var_FMSTR_CFG_BUS_WIDTH" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CFG_BUS_WIDTH');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CFG_BUS_WIDTH</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="525">  525   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="526">  526   </A>  <SPAN CLASS="CT">/* recorder memory available? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="527">  527   </A>  <SPAN CLASS="KW">if</SPAN> (blen &gt; <A HREF="freemaster_rec_c.html#fcn_FMSTR_GetRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetRecBuffSize</FONT></A>()) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="528">  528   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="529">  529   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="530">  530   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="531">  531   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="532">  532   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="533">  533   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="534">  534   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="535">  535   </A>    nResponseCode = FMSTR_STC_INVSIZE;
+</SPAN><SPAN><A CLASS="LN" NAME="536">  536   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="537">  537   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="538">  538   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="539">  539   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="540">  540   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="541">  541   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="542">  542   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="543">  543   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="544">  544   </A>  <SPAN CLASS="CT">/* remember the effective end of circular buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="545">  545   </A>  <A HREF="freemaster_rec_c.html#var_pcm_dwRecEndBuffPtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecEndBuffPtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecEndBuffPtr</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A> + blen;
+</SPAN><SPAN><A CLASS="LN" NAME="546">  546   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="547">  547   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="548">  548   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="549">  549   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_FASTREC
+</SPAN><SPAN><A CLASS="LN" NAME="550">  550   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="551">  551   </A>  <SPAN CLASS="KW">if</SPAN> (!FMSTR_SetUpFastRec()) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="552">  552   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="553">  553   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="554">  554   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="555">  555   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="556">  556   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="557">  557   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* FMSTR_REC_COMMON_ERR_CODES */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="558">  558   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="559">  559   </A>    nResponseCode = FMSTR_STC_FASTRECERR;
+</SPAN><SPAN><A CLASS="LN" NAME="560">  560   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="561">  561   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="562">  562   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_REC_COMMON_ERR_CODES */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="563">  563   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="564">  564   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="565">  565   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="566">  566   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_FASTREC */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="567">  567   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="568">  568   </A>  <SPAN CLASS="CT">/* everything is okay    */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="569">  569   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsConfigured = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="570">  570   </A>  nResponseCode = FMSTR_STS_OK;
+</SPAN><SPAN><A CLASS="LN" NAME="571">  571   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="572">  572   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="573">  573   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="574">  574   </A>  <SPAN CLASS="KW">goto</SPAN> FMSTR_SetUpRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="575">  575   </A> FMSTR_SetUpRec_exit_error:
+</SPAN><SPAN><A CLASS="LN" NAME="576">  576   </A>  nResponseCode = FMSTR_STC_INVSIZE;
+</SPAN><SPAN><A CLASS="LN" NAME="577">  577   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="578">  578   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="579">  579   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="580">  580   </A> FMSTR_SetUpRec_exit:
+</SPAN><SPAN><A CLASS="LN" NAME="581">  581   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pResponse, nResponseCode);
+</SPAN><SPAN><A CLASS="LN" NAME="582">  582   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="583">  583   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="584">  584   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="585">  585   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="586">  586   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="587">  587   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="588">  588   </A><SPAN CLASS="CT"> * @brief    API: Pull the trigger of the recorder</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="589">  589   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="590">  590   </A><SPAN CLASS="CT"> * This function starts the post-trigger stop countdown</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="591">  591   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="592">  592   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="593">  593   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_TriggerRec">FMSTR_TriggerRec</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="594">  594   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="595">  595   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsStopping) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="596">  596   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsStopping = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="597">  597   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="598">  598   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_POSTTRIG) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="599">  599   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="600">  600   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wStoprecCountDown" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wStoprecCountDown');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wStoprecCountDown</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_wRecPostTrigger" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecPostTrigger');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecPostTrigger</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="601">  601   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="602">  602   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="603">  603   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="604">  604   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wStoprecCountDown" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wStoprecCountDown');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wStoprecCountDown</FONT></A> = FMSTR_REC_STATIC_POSTTRIG;
+</SPAN><SPAN><A CLASS="LN" NAME="605">  605   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="606">  606   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="607">  607   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="608">  608   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="609">  609   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="610">  610   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="611">  611   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="612">  612   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="613">  613   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="614">  614   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="615">  615   </A><SPAN CLASS="CT"> * @brief    Handling STARTREC command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="616">  616   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="617">  617   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="618">  618   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="619">  619   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the length</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="620">  620   </A><SPAN CLASS="CT"> *           of the response filled into the buffer (including status byte)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="621">  621   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="622">  622   </A><SPAN CLASS="CT"> * This function starts recording (initializes internal recording variables</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="623">  623   </A><SPAN CLASS="CT"> * and flags)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="624">  624   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="625">  625   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="626">  626   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_StartRec">FMSTR_StartRec</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="627">  627   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="628">  628   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> nResponseCode;
+</SPAN><SPAN><A CLASS="LN" NAME="629">  629   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="630">  630   </A>  <SPAN CLASS="CT">/* must be configured */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="631">  631   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsConfigured) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="632">  632   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="633">  633   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="634">  634   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="635">  635   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_StartRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="636">  636   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="637">  637   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="638">  638   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="639">  639   </A>    nResponseCode = FMSTR_STC_NOTINIT;
+</SPAN><SPAN><A CLASS="LN" NAME="640">  640   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_StartRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="641">  641   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="642">  642   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="643">  643   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="644">  644   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="645">  645   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="646">  646   </A>  <SPAN CLASS="CT">/* already running ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="647">  647   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="648">  648   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="649">  649   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="650">  650   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="651">  651   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_StartRec_exit_error;
+</SPAN><SPAN><A CLASS="LN" NAME="652">  652   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="653">  653   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="654">  654   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="655">  655   </A>    nResponseCode = FMSTR_STS_RECRUN;
+</SPAN><SPAN><A CLASS="LN" NAME="656">  656   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_StartRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="657">  657   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="658">  658   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="659">  659   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="660">  660   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="661">  661   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="662">  662   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="663">  663   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="664">  664   </A>  <SPAN CLASS="CT">/* initialize write pointer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="665">  665   </A>  <A HREF="freemaster_rec_c.html#var_pcm_dwRecWritePtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecWritePtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecWritePtr</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="666">  666   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="667">  667   </A>  <SPAN CLASS="CT">/* current (first) sample index */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="668">  668   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffStartIx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffStartIx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffStartIx</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="669">  669   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="670">  670   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="671">  671   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="672">  672   </A>  <SPAN CLASS="CT">/* initialize time divisor */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="673">  673   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_DIVISOR) != 1
+</SPAN><SPAN><A CLASS="LN" NAME="674">  674   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="675">  675   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDivCtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDivCtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDivCtr</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="676">  676   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="677">  677   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="678">  678   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="679">  679   </A>  <SPAN CLASS="CT">/* initiate virgin cycle */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="680">  680   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsStopping = 0U;  <SPAN CLASS="CT">/* no trigger active */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="681">  681   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bTrgCrossActive = 0U;<SPAN CLASS="CT">/* waiting for threshold crossing */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="682">  682   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bInvirginCycle = 1U;<SPAN CLASS="CT">/* initial cycle */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="683">  683   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="684">  684   </A>  <SPAN CLASS="CT">/* run now */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="685">  685   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="686">  686   </A>  <SPAN CLASS="CT">/* start fast recorder */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="687">  687   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_FASTREC
+</SPAN><SPAN><A CLASS="LN" NAME="688">  688   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="689">  689   </A>  FMSTR_StartFastRec();
+</SPAN><SPAN><A CLASS="LN" NAME="690">  690   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="691">  691   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (MSTR_USE_FASTREC */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="692">  692   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="693">  693   </A>  <SPAN CLASS="CT">/* run now */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="694">  694   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning = 1U;   <SPAN CLASS="CT">/* is running now! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="695">  695   </A>  nResponseCode = FMSTR_STS_OK;
+</SPAN><SPAN><A CLASS="LN" NAME="696">  696   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="697">  697   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_COMMON_ERR_CODES
+</SPAN><SPAN><A CLASS="LN" NAME="698">  698   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="699">  699   </A>  <SPAN CLASS="KW">goto</SPAN> FMSTR_StartRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="700">  700   </A> FMSTR_StartRec_exit_error:
+</SPAN><SPAN><A CLASS="LN" NAME="701">  701   </A>  nResponseCode = FMSTR_STC_NOTINIT;
+</SPAN><SPAN><A CLASS="LN" NAME="702">  702   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="703">  703   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="704">  704   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="705">  705   </A> FMSTR_StartRec_exit:
+</SPAN><SPAN><A CLASS="LN" NAME="706">  706   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, nResponseCode);
+</SPAN><SPAN><A CLASS="LN" NAME="707">  707   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="708">  708   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="709">  709   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="710">  710   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="711">  711   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="712">  712   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="713">  713   </A><SPAN CLASS="CT"> * @brief    Handling STOPREC command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="714">  714   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="715">  715   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="716">  716   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="717">  717   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the length</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="718">  718   </A><SPAN CLASS="CT"> *           of the response filled into the buffer (including status byte)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="719">  719   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="720">  720   </A><SPAN CLASS="CT"> * This function stops recording (same as manual trigger)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="721">  721   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="722">  722   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="723">  723   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_StopRec">FMSTR_StopRec</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="724">  724   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="725">  725   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> nResponseCode;
+</SPAN><SPAN><A CLASS="LN" NAME="726">  726   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="727">  727   </A>  <SPAN CLASS="CT">/* must be configured */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="728">  728   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsConfigured) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="729">  729   </A>    nResponseCode = FMSTR_STC_NOTINIT;
+</SPAN><SPAN><A CLASS="LN" NAME="730">  730   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_StopRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="731">  731   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="732">  732   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="733">  733   </A>  <SPAN CLASS="CT">/* already stopped ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="734">  734   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="735">  735   </A>    nResponseCode = FMSTR_STS_RECDONE;
+</SPAN><SPAN><A CLASS="LN" NAME="736">  736   </A>    <SPAN CLASS="KW">goto</SPAN> FMSTR_StopRec_exit;
+</SPAN><SPAN><A CLASS="LN" NAME="737">  737   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="738">  738   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="739">  739   </A>  <SPAN CLASS="CT">/* simulate trigger */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="740">  740   </A>  <A HREF="freemaster_rec_c.html#fcn_FMSTR_TriggerRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TriggerRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TriggerRec</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="741">  741   </A>  nResponseCode = FMSTR_STS_OK;
+</SPAN><SPAN><A CLASS="LN" NAME="742">  742   </A> FMSTR_StopRec_exit:
+</SPAN><SPAN><A CLASS="LN" NAME="743">  743   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, nResponseCode);
+</SPAN><SPAN><A CLASS="LN" NAME="744">  744   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="745">  745   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="746">  746   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="747">  747   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="748">  748   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="749">  749   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="750">  750   </A><SPAN CLASS="CT"> * @brief    Handling GETRECSTS command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="751">  751   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="752">  752   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="753">  753   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="754">  754   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="755">  755   </A><SPAN CLASS="CT"> *           pointer where the response output finished (except checksum)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="756">  756   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="757">  757   </A><SPAN CLASS="CT"> * This function returns current recorder status</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="758">  758   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="759">  759   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="760">  760   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_GetRecStatus">FMSTR_GetRecStatus</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="761">  761   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="762">  762   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> nResponseCode = (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A>) (<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning ?
+</SPAN><SPAN><A CLASS="LN" NAME="763">  763   </A>    FMSTR_STS_RECRUN : FMSTR_STS_RECDONE);
+</SPAN><SPAN><A CLASS="LN" NAME="764">  764   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="765">  765   </A>  <SPAN CLASS="CT">/* must be configured */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="766">  766   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsConfigured) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="767">  767   </A>    nResponseCode = FMSTR_STC_NOTINIT;
+</SPAN><SPAN><A CLASS="LN" NAME="768">  768   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="769">  769   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="770">  770   </A>  <SPAN CLASS="CT">/* get run/stop status */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="771">  771   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, (<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A>) nResponseCode);
+</SPAN><SPAN><A CLASS="LN" NAME="772">  772   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="773">  773   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="774">  774   </A><SPAN CLASS="CT">/* now follows the recorder only routines, skip that if FastRecorder is used */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="775">  775   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_USE_FASTREC) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="776">  776   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="777">  777   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="778">  778   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="779">  779   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="780">  780   </A><SPAN CLASS="CT"> * @brief    Get recorder memory size</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="781">  781   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="782">  782   </A><SPAN CLASS="CT"> * @return   Recorder memory size in native sizeof units (=bytes on most platforms)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="783">  783   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="784">  784   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="785">  785   </A><A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> <A NAME="fcn_FMSTR_GetRecBuffSize">FMSTR_GetRecBuffSize</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="786">  786   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="787">  787   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="788">  788   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_OWNBUFF
+</SPAN><SPAN><A CLASS="LN" NAME="789">  789   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="790">  790   </A>  <SPAN CLASS="KW">return</SPAN> <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffSize</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="791">  791   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="792">  792   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="793">  793   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="794">  794   </A>  <SPAN CLASS="KW">return</SPAN> (<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>) <A HREF="freemaster_rec_c.html#var_FMSTR_REC_BUFF_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_REC_BUFF_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_REC_BUFF_SIZE</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="795">  795   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="796">  796   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="797">  797   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="798">  798   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="799">  799   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="800">  800   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="801">  801   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="802">  802   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="803">  803   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="804">  804   </A><SPAN CLASS="CT"> * @brief    Check wether given memory region is inside the recorder buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="805">  805   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="806">  806   </A><SPAN CLASS="CT"> * @param    dwAddr - address of the memory to be checked</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="807">  807   </A><SPAN CLASS="CT"> * @param    wSize  - size of the memory to be checked</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="808">  808   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="809">  809   </A><SPAN CLASS="CT"> * @return   This function returns non-zero if user space is in recorder buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="810">  810   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="811">  811   </A><SPAN CLASS="CT"> * This function is called as a part of TSA-checking process when the PC host</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="812">  812   </A><SPAN CLASS="CT"> * is requesting memory contents</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="813">  813   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="814">  814   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="815">  815   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_IsInRecBuffer">FMSTR_IsInRecBuffer</A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> dwAddr, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize)
+</SPAN><SPAN><A CLASS="LN" NAME="816">  816   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="817">  817   </A>  <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> bRet = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="818">  818   </A>  <SPAN CLASS="KW">if</SPAN> (dwAddr &gt;= <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="819">  819   </A>    bRet = (<A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A>)((dwAddr + nSize) &lt;= (<A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A> +
+</SPAN><SPAN><A CLASS="LN" NAME="820">  820   </A>      <A HREF="freemaster_rec_c.html#fcn_FMSTR_GetRecBuffSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_GetRecBuffSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_GetRecBuffSize</FONT></A>()) ? FMSTR_TRUE : FMSTR_FALSE);
+</SPAN><SPAN><A CLASS="LN" NAME="821">  821   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="822">  822   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="823">  823   </A>  <SPAN CLASS="KW">return</SPAN> bRet;
+</SPAN><SPAN><A CLASS="LN" NAME="824">  824   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="825">  825   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="826">  826   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="827">  827   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="828">  828   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="829">  829   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="830">  830   </A><SPAN CLASS="CT"> * @brief    Handling GETRECBUFF and GETRECBUFF_EX command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="831">  831   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="832">  832   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="833">  833   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="834">  834   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="835">  835   </A><SPAN CLASS="CT"> *           pointer where the response output finished (except checksum)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="836">  836   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="837">  837   </A><SPAN CLASS="CT"> * This function returns recorder buffer information</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="838">  838   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="839">  839   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="840">  840   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_GetRecBuff">FMSTR_GetRecBuff</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="841">  841   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="842">  842   </A>  <SPAN CLASS="DT">volatile</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pResponse;
+</SPAN><SPAN><A CLASS="LN" NAME="843">  843   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="844">  844   </A>  <SPAN CLASS="CT">/* must be configured */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="845">  845   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsConfigured) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="846">  846   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STC_NOTINIT);
+</SPAN><SPAN><A CLASS="LN" NAME="847">  847   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="848">  848   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="849">  849   </A>  <SPAN CLASS="CT">/* must be stopped */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="850">  850   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="851">  851   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STC_SERVBUSY);
+</SPAN><SPAN><A CLASS="LN" NAME="852">  852   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="853">  853   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="854">  854   </A>  <SPAN CLASS="CT">/* fill the return info */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="855">  855   </A>  pResponse = FMSTR_ConstToBuffer8(pMessageIO, FMSTR_STS_OK);
+</SPAN><SPAN><A CLASS="LN" NAME="856">  856   </A>  pResponse = <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_AddressToBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AddressToBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AddressToBuffer</FONT></A>(pResponse, <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="857">  857   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_ValueToBuffer16(pResponse, <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffStartIx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffStartIx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffStartIx</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="858">  858   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="859">  859   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="860">  860   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="861">  861   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="862">  862   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="863">  863   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="864">  864   </A><SPAN CLASS="CT"> * @brief    Compare macro used in trigger detection</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="865">  865   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="866">  866   </A><SPAN CLASS="CT"> * @param    v - original command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="867">  867   </A><SPAN CLASS="CT"> * @param    t - response buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="868">  868   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="869">  869   </A><SPAN CLASS="CT"> * @return   zero when value is lower than threshold.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="870">  870   </A><SPAN CLASS="CT"> * @return   non-zero when value is greater than or equal as threshold</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="871">  871   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="872">  872   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="873">  873   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">define</SPAN> CMP(v,t)                       ((<A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A>)(((v) &lt; (t)) ? 0 : 1))
+</SPAN><SPAN><A CLASS="LN" NAME="874">  874   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <A HREF="freemaster_rec_c.html#var_FMSTR_CFG_BUS_WIDTH" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CFG_BUS_WIDTH');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CFG_BUS_WIDTH</FONT></A> == 1U
+</SPAN><SPAN><A CLASS="LN" NAME="875">  875   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="876">  876   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Compare8S">FMSTR_Compare8S</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="877">  877   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="878">  878   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetS8(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.s8);
+</SPAN><SPAN><A CLASS="LN" NAME="879">  879   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="880">  880   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="881">  881   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Compare8U">FMSTR_Compare8U</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="882">  882   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="883">  883   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetU8(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.u8);
+</SPAN><SPAN><A CLASS="LN" NAME="884">  884   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="885">  885   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="886">  886   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="887">  887   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="888">  888   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Compare16S">FMSTR_Compare16S</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="889">  889   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="890">  890   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetS16(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.s16);
+</SPAN><SPAN><A CLASS="LN" NAME="891">  891   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="892">  892   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="893">  893   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Compare16U">FMSTR_Compare16U</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="894">  894   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="895">  895   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetU16(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.u16);
+</SPAN><SPAN><A CLASS="LN" NAME="896">  896   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="897">  897   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="898">  898   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Compare32S">FMSTR_Compare32S</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="899">  899   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="900">  900   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetS32(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.s32);
+</SPAN><SPAN><A CLASS="LN" NAME="901">  901   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="902">  902   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="903">  903   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Compare32U">FMSTR_Compare32U</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="904">  904   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="905">  905   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetU32(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.u32);
+</SPAN><SPAN><A CLASS="LN" NAME="906">  906   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="907">  907   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="908">  908   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_REC_FLOAT_TRIG
+</SPAN><SPAN><A CLASS="LN" NAME="909">  909   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="910">  910   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_Comparefloat">FMSTR_Comparefloat</A>()
+</SPAN><SPAN><A CLASS="LN" NAME="911">  911   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="912">  912   </A>  <SPAN CLASS="KW">return</SPAN> CMP(FMSTR_GetFloat(<A HREF="freemaster_rec_c.html#var_pcm_nTrgVarAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nTrgVarAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nTrgVarAddr</FONT></A>), pcm_uTrgThreshold.fp);
+</SPAN><SPAN><A CLASS="LN" NAME="913">  913   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="914">  914   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="915">  915   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="916">  916   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="917">  917   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="918">  918   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="919">  919   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="920">  920   </A><SPAN CLASS="CT"> * @brief    API: Recorder worker routine - can be called from application's timer ISR</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="921">  921   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="922">  922   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="923">  923   </A><SPAN CLASS="CT"> * This returns quickly if recorder is not running, otherwise it calls quite lengthy</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="924">  924   </A><SPAN CLASS="CT"> * recorder routine which does all the recorder work (sampling, triggering)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="925">  925   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="926">  926   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="927">  927   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xxx) || <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xx)
+</SPAN><SPAN><A CLASS="LN" NAME="928">  928   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="929">  929   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">pragma</SPAN> interrupt called
+</SPAN><SPAN><A CLASS="LN" NAME="930">  930   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="931">  931   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="932">  932   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="933">  933   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_Recorder">FMSTR_Recorder</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="934">  934   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="935">  935   </A>  <SPAN CLASS="CT">/* recorder not active */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="936">  936   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="937">  937   </A>    <SPAN CLASS="KW">return</SPAN> ;
+</SPAN><SPAN><A CLASS="LN" NAME="938">  938   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="939">  939   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="940">  940   </A>  <SPAN CLASS="CT">/* do the hard work      */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="941">  941   </A>  <A HREF="freemaster_rec_c.html#fcn_FMSTR_Recorder2" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Recorder2');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Recorder2</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="942">  942   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="943">  943   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="944">  944   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="945">  945   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="946">  946   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="947">  947   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="948">  948   </A><SPAN CLASS="CT"> * @brief    Recorder function called when recorder is active</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="949">  949   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="950">  950   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="951">  951   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xxx) || <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xx)
+</SPAN><SPAN><A CLASS="LN" NAME="952">  952   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="953">  953   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">pragma</SPAN> interrupt called
+</SPAN><SPAN><A CLASS="LN" NAME="954">  954   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="955">  955   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="956">  956   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="957">  957   </A><SPAN CLASS="DT">static</SPAN> <SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_Recorder2">FMSTR_Recorder2</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="958">  958   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="959">  959   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> sz;
+</SPAN><SPAN><A CLASS="LN" NAME="960">  960   </A>  <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> cmp;
+</SPAN><SPAN><A CLASS="LN" NAME="961">  961   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U8</FONT></A> i;
+</SPAN><SPAN><A CLASS="LN" NAME="962">  962   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="963">  963   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_DIVISOR) != 1
+</SPAN><SPAN><A CLASS="LN" NAME="964">  964   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="965">  965   </A>  <SPAN CLASS="CT">/* skip this call ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="966">  966   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDivCtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDivCtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDivCtr</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="967">  967   </A>    <SPAN CLASS="CT">/* maybe next time... */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="968">  968   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDivCtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDivCtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDivCtr</FONT></A>--;
+</SPAN><SPAN><A CLASS="LN" NAME="969">  969   </A>    <SPAN CLASS="KW">return</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="970">  970   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="971">  971   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="972">  972   </A>  <SPAN CLASS="CT">/* re-initialize divider */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="973">  973   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> (FMSTR_REC_STATIC_DIVISOR) == 0
+</SPAN><SPAN><A CLASS="LN" NAME="974">  974   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="975">  975   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDivCtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDivCtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDivCtr</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDiv" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDiv');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDiv</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="976">  976   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="977">  977   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="978">  978   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="979">  979   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecTimeDivCtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecTimeDivCtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecTimeDivCtr</FONT></A> = FMSTR_REC_STATIC_DIVISOR;
+</SPAN><SPAN><A CLASS="LN" NAME="980">  980   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="981">  981   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_REC_STATIC_DIVISOR) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="982">  982   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_REC_STATIC_DIVISOR) != 1 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="983">  983   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="984">  984   </A>  <SPAN CLASS="CT">/* take snapshot of variable values */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="985">  985   </A>  <SPAN CLASS="KW">for</SPAN> (i=0U; i&lt;<A HREF="freemaster_rec_c.html#var_pcm_nRecVarCount" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecVarCount');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecVarCount</FONT></A>; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="986">  986   </A>    sz = <A HREF="freemaster_rec_c.html#var_pcm_pRecVarSize" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pRecVarSize');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pRecVarSize</FONT></A>[i];
+</SPAN><SPAN><A CLASS="LN" NAME="987">  987   </A>    <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_CopyMemory" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CopyMemory');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CopyMemory</FONT></A>(<A HREF="freemaster_rec_c.html#var_pcm_dwRecWritePtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecWritePtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecWritePtr</FONT></A>, pcm_pRecVarAddr[i], sz);
+</SPAN><SPAN><A CLASS="LN" NAME="988">  988   </A>    sz /= <A HREF="freemaster_rec_c.html#var_FMSTR_CFG_BUS_WIDTH" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CFG_BUS_WIDTH');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CFG_BUS_WIDTH</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="989">  989   </A>    <A HREF="freemaster_rec_c.html#var_pcm_dwRecWritePtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecWritePtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecWritePtr</FONT></A> += sz;
+</SPAN><SPAN><A CLASS="LN" NAME="990">  990   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="991">  991   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="992">  992   </A>  <SPAN CLASS="CT">/* another sample taken (startIx "points" after sample just taken) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="993">  993   </A>  <SPAN CLASS="CT">/* i.e. it points to the oldest sample */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="994">  994   </A>  <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffStartIx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffStartIx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffStartIx</FONT></A>++;
+</SPAN><SPAN><A CLASS="LN" NAME="995">  995   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="996">  996   </A>  <SPAN CLASS="CT">/* wrap around (circular buffer) ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="997">  997   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_dwRecWritePtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecWritePtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecWritePtr</FONT></A> &gt;= <A HREF="freemaster_rec_c.html#var_pcm_dwRecEndBuffPtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecEndBuffPtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecEndBuffPtr</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="998">  998   </A>    <A HREF="freemaster_rec_c.html#var_pcm_dwRecWritePtr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_dwRecWritePtr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_dwRecWritePtr</FONT></A> = <A HREF="freemaster_rec_c.html#var_pcm_nRecBuffAddr" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecBuffAddr');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecBuffAddr</FONT></A>;
+</SPAN><SPAN><A CLASS="LN" NAME="999">  999   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bInvirginCycle = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1000"> 1000   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wRecBuffStartIx" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecBuffStartIx');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecBuffStartIx</FONT></A> = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1001"> 1001   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1002"> 1002   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1003"> 1003   </A>  <SPAN CLASS="CT">/* no trigger testing in virgin cycle */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1004"> 1004   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bInvirginCycle) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1005"> 1005   </A>    <SPAN CLASS="KW">return</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="1006"> 1006   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1007"> 1007   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1008"> 1008   </A>  <SPAN CLASS="CT">/* test trigger condition if still running */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1009"> 1009   </A>  <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsStopping &amp;&amp; <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A> != NULL) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1010"> 1010   </A>    <SPAN CLASS="CT">/* compare trigger threshold */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1011"> 1011   </A>    cmp = <A HREF="freemaster_rec_c.html#var_pcm_pCompareFunc" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_pCompareFunc');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_pCompareFunc</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1012"> 1012   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1013"> 1013   </A>    <SPAN CLASS="CT">/* negated logic (falling-edge) ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1014"> 1014   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_nRecTriggerMode" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_nRecTriggerMode');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_nRecTriggerMode</FONT></A> == 2U) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1015"> 1015   </A>      cmp = (<A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A>) !cmp;
+</SPAN><SPAN><A CLASS="LN" NAME="1016"> 1016   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1017"> 1017   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1018"> 1018   </A>    <SPAN CLASS="CT">/* above threshold ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1019"> 1019   </A>    <SPAN CLASS="KW">if</SPAN> (cmp) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1020"> 1020   </A>      <SPAN CLASS="CT">/* were we at least once below threshold ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1021"> 1021   </A>      <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bTrgCrossActive) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1022"> 1022   </A>        <SPAN CLASS="CT">/* EDGE TRIGGER ! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1023"> 1023   </A>        <A HREF="freemaster_rec_c.html#fcn_FMSTR_TriggerRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TriggerRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TriggerRec</FONT></A>();
+</SPAN><SPAN><A CLASS="LN" NAME="1024"> 1024   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1025"> 1025   </A>    <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1026"> 1026   </A>      <SPAN CLASS="CT">/* we got bellow threshold, now wait for being above threshold */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1027"> 1027   </A>      <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bTrgCrossActive = 1U;
+</SPAN><SPAN><A CLASS="LN" NAME="1028"> 1028   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1029"> 1029   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1030"> 1030   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1031"> 1031   </A>  <SPAN CLASS="CT">/* in stopping mode ? (note that this bit might have been set just above!) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1032"> 1032   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsStopping) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1033"> 1033   </A>    <SPAN CLASS="CT">/* count down post-trigger samples expired ? */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1034"> 1034   </A>    <SPAN CLASS="KW">if</SPAN> (!<A HREF="freemaster_rec_c.html#var_pcm_wStoprecCountDown" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wStoprecCountDown');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wStoprecCountDown</FONT></A>) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1035"> 1035   </A>      <SPAN CLASS="CT">/* STOP RECORDER */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1036"> 1036   </A>      <A HREF="freemaster_rec_c.html#var_pcm_wRecFlags" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wRecFlags');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wRecFlags</FONT></A>.flg.bIsRunning = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="1037"> 1037   </A>      <SPAN CLASS="KW">return</SPAN>;
+</SPAN><SPAN><A CLASS="LN" NAME="1038"> 1038   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1039"> 1039   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1040"> 1040   </A>    <SPAN CLASS="CT">/* perhaps next time */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1041"> 1041   </A>    <A HREF="freemaster_rec_c.html#var_pcm_wStoprecCountDown" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_pcm_wStoprecCountDown');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">pcm_wStoprecCountDown</FONT></A>--;
+</SPAN><SPAN><A CLASS="LN" NAME="1042"> 1042   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1043"> 1043   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1044"> 1044   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1045"> 1045   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* (FMSTR_USE_FASTREC) == 0 */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1046"> 1046   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1047"> 1047   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* FMSTR_USE_RECORDER && (!FMSTR_DISABLE) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1048"> 1048   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1049"> 1049   </A><SPAN CLASS="CT">/* use void recorder API functions */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1050"> 1050   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_Recorder" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_Recorder');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_Recorder</FONT></A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="1051"> 1051   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1052"> 1052   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1053"> 1053   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1054"> 1054   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_TriggerRec" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TriggerRec');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TriggerRec</FONT></A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="1055"> 1055   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1056"> 1056   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1057"> 1057   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1058"> 1058   </A><SPAN CLASS="DT">void</SPAN> <A HREF="freemaster_rec_c.html#fcn_FMSTR_SetUpRecBuff" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SetUpRecBuff');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SetUpRecBuff</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> pBuffer, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> wBuffSize)
+</SPAN><SPAN><A CLASS="LN" NAME="1059"> 1059   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1060"> 1060   </A>  FMSTR_UNUSED(pBuffer);
+</SPAN><SPAN><A CLASS="LN" NAME="1061"> 1061   </A>  FMSTR_UNUSED(wBuffSize);
+</SPAN><SPAN><A CLASS="LN" NAME="1062"> 1062   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="1063"> 1063   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="1064"> 1064   </A><SPAN CLASS="CT">/*lint -efile(766, freemaster_protocol.h) include file is not used in this case */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1065"> 1065   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_RECORDER && (!FMSTR_DISABLE) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="1066"> 1066   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>

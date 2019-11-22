@@ -1,0 +1,326 @@
+<HTML>
+<HEAD>
+<TITLE>RTW Report - freemaster_tsa.c </TITLE>
+<STYLE> .LN { font-style: italic; color: #888888 } </STYLE>
+<STYLE> .CT { font-style: italic; color: #117755 } </STYLE>
+<STYLE> .PP { font-style: bold;   color: #992211 } </STYLE>
+<STYLE> .KW { font-style: bold;   color: #112266 } </STYLE>
+<STYLE> .DT { font-style: bold;   color: #112266 } </STYLE>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function rtwHilite(aBlock,aParentSID) {
+ aParentSID = "";
+ try {
+    window.location.href="matlab: if ~isempty(which('private/rtwbindmodel')), rtwprivate rtwbindmodel 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L.mdl' 'H:\\EECS_461\\project\\template_Final_Project_MPC5643L_rappid_rtw' '', end; rtwprivate code2model "+aBlock+" "+aParentSID+";"
+ } catch (e) { 
+ }
+} // end rtwHilite
+//-->
+</SCRIPT>
+</HEAD>
+<BODY BGCOLOR="#eeeeee" TEXT="#1122aa" ONLOAD="if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window);} ">
+<P>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="6" WIDTH="100%" HEIGHT="100%"><TR><TD WIDTH="100%" VALIGN="top" BGCOLOR="#ffffff">
+<H4>File: <A HREF="file:///H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_tsa.c" TARGET="rtwreport_document_frame">H:\EECS_461\project\template_Final_Project_MPC5643L_rappid_rtw\freemaster_tsa.c</A></H4>
+<PRE id="RTWcode">
+<SPAN><A CLASS="LN" NAME="1">    1   </A><SPAN CLASS="CT">/******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="2">    2   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="3">    3   </A><SPAN CLASS="CT"> * Freescale Semiconductor Inc.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="4">    4   </A><SPAN CLASS="CT"> * (c) Copyright 2004-2011 Freescale Semiconductor</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="5">    5   </A><SPAN CLASS="CT"> * ALL RIGHTS RESERVED.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="6">    6   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="7">    7   </A><SPAN CLASS="CT"> ****************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="8">    8   </A>  <SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="9">    9   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="10">   10   </A><SPAN CLASS="CT">   * @file   freemaster_tsa.c</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="11">   11   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="12">   12   </A><SPAN CLASS="CT">   * @brief  FreeMASTER TSA implementation</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="13">   13   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="14">   14   </A><SPAN CLASS="CT">   * @version 1.0.17.0</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="15">   15   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="16">   16   </A><SPAN CLASS="CT">   * @date Aug-3-2011</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="17">   17   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="18">   18   </A><SPAN CLASS="CT">   *******************************************************************************</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="19">   19   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="20">   20   </A><SPAN CLASS="CT">   * This file implements a new FreeMASTER feature called Targer-side address</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="21">   21   </A><SPAN CLASS="CT">   * translation.</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="22">   22   </A><SPAN CLASS="CT">   *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="23">   23   </A><SPAN CLASS="CT">   *******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="24">   24   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="25">   25   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="26">   26   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="27">   27   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_private.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="28">   28   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">include</SPAN> <FONT COLOR="#992211">&quot;freemaster_protocol.h&quot;</FONT>
+</SPAN><SPAN><A CLASS="LN" NAME="29">   29   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_TSA &amp;&amp; (!FMSTR_DISABLE)
+</SPAN><SPAN><A CLASS="LN" NAME="30">   30   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="31">   31   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="32">   32   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="33">   33   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="34">   34   </A><SPAN CLASS="CT"> * @brief    TSA Initialization</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="35">   35   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="36">   36   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="37">   37   </A><SPAN CLASS="DT">void</SPAN> <A NAME="fcn_FMSTR_InitTsa">FMSTR_InitTsa</A>(<SPAN CLASS="DT">void</SPAN>)
+</SPAN><SPAN><A CLASS="LN" NAME="38">   38   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="39">   39   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="40">   40   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="41">   41   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="42">   42   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="43">   43   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="44">   44   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="45">   45   </A><SPAN CLASS="CT"> * @brief    Handling GETTSAINFO and GETTSAINFO_EX command</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="46">   46   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="47">   47   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="48">   48   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="49">   49   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="50">   50   </A><SPAN CLASS="CT"> *           pointer where the response output finished (except checksum)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="51">   51   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="52">   52   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="53">   53   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_GetTsaInfo">FMSTR_GetTsaInfo</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="54">   54   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="55">   55   </A>  <SPAN CLASS="DT">volatile</SPAN> <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pResponse = pMessageIO;
+</SPAN><SPAN><A CLASS="LN" NAME="56">   56   </A>  <SPAN CLASS="DT">const</SPAN> <A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_ENTRY" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_ENTRY');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_ENTRY</FONT></A>* pTbl;
+</SPAN><SPAN><A CLASS="LN" NAME="57">   57   </A>  <A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_TINDEX" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_TINDEX');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_TINDEX</FONT></A> nTblIndex;
+</SPAN><SPAN><A CLASS="LN" NAME="58">   58   </A>  <A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_TSIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_TSIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_TSIZE</FONT></A> nTblSize = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="59">   59   </A>  <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> tmpAddr;
+</SPAN><SPAN><A CLASS="LN" NAME="60">   60   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> tmp16;
+</SPAN><SPAN><A CLASS="LN" NAME="61">   61   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="62">   62   </A>  <SPAN CLASS="CT">/* get index of table the PC is requesting   */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="63">   63   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 2U);
+</SPAN><SPAN><A CLASS="LN" NAME="64">   64   </A>  pMessageIO = FMSTR_ValueFromBuffer16(&amp;nTblIndex, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="65">   65   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="66">   66   </A>  <SPAN CLASS="CT">/* TSA flags */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="67">   67   </A>  tmp16 = FMSTR_TSA_VERSION | FMSTR_TSA_FLAGS;
+</SPAN><SPAN><A CLASS="LN" NAME="68">   68   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="69">   69   </A>  <SPAN CLASS="CT">/* sizeof TSA table entry items */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="70">   70   </A>  <SPAN CLASS="CT">/*lint -e{506,774} constant value boolean */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="71">   71   </A>  <SPAN CLASS="KW">if</SPAN> ((<SPAN CLASS="KW">sizeof</SPAN>(<A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_ENTRY" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_ENTRY');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_ENTRY</FONT></A>)/4U) == 4U) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="72">   72   </A>    tmp16 |= FMSTR_TSA_INFO_32BIT;     <SPAN CLASS="CT">/* 32bit TSA entries */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="73">   73   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="74">   74   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="75">   75   </A>  <SPAN CLASS="CT">/* success, flags */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="76">   76   </A>  pResponse = FMSTR_ConstToBuffer8(pResponse, FMSTR_STS_OK);
+</SPAN><SPAN><A CLASS="LN" NAME="77">   77   </A>  pResponse = FMSTR_ValueToBuffer16(pResponse, tmp16);
+</SPAN><SPAN><A CLASS="LN" NAME="78">   78   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="79">   79   </A>  <SPAN CLASS="CT">/* get the table (or NULL if no table on given index) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="80">   80   </A>  pTbl = FMSTR_TsaGetTable(nTblIndex, &amp;nTblSize);
+</SPAN><SPAN><A CLASS="LN" NAME="81">   81   </A>  FMSTR_PTR2ADDR(tmpAddr, pTbl);
+</SPAN><SPAN><A CLASS="LN" NAME="82">   82   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="83">   83   </A>  <SPAN CLASS="CT">/* table size in bytes */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="84">   84   </A>  nTblSize *= FMSTR_CFG_BUS_WIDTH;
+</SPAN><SPAN><A CLASS="LN" NAME="85">   85   </A>  pResponse = FMSTR_ValueToBuffer16(pResponse, nTblSize);
+</SPAN><SPAN><A CLASS="LN" NAME="86">   86   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="87">   87   </A>  <SPAN CLASS="CT">/* table address */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="88">   88   </A>  <SPAN CLASS="KW">return</SPAN> <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_AddressToBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AddressToBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AddressToBuffer</FONT></A>(pResponse, tmpAddr);
+</SPAN><SPAN><A CLASS="LN" NAME="89">   89   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="90">   90   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="91">   91   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="92">   92   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="93">   93   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="94">   94   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="95">   95   </A><SPAN CLASS="CT"> * @brief    Handling GETSTRLEN and GETSTRLEN_EX commands</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="96">   96   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="97">   97   </A><SPAN CLASS="CT"> * @param    pMessageIO - original command (in) and response buffer (out)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="98">   98   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="99">   99   </A><SPAN CLASS="CT"> * @return   As all command handlers, the return value should be the buffer</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="100">  100   </A><SPAN CLASS="CT"> *           pointer where the response output finished (except checksum)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="101">  101   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="102">  102   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="103">  103   </A><A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> <A NAME="fcn_FMSTR_GetStringLen">FMSTR_GetStringLen</A>(<A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pMessageIO)
+</SPAN><SPAN><A CLASS="LN" NAME="104">  104   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="105">  105   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_BPTR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BPTR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BPTR</FONT></A> pResponse = pMessageIO;
+</SPAN><SPAN><A CLASS="LN" NAME="106">  106   </A>  <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddr;
+</SPAN><SPAN><A CLASS="LN" NAME="107">  107   </A>  <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_U16" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_U16');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_U16</FONT></A> nLen = 0U;
+</SPAN><SPAN><A CLASS="LN" NAME="108">  108   </A>  pMessageIO = FMSTR_SkipInBuffer(pMessageIO, 1U);
+</SPAN><SPAN><A CLASS="LN" NAME="109">  109   </A>  pMessageIO = <A HREF="freemaster_MPC56xx_c.html#fcn_FMSTR_AddressFromBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_AddressFromBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_AddressFromBuffer</FONT></A>(&amp;nAddr, pMessageIO);
+</SPAN><SPAN><A CLASS="LN" NAME="110">  110   </A>  nLen = <A HREF="freemaster_protocol_c.html#fcn_FMSTR_StrLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StrLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StrLen</FONT></A>(nAddr);
+</SPAN><SPAN><A CLASS="LN" NAME="111">  111   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="112">  112   </A>  <SPAN CLASS="CT">/* return strign size in bytes (even on 16bit DSP) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="113">  113   </A>  nLen *= FMSTR_CFG_BUS_WIDTH ;
+</SPAN><SPAN><A CLASS="LN" NAME="114">  114   </A>  pResponse = FMSTR_ConstToBuffer8(pResponse, FMSTR_STS_OK);
+</SPAN><SPAN><A CLASS="LN" NAME="115">  115   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_ValueToBuffer16(pResponse, nLen);
+</SPAN><SPAN><A CLASS="LN" NAME="116">  116   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="117">  117   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="118">  118   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="119">  119   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="120">  120   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="121">  121   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="122">  122   </A><SPAN CLASS="CT"> * @brief    Helper (inline) function for TSA memory region check</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="123">  123   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="124">  124   </A><SPAN CLASS="CT"> * @param    nAddrUser - address of region to be checked</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="125">  125   </A><SPAN CLASS="CT"> * @param    nSizeUser - size of region to be checked</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="126">  126   </A><SPAN CLASS="CT"> * @param    nAddrSafe - address of known "safe" region</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="127">  127   </A><SPAN CLASS="CT"> * @param    wSizeSafe - size of safe region</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="128">  128   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="129">  129   </A><SPAN CLASS="CT"> * @return   This function returns non-zero if given user space is safe</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="130">  130   </A><SPAN CLASS="CT"> *           (i.e. it lies in given safe space)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="131">  131   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="132">  132   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="133">  133   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xxx) || <SPAN CLASS="PP">defined</SPAN>(FMSTR_PLATFORM_56F8xx)
+</SPAN><SPAN><A CLASS="LN" NAME="134">  134   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="135">  135   </A><SPAN CLASS="CT">/* make inline */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="136">  136   </A>inline <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddrUser, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="137">  137   </A>  nSizeUser,
+</SPAN><SPAN><A CLASS="LN" NAME="138">  138   </A>  <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddrSafe, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> wSizeSafe);
+</SPAN><SPAN><A CLASS="LN" NAME="139">  139   </A>inline
+</SPAN><SPAN><A CLASS="LN" NAME="140">  140   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="141">  141   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="142">  142   </A><SPAN CLASS="CT">/* declare function prototype */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="143">  143   </A><SPAN CLASS="DT">static</SPAN> <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddrUser, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="144">  144   </A>  nSizeUser,
+</SPAN><SPAN><A CLASS="LN" NAME="145">  145   </A>  <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddrSafe, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> wSizeSafe);
+</SPAN><SPAN><A CLASS="LN" NAME="146">  146   </A><SPAN CLASS="DT">static</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="147">  147   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="148">  148   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="149">  149   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_CheckMemSpace">FMSTR_CheckMemSpace</A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddrUser, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSizeUser,
+</SPAN><SPAN><A CLASS="LN" NAME="150">  150   </A>  <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> nAddrSafe, <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> wSizeSafe)
+</SPAN><SPAN><A CLASS="LN" NAME="151">  151   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="152">  152   </A>  <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> bRet = FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="153">  153   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="154">  154   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">ifdef</SPAN> __HCS12X__
+</SPAN><SPAN><A CLASS="LN" NAME="155">  155   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="156">  156   </A>  <SPAN CLASS="CT">/* convert from logical to global if needed */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="157">  157   </A>  nAddrUser = FMSTR_FixHcs12xAddr(nAddrUser);
+</SPAN><SPAN><A CLASS="LN" NAME="158">  158   </A>  nAddrSafe = FMSTR_FixHcs12xAddr(nAddrSafe);
+</SPAN><SPAN><A CLASS="LN" NAME="159">  159   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="160">  160   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="161">  161   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="162">  162   </A>  <SPAN CLASS="KW">if</SPAN> (nAddrUser &gt;= nAddrSafe) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="163">  163   </A>    bRet = (<A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A>)
+</SPAN><SPAN><A CLASS="LN" NAME="164">  164   </A>      (((nAddrUser + nSizeUser) &lt;= (nAddrSafe + wSizeSafe)) ? FMSTR_TRUE :
+</SPAN><SPAN><A CLASS="LN" NAME="165">  165   </A>       FMSTR_FALSE);
+</SPAN><SPAN><A CLASS="LN" NAME="166">  166   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="167">  167   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="168">  168   </A>  <SPAN CLASS="KW">return</SPAN> bRet;
+</SPAN><SPAN><A CLASS="LN" NAME="169">  169   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="170">  170   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="171">  171   </A><SPAN CLASS="CT">/**************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="172">  172   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="173">  173   </A><SPAN CLASS="CT">/*!</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="174">  174   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="175">  175   </A><SPAN CLASS="CT"> * @brief    Check wether given memory region is "safe" (covered by TSA)</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="176">  176   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="177">  177   </A><SPAN CLASS="CT"> * @param    dwAddr - address of the memory to be checked</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="178">  178   </A><SPAN CLASS="CT"> * @param    nSize  - size of the memory to be checked</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="179">  179   </A><SPAN CLASS="CT"> * @param    bWriteAccess - write access is required</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="180">  180   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="181">  181   </A><SPAN CLASS="CT"> * @return   This function returns non-zero if user space is safe</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="182">  182   </A><SPAN CLASS="CT"> *</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="183">  183   </A><SPAN CLASS="CT"> ******************************************************************************/</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="184">  184   </A><A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A> <A NAME="fcn_FMSTR_CheckTsaSpace">FMSTR_CheckTsaSpace</A>(<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> dwAddr, <A HREF="freemaster_MPC56xx_h.html#type_FMSTR_SIZE8" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE8');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE8</FONT></A> nSize, <A HREF="freemaster_h.html#type_FMSTR_BOOL" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_BOOL');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_BOOL</FONT></A>
+</SPAN><SPAN><A CLASS="LN" NAME="185">  185   </A>  bWriteAccess)
+</SPAN><SPAN><A CLASS="LN" NAME="186">  186   </A><B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="187">  187   </A>  <SPAN CLASS="DT">const</SPAN> <A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_ENTRY" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_ENTRY');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_ENTRY</FONT></A>* pte;
+</SPAN><SPAN><A CLASS="LN" NAME="188">  188   </A>  <A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_TINDEX" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_TINDEX');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_TINDEX</FONT></A> nTableIndex;
+</SPAN><SPAN><A CLASS="LN" NAME="189">  189   </A>  <A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_TSIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_TSIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_TSIZE</FONT></A> i, cnt;
+</SPAN><SPAN><A CLASS="LN" NAME="190">  190   </A>  <A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A> nInfo;
+</SPAN><SPAN><A CLASS="LN" NAME="191">  191   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="192">  192   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_CFG_BUS_WIDTH &gt;= 2U
+</SPAN><SPAN><A CLASS="LN" NAME="193">  193   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="194">  194   </A>  <SPAN CLASS="CT">/* TSA tables use sizeof() operator which returns size in "bus-widths" (e.g. 56F8xx) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="195">  195   </A>  nSize = (nSize + 1) / FMSTR_CFG_BUS_WIDTH;
+</SPAN><SPAN><A CLASS="LN" NAME="196">  196   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="197">  197   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="198">  198   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="199">  199   </A>  <SPAN CLASS="CT">/* to be as fast as possible during normal operation,</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="200">  200   </A><SPAN CLASS="CT">     check variable entries in all tables first */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="201">  201   </A>  <SPAN CLASS="KW">for</SPAN> (nTableIndex=0U; (pte=FMSTR_TsaGetTable(nTableIndex, &amp;cnt)) != NULL;
+</SPAN><SPAN><A CLASS="LN" NAME="202">  202   </A>       nTableIndex++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="203">  203   </A>    <SPAN CLASS="CT">/* number of items in a table */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="204">  204   </A>    cnt /= (<A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_TSIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_TSIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_TSIZE</FONT></A>) <SPAN CLASS="KW">sizeof</SPAN>(<A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_ENTRY" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_ENTRY');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_ENTRY</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="205">  205   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="206">  206   </A>    <SPAN CLASS="CT">/* all table entries */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="207">  207   </A>    <SPAN CLASS="KW">for</SPAN> (i=0U; i&lt;cnt; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="208">  208   </A>      <SPAN CLASS="CT">/*lint -e{506,774} condition always true/false */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="209">  209   </A>      <SPAN CLASS="KW">if</SPAN> (<SPAN CLASS="KW">sizeof</SPAN>(pte-&gt;addr.p) &lt; <SPAN CLASS="KW">sizeof</SPAN>(pte-&gt;addr.n))
+</SPAN><SPAN><A CLASS="LN" NAME="210">  210   </A>        nInfo = (<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>) pte-&gt;info.n;
+</SPAN><SPAN><A CLASS="LN" NAME="211">  211   </A>      <SPAN CLASS="KW">else</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="212">  212   </A>        nInfo = (<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>) pte-&gt;info.p;
+</SPAN><SPAN><A CLASS="LN" NAME="213">  213   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="214">  214   </A>      <SPAN CLASS="CT">/* variable entry only (also check read-write flag) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="215">  215   </A>      <SPAN CLASS="KW">if</SPAN> ((nInfo &amp; FMSTR_TSA_INFO_VAR_FLAG) &amp;&amp; (!bWriteAccess || (nInfo &amp;
+</SPAN><SPAN><A CLASS="LN" NAME="216">  216   </A>            FMSTR_TSA_INFO_RWV_FLAG))) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="217">  217   </A>        <SPAN CLASS="CT">/* need to take the larger of the two in union (will be optimized by compiler anyway) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="218">  218   </A>        <SPAN CLASS="CT">/*lint -e{506,774} condition always true/false */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="219">  219   </A>        <SPAN CLASS="KW">if</SPAN> (<SPAN CLASS="KW">sizeof</SPAN>(pte-&gt;addr.p) &lt; <SPAN CLASS="KW">sizeof</SPAN>(pte-&gt;addr.n)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="220">  220   </A>          <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(dwAddr, nSize, (<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A>) pte-&gt;addr.n,
+</SPAN><SPAN><A CLASS="LN" NAME="221">  221   </A>                                  (<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>) (nInfo &gt;&gt; 2))) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="222">  222   </A>            <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;         <SPAN CLASS="CT">/* access granted! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="223">  223   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="224">  224   </A>        <B>}</B> <SPAN CLASS="KW">else</SPAN> <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="225">  225   </A>          <SPAN CLASS="CT">/*lint -e{923} casting pointer to long (on some architectures) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="226">  226   </A>          <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(dwAddr, nSize, (<A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A>) pte-&gt;addr.p,
+</SPAN><SPAN><A CLASS="LN" NAME="227">  227   </A>                                  (<A HREF="freemaster_h.html#type_FMSTR_SIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_SIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_SIZE</FONT></A>) (nInfo &gt;&gt; 2))) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="228">  228   </A>            <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;         <SPAN CLASS="CT">/* access granted! */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="229">  229   </A>          <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="230">  230   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="231">  231   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="232">  232   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="233">  233   </A>      pte++;
+</SPAN><SPAN><A CLASS="LN" NAME="234">  234   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="235">  235   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="236">  236   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="237">  237   </A>  <SPAN CLASS="CT">/* no more writable memory chunks available */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="238">  238   </A>  <SPAN CLASS="KW">if</SPAN> (bWriteAccess) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="239">  239   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="240">  240   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="241">  241   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="242">  242   </A>  <SPAN CLASS="CT">/* allow reading of recorder buffer */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="243">  243   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">if</SPAN> FMSTR_USE_RECORDER
+</SPAN><SPAN><A CLASS="LN" NAME="244">  244   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="245">  245   </A>  <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_rec_c.html#fcn_FMSTR_IsInRecBuffer" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_IsInRecBuffer');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_IsInRecBuffer</FONT></A>(dwAddr, nSize)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="246">  246   </A>    <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="247">  247   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="248">  248   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="249">  249   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="250">  250   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="251">  251   </A>  <SPAN CLASS="CT">/* allow reading of any C-constant string referenced in TSA tables */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="252">  252   </A>  <SPAN CLASS="KW">for</SPAN> (nTableIndex=0U; (pte=FMSTR_TsaGetTable(nTableIndex, &amp;cnt)) != NULL;
+</SPAN><SPAN><A CLASS="LN" NAME="253">  253   </A>       nTableIndex++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="254">  254   </A>    <A HREF="freemaster_h.html#type_FMSTR_ADDR" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_ADDR');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_ADDR</FONT></A> tmpAddr;
+</SPAN><SPAN><A CLASS="LN" NAME="255">  255   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="256">  256   </A>    <SPAN CLASS="CT">/* allow reading of the TSA table itself */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="257">  257   </A>    FMSTR_PTR2ADDR(tmpAddr, pte);
+</SPAN><SPAN><A CLASS="LN" NAME="258">  258   </A>    <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(dwAddr, nSize, tmpAddr, cnt)) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="259">  259   </A>      <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="260">  260   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="261">  261   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="262">  262   </A>    <SPAN CLASS="CT">/* number of items in a table */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="263">  263   </A>    cnt /= (<A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_TSIZE" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_TSIZE');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_TSIZE</FONT></A>) <SPAN CLASS="KW">sizeof</SPAN>(<A HREF="freemaster_tsa_h.html#type_FMSTR_TSA_ENTRY" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_TSA_ENTRY');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_TSA_ENTRY</FONT></A>);
+</SPAN><SPAN><A CLASS="LN" NAME="264">  264   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="265">  265   </A>    <SPAN CLASS="CT">/* all table entries */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="266">  266   </A>    <SPAN CLASS="KW">for</SPAN> (i=0U; i&lt;cnt; i++) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="267">  267   </A>      <SPAN CLASS="CT">/* system strings are always accessible at C-pointers */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="268">  268   </A>      FMSTR_PTR2ADDR(tmpAddr, pte-&gt;name.p);
+</SPAN><SPAN><A CLASS="LN" NAME="269">  269   </A>      <SPAN CLASS="KW">if</SPAN> (pte-&gt;name.p) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="270">  270   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(dwAddr, nSize, tmpAddr, <A HREF="freemaster_protocol_c.html#fcn_FMSTR_StrLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StrLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StrLen</FONT></A>(tmpAddr)))
+</SPAN><SPAN><A CLASS="LN" NAME="271">  271   </A>        <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="272">  272   </A>          <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="273">  273   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="274">  274   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="275">  275   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="276">  276   </A>      FMSTR_PTR2ADDR(tmpAddr, pte-&gt;type.p);
+</SPAN><SPAN><A CLASS="LN" NAME="277">  277   </A>      <SPAN CLASS="KW">if</SPAN> (pte-&gt;type.p) <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="278">  278   </A>        <SPAN CLASS="KW">if</SPAN> (<A HREF="freemaster_tsa_c.html#fcn_FMSTR_CheckMemSpace" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_CheckMemSpace');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_CheckMemSpace</FONT></A>(dwAddr, nSize, tmpAddr, <A HREF="freemaster_protocol_c.html#fcn_FMSTR_StrLen" ONCLICK="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_FMSTR_StrLen');" TARGET="rtwreport_document_frame"><FONT COLOR="#1122aa">FMSTR_StrLen</FONT></A>(tmpAddr)))
+</SPAN><SPAN><A CLASS="LN" NAME="279">  279   </A>        <B>{</B>
+</SPAN><SPAN><A CLASS="LN" NAME="280">  280   </A>          <SPAN CLASS="KW">return</SPAN> FMSTR_TRUE;
+</SPAN><SPAN><A CLASS="LN" NAME="281">  281   </A>        <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="282">  282   </A>      <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="283">  283   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="284">  284   </A>      pte++;
+</SPAN><SPAN><A CLASS="LN" NAME="285">  285   </A>    <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="286">  286   </A>  <B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="287">  287   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="288">  288   </A>  <SPAN CLASS="CT">/* no valid TSA entry found =&gt; not-safe to access the memory */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="289">  289   </A>  <SPAN CLASS="KW">return</SPAN> FMSTR_FALSE;
+</SPAN><SPAN><A CLASS="LN" NAME="290">  290   </A><B>}</B>
+</SPAN><SPAN><A CLASS="LN" NAME="291">  291   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="292">  292   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">else</SPAN>                                  <SPAN CLASS="CT">/* FMSTR_USE_TSA && (!FMSTR_DISABLE) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="293">  293   </A>
+</SPAN><SPAN><A CLASS="LN" NAME="294">  294   </A><SPAN CLASS="CT">/*lint -efile(766, freemaster_protocol.h) include file is not used in this case */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="295">  295   </A><FONT COLOR="#992211">#</FONT><SPAN CLASS="PP">endif</SPAN>                                 <SPAN CLASS="CT">/* FMSTR_USE_TSA && (!FMSTR_DISABLE) */</SPAN>
+</SPAN><SPAN><A CLASS="LN" NAME="296">  296   </A>
+</SPAN></PRE>
+</TD></TR></TABLE>
+</P>
+</BODY>
+</HTML>
